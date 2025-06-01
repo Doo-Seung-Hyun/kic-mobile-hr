@@ -8,7 +8,7 @@ interface LayoutProps{
 
 function RootLayout(props: LayoutProps) {
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-screen flex flex-col p-4">
             <Header />
             <main className="flex-1">
                 {props.children}
