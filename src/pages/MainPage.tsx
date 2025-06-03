@@ -1,6 +1,8 @@
 import Card from "../components/ui/Card.tsx";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {compareAsc, differenceInCalendarDays, format, parse, startOfDay} from "date-fns";
+import ExpandableCard from "../components/ui/ExpandableCard.tsx";
+import Button from "../components/ui/Button.tsx";
 
 interface LeaveType {
     leaveTypeCode: string;
@@ -25,7 +27,7 @@ const myLeaveDays : LeaveType[] = [
     {leaveTypeCode: '001', leaveTypeName: '연차휴가', leftLeaveDays: 10},
     {leaveTypeCode: '002', leaveTypeName: '보상휴가', leftLeaveDays: 2},
     {leaveTypeCode: '003', leaveTypeName: '대체휴가', leftLeaveDays: 4},
-    {leaveTypeCode: '004', leaveTypeName: '공가', leftLeaveDays: 1}
+    // {leaveTypeCode: '004', leaveTypeName: '공가', leftLeaveDays: 1}
 ];
 
 const calculateDaysLeft = (leaveDate:string):string =>{
@@ -108,104 +110,80 @@ const scheduledLeaves : ScheduledLeavesType[] = [
 
 function MainPage(props) {
 
-    const [isLeaveListExpanded, setIsLeaveListExpanded] = useState<boolean>(false);
-    const [expandableLeaveListHeight, setExpandableLeaveListHeight] = useState<number>(0);
-    const expandableLeaveListRef = useRef<HTMLUListElement>(null);
-
-    useEffect(() => {
-        const height = expandableLeaveListRef.current.scrollHeight;
-        setExpandableLeaveListHeight(height);
-    }, [myLeaveDays]);
-
-    const toggleExpandingLeaveList = ():void =>{
-        setIsLeaveListExpanded(prev=>!prev);
-    }
-
-    console.log(scheduledLeaves);
-    console.log(format(parse(scheduledLeaves[0].scheduledLeaveStartDate,'yyyyMMdd',new Date()),'M.d'));
-
     return (
-        <div className="text-gray-800">
+        <div className="flex flex-col gap-4 text-gray-800">
+            <div className="font-bold text-xl pt-6">🚀 휴가를 떠나요</div>
             {/*휴가 현황*/}
-            <Card>
-                <Card.Header>휴가 현황</Card.Header>
-                <Card.Content>
-                    <ul>
-                        {myLeaveDays.slice(0,1).map(leave =>
-                            <li className="flex flex-row justify-between p-2.5">
-                                <span>{leave.leaveTypeName}</span>
-                                <div>
-                                    {leave.leftLeaveDays}
-                                    <span className="text-sm font-normal text-gray-500 pl-1">일</span>
-                                </div>
-                            </li>
-                        )}
-                    </ul>
-                    {myLeaveDays.length > 1 &&
-                        <>
-                            <ul className={'overflow-hidden transition-[height] duration-300 ease-in-out'}
-                                style={{height: isLeaveListExpanded? `${expandableLeaveListHeight}px` : '0px'}}
-                                ref={expandableLeaveListRef}>
-                                {myLeaveDays.slice(1, myLeaveDays.length).map(leave =>
-                                    <li className="flex flex-row justify-between p-2.5">
-                                        <span>{leave.leaveTypeName}</span>
-                                        <div>
-                                            {leave.leftLeaveDays}
-                                            <span className="text-sm font-normal text-gray-500 pl-1">일</span>
-                                        </div>
-                                    </li>
-                                )}
-                            </ul>
-                            <button
-                                className="block font-normal w-full bg-gray-100 rounded-md border-gray-400 p-2 mt-2"
-                                onClick={toggleExpandingLeaveList}>
-                                <span>{isLeaveListExpanded ? '접기' : '더보기'}</span>
-                                <span><svg
-                                    width="10"
-                                    height="6"
-                                    viewBox="0 0 10 6"
-                                    fill="none"
-                                    className={`ml-1 inline ${isLeaveListExpanded? 'rotate-180':''}`}
-                                >
-                              <path
-                                  d="M1 1L5 5L9 1"
-                                  stroke="#929294"
-                                  strokeWidth="1.2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                              />
-                            </svg></span>
-                            </button>
-                        </>
-                    }
-                </Card.Content>
-            </Card>
-            {/*예정 휴가*/}
-            <Card>
-                <Card.Header>예정 휴가</Card.Header>
-                <Card.Content>
-                    {scheduledLeaves.map(leave =>
-                        <div className="flex flex-row items-center justify-between p-2">
-                            <div className="flex-1 text-blue-500">
-                                <span>{leave.daysLeft}</span>
-                            </div>
-                            <div className="flex-1 font-normal">
-                                <span>{leave.leaveTypeDisplayName}</span>
-                            </div>
-                            <div className="flex-1 flex-grow-[2] text-right font-normal text-sm text-gray-700">
-                                <span className="bg-gray-100 rounded-md p-0.5">{leave.formattedDuration.start}</span>
+            <ExpandableCard
+                title='휴가 현황'
+                items={myLeaveDays}
+                itemRenderFunc= {leave => <>
+                    <span>{leave.leaveTypeName}</span>
+                    <div>
+                        {leave.leftLeaveDays}
+                        <span className="text-sm font-normal text-gray-500 pl-1">일</span>
+                    </div>
+                </>}
+                visibleCount={3}
+            />
 
-                                {!leave.formattedDuration.isOneDay &&
-                                    <>
-                                        <span className="mx-1">-</span>
-                                        <span className="bg-gray-100 rounded-md p-0.5">{leave.formattedDuration.end}</span>
-                                    </>
-                                }
-                            </div>
-                        </div>
-                    )}
-                </Card.Content>
-            </Card>
+            {/*예정 휴가*/}
+            <ExpandableCard
+                title='예정된 휴가'
+                items={scheduledLeaves}
+                itemRenderFunc= {leave => <>
+                    <div className="flex-1 text-blue-500">
+                        <span>{leave.daysLeft}</span>
+                    </div>
+                    <div className="flex-1 font-normal">
+                        <span>{leave.leaveTypeDisplayName}</span>
+                    </div>
+                    <div className="flex-1 flex-grow-[2] text-right font-normal text-sm text-gray-700">
+                        <span className="bg-gray-100 rounded-md p-0.5">{leave.formattedDuration.start}</span>
+
+                        {!leave.formattedDuration.isOneDay &&
+                            <>
+                                <span className="mx-1">-</span>
+                                <span className="bg-gray-100 rounded-md p-0.5">{leave.formattedDuration.end}</span>
+                            </>
+                        }
+                    </div>
+                </>}
+                listItemClassName='items-center'
+            />
+
+            {/*휴가신청 버튼*/}
+            <Button className={"mb-2"}>휴가 신청하기</Button>
+
+            <div className="font-bold text-xl pt-6">🕕 가족과 함께 시간을 보내요</div>
+
+            {/*예정 휴가*/}
+            <ExpandableCard
+                title='예정된 휴가'
+                items={scheduledLeaves}
+                itemRenderFunc= {leave => <>
+                    <div className="flex-1 text-blue-500">
+                        <span>{leave.daysLeft}</span>
+                    </div>
+                    <div className="flex-1 font-normal">
+                        <span>{leave.leaveTypeDisplayName}</span>
+                    </div>
+                    <div className="flex-1 flex-grow-[2] text-right font-normal text-sm text-gray-700">
+                        <span className="bg-gray-100 rounded-md p-0.5">{leave.formattedDuration.start}</span>
+
+                        {!leave.formattedDuration.isOneDay &&
+                            <>
+                                <span className="mx-1">-</span>
+                                <span className="bg-gray-100 rounded-md p-0.5">{leave.formattedDuration.end}</span>
+                            </>
+                        }
+                    </div>
+                </>}
+                listItemClassName='items-center'
+            />
+
+            {/*가족과 함께하는날 신청 버튼*/}
+            <Button className={"mb-2"}>가족과 함꼐하는 날 신청하기</Button>
         </div>
     );
 }

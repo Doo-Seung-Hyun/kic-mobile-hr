@@ -2,7 +2,7 @@ import React from "react";
 
 function Card({children}:{children: React.ReactNode}):React.ReactNode {
     return (
-        <div className="flex flex-col gap-3 bg-white font-semibold rounded-lg drop-shadow-sm p-4 my-4">
+        <div className="flex flex-col gap-3 bg-white font-semibold rounded-lg drop-shadow-sm p-4">
             {children}
         </div>
     );
