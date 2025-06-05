@@ -12,6 +12,7 @@ import {
 } from "date-fns";
 import ExpandableCard from "../components/ui/ExpandableCard.tsx";
 import Button from "../components/ui/Button.tsx";
+import TeamCalendar from "../features/mainpage/TeamCalendar/TeamCalendar.tsx";
 
 interface LeaveType {
     leaveTypeCode: string;
@@ -231,22 +232,7 @@ function MainPage(props) {
 
             {/*캘린더*/}
             <div className="font-bold text-2xl pt-6">📅 캘린더</div>
-            <Card>
-                <Card.Content className={"text-center font-normal text-gray-800 text-sm"}>
-                    <div className={"font-bold py-4"}>{`${yyyyMMdd.getFullYear()}년 ${yyyyMMdd.getMonth()+1}월`}</div>
-                    <div className="flex flex-row h-8 text-gray-600">
-                        {['S','M',"T",'W','T','F','S'].map((day, index)=>
-                            <div className={`flex-1 ${(index==0||index==6)&&'text-gray-400'}`}>{day}</div>
-                        )}
-                    </div>
-                    {calendarGrid.map(row =>
-                        <div className={"flex flex-row h-8"}>
-                            {row.map((day, index) =>
-                                <div className={`flex-1 ${(index==0||index==6||day.getMonth()!==yyyyMMdd.getMonth())&&'text-gray-400'}`}>{day.getDate()}</div>)}
-                        </div>
-                    )}
-                </Card.Content>
-            </Card>
+            <TeamCalendar />
         </div>
     );
 }
