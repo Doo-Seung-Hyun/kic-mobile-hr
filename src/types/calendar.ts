@@ -1,5 +1,5 @@
 export interface CalendarDay {
-    date: Date | null;
+    date: string;
     hasLeave?: boolean;
     hasFamilyTime?: boolean;
 }

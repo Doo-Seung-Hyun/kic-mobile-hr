@@ -3,14 +3,17 @@ import Card from "../../../components/ui/Card.tsx";
 import CalendarHeader from "../../../components/ui/Calendar/CalendarHeader.tsx";
 import CalendarGrid from "../../../components/ui/Calendar/CalendarGrid.tsx";
 import useCalendarData from "./useCalendarData.ts";
-import {format} from "date-fns";
 
 const TeamCalendar:React.FC = () => {
     const {
-        date,
+        currentYear,
+        currentMonth,
         goToNextMonth,
         goToPrevMonth,
-        calendarData
+        calendarData,
+        translateX,
+        hasTransition,
+        onTransitionEnd
     } = useCalendarData();
 
     return (
@@ -18,10 +21,12 @@ const TeamCalendar:React.FC = () => {
             <Card.Content>
                 <CalendarHeader onPrevClick={goToPrevMonth}
                                 onNextClick={goToNextMonth}
-                                title={format(date,'yyyy년 MM월')}
+                                title={`${currentYear}년 ${currentMonth}월`}
                 />
                 <CalendarGrid calendarData={calendarData}
-                              yyyymm={format(date,'yyyyMM')}
+                              hasTransition={hasTransition}
+                              translateX={translateX}
+                              onTransitionEnd={onTransitionEnd}
                 />
             </Card.Content>
         </Card>
