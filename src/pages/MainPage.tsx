@@ -13,12 +13,9 @@ import {
 import ExpandableCard from "../components/ui/ExpandableCard.tsx";
 import Button from "../components/ui/Button.tsx";
 import TeamCalendar from "../features/mainpage/TeamCalendar/TeamCalendar.tsx";
+import type {LeaveType} from "../types/leave.ts";
+import {useNavigate} from "react-router-dom";
 
-interface LeaveType {
-    leaveTypeCode: string;
-    leaveTypeName: string;
-    leftLeaveDays: number;
-}
 
 // 로더로 이관 예정
 interface ScheduledLeavesType {
@@ -142,6 +139,7 @@ const calendarGrid = getCalendarGrid(format(yyyyMMdd,'yyyyMM'));
 console.log(calendarGrid);
 
 function MainPage(props) {
+    const navigate = useNavigate();
 
     return (
         <div className="flex flex-col gap-4 text-gray-800 pb-10">
@@ -186,7 +184,9 @@ function MainPage(props) {
             />
 
             {/*휴가신청 버튼*/}
-            <Button className={"mb-2"}>휴가 신청하기</Button>
+            <Button className={"mb-2"}
+                    onClick={()=>navigate('/leave/apply')}
+            >휴가 신청하기</Button>
 
             {/*가족과 함께하는 날*/}
             <div className="font-bold text-2xl pt-6">🕕 가족과 함께하는 시간</div>

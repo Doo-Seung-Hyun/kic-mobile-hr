@@ -52,15 +52,18 @@ const useCalendarData = () =>{
 
     const [hasTransition, setHasTransition] = useState(false);
 
-    useEffect(() => {
+    const goToNextMonth = () => {
         setHasTransition(true);
-    }, [hasTransition]);
+        setMonthIndex(2);
+    }
 
-    const goToNextMonth = () => setMonthIndex(2);
-
-    const goToPrevMonth = () => setMonthIndex(0);
+    const goToPrevMonth = () => {
+        setHasTransition(true);
+        setMonthIndex(0);
+    }
 
     const onTransitionEnd = () => {
+        console.log('############')
         setYyyyMM(prev => {
             const nextMonth = addMonths(prev.parseDate(), monthIndex===2? 1:-1);
             return {
