@@ -13,13 +13,13 @@ const Button: React.FC<ButtonProps> = ({
                                            children,
                                            ...props
                                        }) => {
-    const baseClasses = 'font-medium rounded-lg transition-colors focus:outline-none';
+    const baseClasses = 'font-bold rounded-lg transition-colors focus:outline-none';
 
     const variantClasses = {
         primary: 'text-white hover:bg-blue-800 focus:ring-blue-500',
         secondary: 'bg-gray-500 text-white hover:bg-gray-600 focus:ring-gray-500',
         outline: 'border border-blue-700 text-blue-700 hover:bg-blue-50 focus:ring-blue-500',
-        none : 'text-blue-700 border-none'
+        none : 'border-none text-gray-800'
     };
 
     const sizeClasses = {
