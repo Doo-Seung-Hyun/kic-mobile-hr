@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
 import type {LeaveType} from "../types/leave.ts";
@@ -26,6 +26,34 @@ const myLeaveDays : LeaveType[] = [
     // {leaveTypeCode: '004', leaveTypeName: '공가', leftLeaveDays: 1}
 ];
 
+interface DimmedBackgroundProps {
+    onBackgroundClick : React.MouseEventHandler<HTMLDivElement>;
+    children : React.ReactNode;
+    type : 'bottomSheet' | 'modal';
+}
+
+const DimmedBackground = ({
+        type,
+        onBackgroundClick,
+        children
+    } : DimmedBackgroundProps) => {
+
+    const baseClasses = 'flex bg-black bg-opacity-70 fixed inset-0 text-gray-800';
+
+    const layoutClasses = {
+        bottomSheet : 'flex flex-row-reverse',
+        modal : 'flex items-center justify-center p-4'
+    }
+
+    return (
+    <div className={`${baseClasses} ${layoutClasses[type]}`}
+         onClick={onBackgroundClick}
+    >
+        {children}
+    </div>
+    );
+}
+
 const checkedSvg = <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                         data-seed-icon="true" data-seed-icon-version="0.0.21" width="18"
                         height="18" className="_1ks49b8e">
@@ -36,13 +64,22 @@ const checkedSvg = <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org
     </g>
 </svg>;
 
+const datePickerSvg = <svg className="w-5 text-gray-500"
+                           aria-hidden="true" viewBox="0 0 24 24">
+    <path
+        d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
+        fill={"currentColor"}></path>
+</svg>;
+
 
 
 function LeaveApplicationPage(props) {
-    const [selectedLeave, setSelectedLeave] = useState<LeaveType>(myLeaveDays.find(leave=>leave.leaveTypeCode==='001'));
+    const [selectedLeave, setSelectedLeave] = useState<LeaveType>(myLeaveDays.find(leave => leave.leaveTypeCode === '001'));
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [hide, setHide] = useState(true);
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+    const [hideBottomSheet, setHideBottomSheet] = useState(true);
+
+    const [isModalOpen, setIsModalOpen] = useState(true);
 
     const onLeaveItemClickOfBottomSheet = (leaveTypeCode: string) => {
         const selectedLeave = myLeaveDays.find(leave=>
@@ -51,9 +88,9 @@ function LeaveApplicationPage(props) {
     }
 
     useEffect(() => {
-        if(isOpen)
-            setHide(false);
-    }, [isOpen]);
+        if(isBottomSheetOpen)
+            setHideBottomSheet(false);
+    }, [isBottomSheetOpen]);
     return (
         <div className={"flex flex-col gap-4"}>
             <div>
@@ -71,7 +108,7 @@ function LeaveApplicationPage(props) {
                             <Button variant={"none"}
                                     size={"sm"}
                                     className={"block w-full font-semibold pt-0 pb-0 underline underline-offset-4"}
-                                    onClick={()=>setIsOpen(true)}
+                                    onClick={()=>setIsBottomSheetOpen(true)}
                             >휴가변경</Button>
                         </div>
                     </Card.Content>
@@ -92,8 +129,19 @@ function LeaveApplicationPage(props) {
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <span>시작일</span>
+                        <div className={"flex items-center"}>
+                            <span className={"flex-1"}>날짜</span>
+                            <div>
+                                <div className={"relative"}>
+                                    <input type={"text"}
+                                           readOnly={true}
+                                           className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
+                                    />
+                                    <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}>
+                                        {datePickerSvg}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <span>종료일</span>
@@ -103,17 +151,16 @@ function LeaveApplicationPage(props) {
             </div>
 
             {
-                isOpen &&
-                <div className={"flex flex-col-reverse bg-black bg-opacity-70 fixed inset-0 text-gray-800"}
-                     onClick={()=>setHide(true)}
-                >
+                isBottomSheetOpen &&
+                <DimmedBackground type={"bottomSheet"}
+                                  onBackgroundClick={()=>setHideBottomSheet(true)} >
                     <div className={"rounded-t-2xl max-h-[75%] overflow-auto bg-white p-6"}
                          style={{transition: 'transform 0.3s',
-                             transform: `translateY(${hide ? '100%' : '0'})`
+                             transform: `translateY(${hideBottomSheet ? '100%' : '0'})`
                          }}
                          onTransitionEnd={()=> {
-                             if(hide)
-                                setIsOpen(false);
+                             if(hideBottomSheet)
+                                setIsBottomSheetOpen(false);
                          }}
                     >
                         <div className={"font-bold text-xl"}>휴가 현황</div>
@@ -136,7 +183,18 @@ function LeaveApplicationPage(props) {
                             </li>)}
                         </ul>
                     </div>
-                </div>
+                </DimmedBackground>
+            }
+            {
+                isModalOpen &&
+                <DimmedBackground type={"modal"}
+                                  onBackgroundClick={()=>null}>
+                    <Card>
+                        <Card.Content>
+                            <TeamCalendar/>
+                        </Card.Content>
+                    </Card>
+                </DimmedBackground>
             }
         </div>
     );

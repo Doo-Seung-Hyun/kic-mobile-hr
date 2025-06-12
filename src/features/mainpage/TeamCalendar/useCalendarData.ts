@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {
     addMonths,
     endOfMonth,
@@ -20,18 +20,34 @@ const getCalendarGrid = (yyyyMM : string)=>{
     const endDateOfMonth = endOfMonth(parse(yyyyMM,'yyyyMM',new Date()));
 
     const startDayOfMonth = startDateOfMonth.getDay();
-    const calendarGrid:string[][] = [];
+    const calendarGrid:CalendarDay[][] = [];
 
-    calendarGrid.push([...Array(7).keys()].map(day=>
-        day<startDayOfMonth ? '' : String(day-startDayOfMonth+1)));
+    const toEmptyCalendarDay = () => toCalendarDay(0);
+
+    const toCalendarDay = (date:number = 0,
+                           hasFamilyTime: boolean = false,
+                           hasLeave: boolean = false) => {
+        return {
+            date: date==0? '' : String(date-startDayOfMonth+1),
+            fullDate: `${yyyyMM}${date<10? '0':''}${date}`,
+            hasFamilyTime: hasFamilyTime,
+            hasLeave: hasLeave
+        }
+    };
+
+    calendarGrid.push([...Array(7).keys()].map(date=>
+        date<startDayOfMonth ?
+            toEmptyCalendarDay() :toCalendarDay(date)
+        )
+    );
 
     for(let date = Number(calendarGrid[0][6])+1, count=0; date<=endDateOfMonth.getDate(); date++, count++){
         if(count%7===0)
             calendarGrid.push([]);
-        calendarGrid[calendarGrid.length-1].push(String(date));
+        calendarGrid[calendarGrid.length-1].push(toCalendarDay(date));
     }
     for(let i=calendarGrid[calendarGrid.length-1].length; i<7; i++)
-        calendarGrid[calendarGrid.length-1].push('');
+        calendarGrid[calendarGrid.length-1].push(toEmptyCalendarDay());
 
     return calendarGrid;
 };
@@ -41,12 +57,15 @@ const useCalendarData = () =>{
         year:TODAY.getFullYear(),
         month:TODAY.getMonth()+1,
         parseDate: ()=>startOfMonth(TODAY)
-    })
-    const [calendarGrids, setCalendarGrids] = useState<string[][][]>([
+    });
+
+    const [calendarGrids, setCalendarGrids] = useState<CalendarDay[][][]>([
         getCalendarGrid(format(addMonths(TODAY,-1),'yyyyMM')),
         getCalendarGrid(format(TODAY,'yyyyMM')),
         getCalendarGrid(format(addMonths(TODAY,+1),'yyyyMM'))
     ]);
+
+    const [selectedDate, setSelectedDate] = useState(TODAY);
 
     const [monthIndex, setMonthIndex] = useState<number>(1);
 
@@ -92,24 +111,14 @@ const useCalendarData = () =>{
         setMonthIndex(1);
     }
 
-    const calendarData:CalendarDay[][][] = calendarGrids.map(month=>
-        month.map(week =>
-            week.map(date => ({
-                    date,
-                    hasLeave: false,
-                    hasFamilyTime: false
-                })
-            )
-        )
-    );
-
     return {
-        TODAY,
+        selectedDate,
+        setSelectedDate,
         currentYear : yyyyMM.year,
         currentMonth : yyyyMM.month,
         goToNextMonth,
         goToPrevMonth,
-        calendarData,
+        calendarData : calendarGrids,
         translateX : monthIndex * -33.333,
         hasTransition,
         onTransitionEnd

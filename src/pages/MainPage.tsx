@@ -232,7 +232,11 @@ function MainPage(props) {
 
             {/*캘린더*/}
             <div className="font-bold text-2xl pt-6">📅 캘린더</div>
-            <TeamCalendar />
+            <Card>
+                <Card.Content>
+                    <TeamCalendar />
+                </Card.Content>
+            </Card>
         </div>
     );
 }

@@ -1,11 +1,18 @@
 import React from 'react';
-import Card from "../../../components/ui/Card.tsx";
 import CalendarHeader from "../../../components/ui/Calendar/CalendarHeader.tsx";
 import CalendarGrid from "../../../components/ui/Calendar/CalendarGrid.tsx";
 import useCalendarData from "./useCalendarData.ts";
+import useDailyAttendance from "./useDailyAttendance.ts";
 
-const TeamCalendar:React.FC = () => {
+interface TeamCalendarProps {
+    className? : string;
+}
+
+const TeamCalendar:React.FC = ({
+    className = ''
+}:TeamCalendarProps) => {
     const {
+        selectedDate,
         currentYear,
         currentMonth,
         goToNextMonth,
@@ -13,23 +20,34 @@ const TeamCalendar:React.FC = () => {
         calendarData,
         translateX,
         hasTransition,
-        onTransitionEnd
+        onTransitionEnd,
+        setSelectedDate
     } = useCalendarData();
 
+    const {
+        getAttendanceList,
+        attendanceList
+    } = useDailyAttendance(selectedDate,'95');
+
+    const onChangeDate = (newDate: string) => {
+        setSelectedDate(newDate)
+    }
+
     return (
-        <Card>
-            <Card.Content>
-                <CalendarHeader onPrevClick={goToPrevMonth}
-                                onNextClick={goToNextMonth}
-                                title={`${currentYear}년 ${currentMonth}월`}
-                />
-                <CalendarGrid calendarData={calendarData}
-                              hasTransition={hasTransition}
-                              translateX={translateX}
-                              onTransitionEnd={onTransitionEnd}
-                />
-            </Card.Content>
-        </Card>
+        <div className={`${className}`}>
+            <CalendarHeader onPrevClick={goToPrevMonth}
+                            onNextClick={goToNextMonth}
+                            title={`${currentYear}년 ${currentMonth}월`}
+            />
+            <CalendarGrid calendarData={calendarData}
+                          hasTransition={hasTransition}
+                          translateX={translateX}
+                          onTransitionEnd={onTransitionEnd}
+            />
+            <TeamDailyAttendanceList date={today}
+                                     attendanceList={attendanceList}
+            />
+        </div>
     );
 };
 
