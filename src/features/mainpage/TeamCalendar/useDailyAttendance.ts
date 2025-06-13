@@ -1,25 +1,14 @@
 import {useState} from 'react';
 import {addBusinessDays, format} from "date-fns";
+import type {AttendanceData} from "../../../types/attendanceData.ts";
 
-interface attendanceData {
-    empNo : string,
-    empNm : string,
-    orgNm : string,
-    posGrdNm : string,
-    ymd : string,
-    leaveStaYmd? : string,
-    leaveEndYmd? : string,
-    leaveTitleNm? : string,
-    remark? : string,
-    familyTimeTypeCd? : '20'|'30'
-    _seq : number
-}
+
 
 const tempDate = format(new Date(), 'yyyyMMdd');
 const tempNextDate = format(addBusinessDays(new Date(),1), 'yyyyMMdd');
 const tempPrevDate = format(addBusinessDays(new Date(),-1), 'yyyyMMdd');
 
-const mockData:attendanceData[] = [
+const mockData:AttendanceData[] = [
     {
         empNm : '두승현',
         empNo : '2230103',
@@ -27,6 +16,8 @@ const mockData:attendanceData[] = [
         posGrdNm : '4급',
         ymd : tempDate,
         _seq : 1,
+        workStartTime: 9,
+        workEndTime: 18,
         familyTimeTypeCd : '20'
     },{
         empNm : '최민수',
@@ -35,6 +26,8 @@ const mockData:attendanceData[] = [
         posGrdNm : '5급',
         ymd : tempDate,
         _seq : 2,
+        workStartTime: 9,
+        workEndTime: 18,
         familyTimeTypeCd : '20'
     },{
         empNm : '두승현',
@@ -43,7 +36,10 @@ const mockData:attendanceData[] = [
         posGrdNm : '4급',
         ymd : tempPrevDate,
         _seq : 1,
-        leaveTitleNm : '오전반차',
+        workStartTime: 8,
+        workEndTime: 17,
+        halfDayType: 'PM',
+        leaveTitleNm : '오후반차',
         remark : '8:00-12:00',
         leaveStaYmd : tempPrevDate,
         leaveEndYmd : tempPrevDate
@@ -53,6 +49,8 @@ const mockData:attendanceData[] = [
         orgNm : '정보시스템실',
         posGrdNm : '5급',
         ymd : tempPrevDate,
+        workStartTime: 9,
+        workEndTime: 18,
         familyTimeTypeCd : '20',
         _seq : 1
     },{
@@ -61,6 +59,8 @@ const mockData:attendanceData[] = [
         orgNm : '정보시스템실',
         posGrdNm : '5급',
         ymd : tempPrevDate,
+        workStartTime: 9,
+        workEndTime: 18,
         _seq : 2,
         leaveTitleNm : '대체휴가',
         leaveStaYmd : tempPrevDate,
@@ -71,6 +71,8 @@ const mockData:attendanceData[] = [
         orgNm : '정보시스템실',
         posGrdNm : '4급',
         ymd : tempNextDate,
+        workStartTime: 9,
+        workEndTime: 18,
         familyTimeTypeCd : '30',
         _seq : 1
     },{
@@ -80,6 +82,8 @@ const mockData:attendanceData[] = [
         posGrdNm : '5급',
         ymd : tempNextDate,
         _seq : 1,
+        workStartTime: 8,
+        workEndTime: 17,
         leaveTitleNm : '연차휴가',
         leaveStaYmd : tempNextDate,
         leaveEndYmd : tempNextDate
@@ -94,7 +98,7 @@ const getTeamAttendanceList = (
 }
 
 const useDailyAttendance = () => {
-    const [attendanceList, setAttendanceList] = useState<attendanceData[]>([]);
+    const [attendanceList, setAttendanceList] = useState<AttendanceData[]>([]);
 
     const getAttendanceList = (date:string, orgId:string) =>{
         setAttendanceList(getTeamAttendanceList(date, orgId))

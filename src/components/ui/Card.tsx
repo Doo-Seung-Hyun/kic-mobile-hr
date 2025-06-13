@@ -11,8 +11,7 @@ function Card({
 }:CardProps):React.ReactNode {
     return (
         <div className={'flex flex-col gap-3 bg-white font-semibold ' +
-            'rounded-lg drop-shadow-sm p-4 text-gray-800 ' +
-            'overflow-scroll'
+            'rounded-lg drop-shadow-sm p-4 text-gray-800'
             +` ${className}`}>
             {children}
         </div>

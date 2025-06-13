@@ -3,6 +3,7 @@ import CalendarHeader from "../../../components/ui/Calendar/CalendarHeader.tsx";
 import CalendarGrid from "../../../components/ui/Calendar/CalendarGrid.tsx";
 import useCalendarData from "./useCalendarData.ts";
 import useDailyAttendance from "./useDailyAttendance.ts";
+import TeamDailyAttendanceList from "./TeamDailyAttendanceList.tsx";
 
 interface TeamCalendarProps {
     className? : string;
@@ -47,7 +48,7 @@ const TeamCalendar:React.FC = ({
                           translateX={translateX}
                           onTransitionEnd={onTransitionEnd}
             />
-            <TeamDailyAttendanceList date={selectedDate}
+            <TeamDailyAttendanceList selectedDate={selectedDate}
                                      attendanceList={attendanceList}
             />
         </div>

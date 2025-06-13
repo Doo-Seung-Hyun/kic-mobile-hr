@@ -28,20 +28,20 @@ const getCalendarGrid = (yyyyMM : string)=>{
                            hasFamilyTime: boolean = false,
                            hasLeave: boolean = false) => {
         return {
-            date: date==0? '' : String(date-startDayOfMonth+1),
+            date: date==0? '' : String(date),
             fullDate: `${yyyyMM}${date<10? '0':''}${date}`,
             hasFamilyTime: hasFamilyTime,
             hasLeave: hasLeave
         }
     };
 
-    calendarGrid.push([...Array(7).keys()].map(date=>
-        date<startDayOfMonth ?
-            toEmptyCalendarDay() :toCalendarDay(date)
+    calendarGrid.push([...Array(7).keys()].map(day=>
+        day<startDayOfMonth ?
+            toEmptyCalendarDay() :toCalendarDay(day-startDayOfMonth+1)
         )
     );
 
-    for(let date = Number(calendarGrid[0][6])+1, count=0; date<=endDateOfMonth.getDate(); date++, count++){
+    for(let date = Number(calendarGrid[0][6].date)+1, count=0; date<=endDateOfMonth.getDate(); date++, count++){
         if(count%7===0)
             calendarGrid.push([]);
         calendarGrid[calendarGrid.length-1].push(toCalendarDay(date));
