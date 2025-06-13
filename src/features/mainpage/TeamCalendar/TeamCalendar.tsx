@@ -8,6 +8,8 @@ interface TeamCalendarProps {
     className? : string;
 }
 
+const orgId = '95';
+
 const TeamCalendar:React.FC = ({
     className = ''
 }:TeamCalendarProps) => {
@@ -27,10 +29,11 @@ const TeamCalendar:React.FC = ({
     const {
         getAttendanceList,
         attendanceList
-    } = useDailyAttendance(selectedDate,'95');
+    } = useDailyAttendance();
 
     const onChangeDate = (newDate: string) => {
-        setSelectedDate(newDate)
+        setSelectedDate(newDate);
+        getAttendanceList(selectedDate, orgId);
     }
 
     return (
@@ -44,7 +47,7 @@ const TeamCalendar:React.FC = ({
                           translateX={translateX}
                           onTransitionEnd={onTransitionEnd}
             />
-            <TeamDailyAttendanceList date={today}
+            <TeamDailyAttendanceList date={selectedDate}
                                      attendanceList={attendanceList}
             />
         </div>

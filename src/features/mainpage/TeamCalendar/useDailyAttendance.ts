@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {addBusinessDays, addDays, format} from "date-fns";
+import {useState} from 'react';
+import {addBusinessDays, format} from "date-fns";
 
 interface attendanceData {
     empNo : string,
@@ -93,13 +93,10 @@ const getTeamAttendanceList = (
     return mockData.filter(data => data.ymd===date);
 }
 
-const useDailyAttendance = (
-    date: string,
-    orgId: string
-) => {
+const useDailyAttendance = () => {
     const [attendanceList, setAttendanceList] = useState<attendanceData[]>([]);
 
-    const getAttendanceList = () =>{
+    const getAttendanceList = (date:string, orgId:string) =>{
         setAttendanceList(getTeamAttendanceList(date, orgId))
     }
 

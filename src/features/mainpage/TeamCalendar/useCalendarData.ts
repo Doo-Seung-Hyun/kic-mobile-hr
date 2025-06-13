@@ -65,7 +65,7 @@ const useCalendarData = () =>{
         getCalendarGrid(format(addMonths(TODAY,+1),'yyyyMM'))
     ]);
 
-    const [selectedDate, setSelectedDate] = useState(TODAY);
+    const [selectedDate, setSelectedDate] = useState<string>(format(TODAY,'yyyyMMdd'));
 
     const [monthIndex, setMonthIndex] = useState<number>(1);
 
