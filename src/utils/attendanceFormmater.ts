@@ -6,7 +6,7 @@ import {
 } from "../types/attendanceData.ts";
 
 const getIcon = (attendanceType: 'Leave'|'FamilyTime') =>
-    attendanceType==='Leave' ? '🏖️' : '⏰';
+    attendanceType==='Leave' ? '⛱️️' : '⏰';
 
 const timeFormatter = (time:number)=>{
     const hour = Math.floor(time);
@@ -23,7 +23,7 @@ const dateFormatter = (date:string) => {
     const m = Number(MM);
     const d = Number(dd);
 
-    return `${m}.${d}`;
+    return `${m}. ${d}`;
 }
 
 const dateRangeFormatter = (from:string, to:string)=>
@@ -42,22 +42,24 @@ const getDisplayInfoOfLeaveAttendanceData = ({
         const halfWorkTime = workStartTime + 4 +(workStartTime>8 ? 1:0);
 
         if(isHalfDayLeave && halfDayType==='AM')
-            return `${timeFormatter(workStartTime)} - ${timeFormatter(halfWorkTime)}`;
+            return `- ${timeFormatter(halfWorkTime)}`;
         else if(isHalfDayLeave && halfDayType==='PM')
-            return `${timeFormatter(halfWorkTime)} - ${timeFormatter(workEndTime)}`;
+            return `${timeFormatter(halfWorkTime)} -`;
         else if(!isHalfDayLeave && leaveStaYmd === leaveEndYmd)
             return `${dateFormatter(leaveStaYmd)}`;
         else
             return `${dateRangeFormatter(leaveStaYmd,leaveEndYmd)}`
 
     }
-    const icon = getIcon('Leave');
+    const attendanceType = 'Leave';
+    const icon = getIcon(attendanceType);
     const displayTexts = [
         leaveTitleNm,
         formatDuration()
     ];
 
     return {
+        attendanceType,
         icon,
         displayTexts
     }
@@ -72,23 +74,22 @@ const getDisplayInfoOfFamilyTimeAttendanceData = ({
     familyTimeTypeCd
 }:FamilyTimeAttendanceData) => {
     const formatDuration = () => {
-        const startTime = getFamilyTimeName(familyTimeTypeCd)==='오전' ?
-            Math.max(8,workStartTime) :
-            workEndTime-2;
-        const endTime  = getFamilyTimeName(familyTimeTypeCd)==='오전' ?
-            10 :
-            workEndTime;
-
-        return `${timeFormatter(startTime)} - ${timeFormatter(endTime)}`;
+        if(getFamilyTimeName(familyTimeTypeCd)==='오전')
+            return '- 10:00'
+        else
+            return `${workEndTime-2}:00 -` ;
     }
 
-    const icon = getIcon('FamilyTime');
+    const attendanceType = 'FamilyTime';
+    const icon = getIcon(attendanceType);
     const displayTexts = [
-        getFamilyTimeName(familyTimeTypeCd),
+        //getFamilyTimeName(familyTimeTypeCd),
+        '가족과함께하는날',
         formatDuration()
     ];
 
     return {
+        attendanceType,
         icon,
         displayTexts
     }
@@ -100,7 +101,7 @@ const getDisplayInfoOfAttendanceData = (attendanceData: AttendanceData) => {
     }else if(isFamilyTimeAttendance(attendanceData)){
         return getDisplayInfoOfFamilyTimeAttendanceData(attendanceData);
     }
-    return {icon: '', displayTexts: []}
+    return {attendanceType: '', icon: '', displayTexts: []}
 }
 
 

@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {addBusinessDays, format} from "date-fns";
 import type {AttendanceData} from "../../../types/attendanceData.ts";
 
@@ -38,6 +38,7 @@ const mockData:AttendanceData[] = [
         _seq : 1,
         workStartTime: 8,
         workEndTime: 17,
+        isHalfDayLeave : true,
         halfDayType: 'PM',
         leaveTitleNm : '오후반차',
         remark : '8:00-12:00',
@@ -97,17 +98,19 @@ const getTeamAttendanceList = (
     return mockData.filter(data => data.ymd===date);
 }
 
-const useDailyAttendance = () => {
+const useDailyAttendance = (selectedDate: string, orgId: string) => {
+
     const [attendanceList, setAttendanceList] = useState<AttendanceData[]>([]);
 
-    const getAttendanceList = (date:string, orgId:string) =>{
-        setAttendanceList(getTeamAttendanceList(date, orgId))
-    }
+    useEffect(() => {
+        const getAttendanceList = (date:string, orgId:string) =>{
+            setAttendanceList(getTeamAttendanceList(date, orgId))
+        }
 
-    return {
-        getAttendanceList,
-        attendanceList
-    }
+        getAttendanceList(selectedDate, orgId)
+    }, [selectedDate, orgId]);
+
+    return attendanceList;
 };
 
 export default useDailyAttendance;

@@ -27,15 +27,7 @@ const TeamCalendar:React.FC = ({
         setSelectedDate
     } = useCalendarData();
 
-    const {
-        getAttendanceList,
-        attendanceList
-    } = useDailyAttendance();
-
-    const onChangeDate = (newDate: string) => {
-        setSelectedDate(newDate);
-        getAttendanceList(selectedDate, orgId);
-    }
+    const attendanceList = useDailyAttendance(selectedDate, orgId);
 
     return (
         <div className={`${className}`}>
@@ -47,6 +39,10 @@ const TeamCalendar:React.FC = ({
                           hasTransition={hasTransition}
                           translateX={translateX}
                           onTransitionEnd={onTransitionEnd}
+                          selectedDate={selectedDate}
+                          onDateClick={date => {
+                              setSelectedDate(date);
+                          }}
             />
             <TeamDailyAttendanceList selectedDate={selectedDate}
                                      attendanceList={attendanceList}
