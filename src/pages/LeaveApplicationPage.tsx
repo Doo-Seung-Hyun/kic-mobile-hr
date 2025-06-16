@@ -3,6 +3,23 @@ import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
 import type {LeaveType} from "../types/leave.ts";
 import TeamCalendar from "../features/mainpage/TeamCalendar/TeamCalendar.tsx";
+import Chip from "../components/ui/Chip.tsx";
+import DropdownChip from "../components/ui/DropdownChip.tsx";
+
+const arrowDownSvg = <span><svg
+    width="8"
+    viewBox="0 0 10 6"
+    fill="none"
+    className={`ml-1 inline`}
+>
+      <path
+          d="M1 1L5 5L9 1"
+          stroke="#323234"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+      />
+</svg></span>;
 
 const myLeaveDays : LeaveType[] = [
     {leaveTypeCode: '001', leaveTypeName: '연차휴가', leftLeaveDays: 10},
@@ -76,10 +93,14 @@ const datePickerSvg = <svg className="w-5 text-gray-500"
 function LeaveApplicationPage(props) {
     const [selectedLeave, setSelectedLeave] = useState<LeaveType>(myLeaveDays.find(leave => leave.leaveTypeCode === '001'));
 
-    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-    const [hideBottomSheet, setHideBottomSheet] = useState(true);
+    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false);
+    const [hideBottomSheet, setHideBottomSheet] = useState<boolean>(true);
 
-    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
+    const [menusOpen, setMenusOpen] = useState<boolean[]>([false,false]);
 
     const onLeaveItemClickOfBottomSheet = (leaveTypeCode: string) => {
         const selectedLeave = myLeaveDays.find(leave=>
@@ -118,19 +139,17 @@ function LeaveApplicationPage(props) {
             <div>
                 <div className="font-bold text-xl pt-6 pb-4">언제 가시나요?</div>
                 <Card>
-
-                    <TeamCalendar />
                     <Card.Content className={"font-normal"}>
-                        <div className={"flex justify-between"}>
-                            <span>2일 이상</span>
-                            <div>
-                                <div className={"w-10 h-6 bg-blue-600 rounded-full p-0.5"}>
-                                    <div className={"aspect-square max-h-full bg-white rounded-full"}></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={"flex items-center"}>
-                            <span className={"flex-1"}>날짜</span>
+                        {/*<div className={"flex justify-between"}>*/}
+                        {/*    <span>2일 이상</span>*/}
+                        {/*    <div>*/}
+                        {/*        <div className={"w-10 h-6 bg-blue-600 rounded-full p-0.5"}>*/}
+                        {/*            <div className={"aspect-square max-h-full bg-white rounded-full"}></div>*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+                        <div className={"flex items-center pb-2"}>
+                            <span className={"flex-1"}>휴가일자</span>
                             <div>
                                 <div className={"relative"}>
                                     <input type={"text"}
@@ -142,6 +161,23 @@ function LeaveApplicationPage(props) {
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                        <div className={"flex items-center gap-3 pb-3"}>
+                            <Chip outline={true}
+                                  classNames={"px-3 py-1"}>오늘</Chip>
+                            <Chip outline={true}
+                                  classNames={"px-3 py-1"}>내일</Chip>
+                            <DropdownChip dropdownGroup={[{
+                                id: 'week',
+                                items: [{label:'이번주', value:'01'}, {label:'다음주', value:'02'}],
+                                defaultValue: '02'
+                            }, {
+                                id: 'day',
+                                items: [{label:'월', value:'01'}, {label:'화', value:'02'}
+                                    , {label:'수', value:'03'}, {label:'목', value:'04'}
+                                    , {label:'금', value:'05'}],
+                                defaultValue: '01'
+                            }]} />
                         </div>
                         <div>
                             <span>종료일</span>
@@ -189,9 +225,13 @@ function LeaveApplicationPage(props) {
                 isModalOpen &&
                 <DimmedBackground type={"modal"}
                                   onBackgroundClick={()=>null}>
-                    <Card>
+                    <Card className={"max-w-[calc(100vw-4rem)]"}>
                         <Card.Content>
                             <TeamCalendar/>
+                            <Button variant={"primary"}
+                                    className={"w-full"}
+                                    onClick={closeModal}
+                            >날짜 선택</Button>
                         </Card.Content>
                     </Card>
                 </DimmedBackground>

@@ -42,7 +42,7 @@ const Grid = ({
                         {week.map((calendarDay, dayIndex) => {
                             const {date, fullDate, hasLeave, hasFamilyTime, isEmpty} = calendarDay;
                             if(isEmpty)
-                                return <div className={"flex-1"} />;
+                                return <div className={"flex-1"} key={dayIndex} />;
                             return <button className={'flex-1 relative'
                                                    + `${isOffDay(dayIndex)? ' text-gray-400':''}`}
                                            key={dayIndex}
