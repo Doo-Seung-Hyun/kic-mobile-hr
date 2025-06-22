@@ -77,8 +77,6 @@ const useCalendarData = () =>{
         getCalendarGrid(format(addMonths(TODAY,+1),'yyyyMM'))
     ]);
 
-    const [selectedDate, setSelectedDate] = useState<string>(format(TODAY,'yyyyMMdd'));
-
     const [monthIndex, setMonthIndex] = useState<number>(1);
 
     const [hasTransition, setHasTransition] = useState(false);
@@ -94,7 +92,6 @@ const useCalendarData = () =>{
     }
 
     const onTransitionEnd = () => {
-        console.log('############')
         setYyyyMM(prev => {
             const nextMonth = addMonths(prev.parseDate(), monthIndex===2? 1:-1);
             return {
@@ -124,8 +121,6 @@ const useCalendarData = () =>{
     }
 
     return {
-        selectedDate,
-        setSelectedDate,
         currentYear : yyyyMM.year,
         currentMonth : yyyyMM.month,
         goToNextMonth,

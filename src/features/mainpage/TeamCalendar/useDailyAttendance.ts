@@ -93,22 +93,30 @@ const mockData:AttendanceData[] = [
 
 const getTeamAttendanceList = (
     date: string,
-    orgId: string
+    //orgId: string
 ) => {
     return mockData.filter(data => data.ymd===date);
 }
 
-const useDailyAttendance = (selectedDate: string, orgId: string) => {
+const useDailyAttendance = (yyyyMMdd: string, orgId: string) => {
 
     const [attendanceList, setAttendanceList] = useState<AttendanceData[]>([]);
 
     useEffect(() => {
-        const getAttendanceList = (date:string, orgId:string) =>{
-            setAttendanceList(getTeamAttendanceList(date, orgId))
+        const getAttendanceList = (
+            date:string,
+            // orgId:string
+        ) =>{
+            setAttendanceList(getTeamAttendanceList(date ,
+                // orgId
+            ))
         }
 
-        getAttendanceList(selectedDate, orgId)
-    }, [selectedDate, orgId]);
+        getAttendanceList(
+            yyyyMMdd,
+            // orgId
+        )
+    }, [yyyyMMdd, orgId]);
 
     return attendanceList;
 };

@@ -1,19 +1,18 @@
-import {type AttendanceData, isLeaveAttendance, type LeaveAttendanceData} from "../../../types/attendanceData.ts";
-import {format, parse} from "date-fns";
+import {type AttendanceData, isLeaveAttendance} from "../../../types/attendanceData.ts";
+import {format} from "date-fns";
 import {getDisplayInfoOfAttendanceData} from "../../../utils/attendanceFormmater.ts";
 import {ko} from "date-fns/locale";
 import Chip from '../../../components/ui/Chip.tsx';
 
 interface TeamDailyAttendanceListProps {
-    selectedDate: string;
+    date: Date;
     attendanceList: AttendanceData[];
 }
 
 const TeamDailyAttendanceList = ({
-    selectedDate,
+    date,
     attendanceList
 }:TeamDailyAttendanceListProps) => {
-    const date = parse(selectedDate,'yyyyMMdd',new Date());
 
     return (
         <div>
@@ -39,15 +38,20 @@ const TeamDailyAttendanceList = ({
                     const [attendanceName, attendanceDuration] = displayTexts;
 
                     return (
-                    <div className={"flex text-gray-800 font-normal justify-between py-1 items-center"}>
+                    <div key={`${attendanceData.empNo}-${attendanceType}-${attendanceName}`}
+                         className={"flex text-gray-800 font-normal justify-between py-1 items-center"}>
                         <div className={"flex gap-2 text-sm items-center"}>
                             <span className={"text-lg mr-1"}>{icon}</span>
                             <span>{attendanceData.empNm}</span>
                             <span>{attendanceData.posGrdNm}</span>
                         </div>
                         <div className={"flex gap-1"}>
-                            <Chip label={attendanceName} color={attendanceType==='Leave' ? "primary" : "secondary"}/>
-                            <Chip label={attendanceDuration} />
+                            <Chip color={attendanceType==='Leave' ? "primary" : "secondary"}>
+                                {attendanceName}
+                            </Chip>
+                            <Chip>
+                                {attendanceDuration}
+                            </Chip>
                         </div>
                     </div>);
                 })

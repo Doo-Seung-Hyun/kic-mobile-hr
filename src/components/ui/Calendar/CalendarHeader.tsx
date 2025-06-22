@@ -12,7 +12,6 @@ const CalendarHeader = ({
     onPrevClick,
     onNextClick
 }:CalendarHeaderProps):React.ReactNode =>{
-    console.log(title)
     if(!title){
         title = format(new Date(), 'yyyy년 M월');
     }

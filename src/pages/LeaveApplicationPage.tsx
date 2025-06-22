@@ -5,21 +5,8 @@ import type {LeaveType} from "../types/leave.ts";
 import TeamCalendar from "../features/mainpage/TeamCalendar/TeamCalendar.tsx";
 import Chip from "../components/ui/Chip.tsx";
 import DropdownChip from "../components/ui/DropdownChip.tsx";
-
-const arrowDownSvg = <span><svg
-    width="8"
-    viewBox="0 0 10 6"
-    fill="none"
-    className={`ml-1 inline`}
->
-      <path
-          d="M1 1L5 5L9 1"
-          stroke="#323234"
-          strokeWidth="1"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-      />
-</svg></span>;
+import {addDays, format, nextSunday, previousSunday} from "date-fns";
+import {ko} from "date-fns/locale";
 
 const myLeaveDays : LeaveType[] = [
     {leaveTypeCode: '001', leaveTypeName: '연차휴가', leftLeaveDays: 10},
@@ -42,6 +29,17 @@ const myLeaveDays : LeaveType[] = [
     {leaveTypeCode: '018', leaveTypeName: '대체휴가', leftLeaveDays: 0},
     // {leaveTypeCode: '004', leaveTypeName: '공가', leftLeaveDays: 1}
 ];
+
+interface SelectedDateProp {
+    dateComponentType : 'todayChip' | 'tomorrowChip'
+        | 'dropdownChip' | 'datePicker';
+    date : Date;
+}
+
+interface DateRange {
+    start : Date;
+    end : Date;
+}
 
 interface DimmedBackgroundProps {
     onBackgroundClick : React.MouseEventHandler<HTMLDivElement>;
@@ -88,9 +86,9 @@ const datePickerSvg = <svg className="w-5 text-gray-500"
         fill={"currentColor"}></path>
 </svg>;
 
+const currDate = new Date();
 
-
-function LeaveApplicationPage(props) {
+function LeaveApplicationPage() {
     const [selectedLeave, setSelectedLeave] = useState<LeaveType>(myLeaveDays.find(leave => leave.leaveTypeCode === '001'));
 
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false);
@@ -100,7 +98,11 @@ function LeaveApplicationPage(props) {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
-    const [menusOpen, setMenusOpen] = useState<boolean[]>([false,false]);
+    // 휴가일자
+    const [selectedDate, setSelectedDate] = useState<SelectedDateProp|null>(null);
+
+    // 휴가기간
+    const [leaveDateRange, setLeaveDateRange] = useState<DateRange | null>(null);
 
     const onLeaveItemClickOfBottomSheet = (leaveTypeCode: string) => {
         const selectedLeave = myLeaveDays.find(leave=>
@@ -155,8 +157,14 @@ function LeaveApplicationPage(props) {
                                     <input type={"text"}
                                            readOnly={true}
                                            className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
+                                           value={selectedDate?.date ?
+                                               format(selectedDate?.date,'yyyy.M.d(EE)',{locale: ko}) :
+                                               ''
+                                           }
                                     />
-                                    <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}>
+                                    <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
+                                            onClick={openModal}
+                                    >
                                         {datePickerSvg}
                                     </button>
                                 </div>
@@ -164,23 +172,70 @@ function LeaveApplicationPage(props) {
                         </div>
                         <div className={"flex items-center gap-3 pb-3"}>
                             <Chip outline={true}
-                                  classNames={"px-3 py-1"}>오늘</Chip>
+                                  classNames={"px-3 py-1"}
+                                  onClick={()=>setSelectedDate({
+                                      dateComponentType: 'todayChip',
+                                      date : currDate
+                                  })}
+                                  isSelected={!!(selectedDate
+                                      && selectedDate.dateComponentType==='todayChip')}
+                            >오늘</Chip>
                             <Chip outline={true}
-                                  classNames={"px-3 py-1"}>내일</Chip>
-                            <DropdownChip dropdownGroup={[{
-                                id: 'week',
-                                items: [{label:'이번주', value:'01'}, {label:'다음주', value:'02'}],
-                                defaultValue: '02'
-                            }, {
-                                id: 'day',
-                                items: [{label:'월', value:'01'}, {label:'화', value:'02'}
-                                    , {label:'수', value:'03'}, {label:'목', value:'04'}
-                                    , {label:'금', value:'05'}],
-                                defaultValue: '01'
-                            }]} />
+                                  classNames={"px-3 py-1"}
+                                  onClick={()=>setSelectedDate({
+                                      dateComponentType: 'tomorrowChip',
+                                      date: addDays(currDate,1)
+                                  })}
+                                  isSelected={!!(selectedDate
+                                      && selectedDate.dateComponentType==='tomorrowChip')}
+                            >내일</Chip>
+                            <DropdownChip onChange={(selectedItems)=>setSelectedDate(()=>{
+                                              const [{value:sunday}, {value:dist}] = selectedItems;
+                                              if(sunday instanceof Date && typeof dist === 'number')
+                                                  return {
+                                                      dateComponentType: 'dropdownChip',
+                                                      date :addDays(sunday, dist)
+                                                  }
+                                              return null;
+                                          })}
+                                          isSelected={!!(selectedDate &&
+                                              selectedDate.dateComponentType==='dropdownChip')}
+                            >
+                                <DropdownChip.DropdownMenu
+                                    items = {[
+                                        {label: '이번주', value: previousSunday(currDate)},
+                                        {label: '다음주', value: nextSunday(currDate)},
+                                    ]}
+                                    defaultIndex = {1}
+                                />
+                                <DropdownChip.DropdownMenu
+                                    items = {['월','화','수','목','금'].map((day, idx)=>{
+                                        return {label:day, value: idx+1}
+                                    })}
+                                    defaultIndex = {0}
+                                />
+
+                            </DropdownChip>
                         </div>
                         <div>
-                            <span>종료일</span>
+                            <span>휴가종료</span>
+                            <div>
+                                <div className={"relative"}>
+                                    <input type={"text"}
+                                           readOnly={true}
+                                           className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
+                                           value={leaveDateRange?
+                                               format(leaveDateRange.end,'yyyy.M.d(EE)',{locale: ko}) :
+                                               ''
+                                           }
+                                    />
+                                    <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
+                                            onClick={openModal}
+                                    >
+                                        {datePickerSvg}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </Card.Content>
                 </Card>
@@ -224,10 +279,20 @@ function LeaveApplicationPage(props) {
             {
                 isModalOpen &&
                 <DimmedBackground type={"modal"}
-                                  onBackgroundClick={()=>null}>
-                    <Card className={"max-w-[calc(100vw-4rem)]"}>
+                                  onBackgroundClick={()=>closeModal()}>
+                    <Card className={"max-w-[calc(100vw-4rem)]"}
+                          onClick={event => event.stopPropagation()}
+                    >
                         <Card.Content>
-                            <TeamCalendar/>
+                            <TeamCalendar
+                                onDateChange={(date, dateRange) => {
+                                    if(dateRange)
+                                        setLeaveDateRange({start: dateRange[0], end: dateRange[1]});
+                                    else
+                                        setSelectedDate({dateComponentType: 'datePicker', date})
+                                }}
+                                dateRangePickerMode = {true}
+                            />
                             <Button variant={"primary"}
                                     className={"w-full"}
                                     onClick={closeModal}
