@@ -114,6 +114,7 @@ function LeaveApplicationPage() {
         if(isBottomSheetOpen)
             setHideBottomSheet(false);
     }, [isBottomSheetOpen]);
+
     return (
         <div className={"flex flex-col gap-4"}>
             <div>
@@ -150,93 +151,119 @@ function LeaveApplicationPage() {
                         {/*        </div>*/}
                         {/*    </div>*/}
                         {/*</div>*/}
-                        <div className={"flex items-center pb-2"}>
-                            <span className={"flex-1"}>휴가일자</span>
-                            <div>
-                                <div className={"relative"}>
-                                    <input type={"text"}
-                                           readOnly={true}
-                                           className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
-                                           value={selectedDate?.date ?
-                                               format(selectedDate?.date,'yyyy.M.d(EE)',{locale: ko}) :
-                                               ''
-                                           }
-                                    />
-                                    <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
-                                            onClick={openModal}
-                                    >
-                                        {datePickerSvg}
-                                    </button>
+                        {selectedDate && <>
+                            <div className={"flex items-center pb-2"}>
+                                <span className={"flex-1"}>휴가일자</span>
+                                <div>
+                                    <div className={"relative"}>
+                                        <input type={"text"}
+                                               readOnly={true}
+                                               className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
+                                               value={selectedDate?.date ?
+                                                   format(selectedDate?.date, 'yyyy.M.d(EE)', {locale: ko}) :
+                                                   ''
+                                               }
+                                        />
+                                        <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
+                                                onClick={openModal}
+                                        >
+                                            {datePickerSvg}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className={"flex items-center gap-3 pb-3"}>
-                            <Chip outline={true}
-                                  classNames={"px-3 py-1"}
-                                  onClick={()=>setSelectedDate({
-                                      dateComponentType: 'todayChip',
-                                      date : currDate
-                                  })}
-                                  isSelected={!!(selectedDate
-                                      && selectedDate.dateComponentType==='todayChip')}
-                            >오늘</Chip>
-                            <Chip outline={true}
-                                  classNames={"px-3 py-1"}
-                                  onClick={()=>setSelectedDate({
-                                      dateComponentType: 'tomorrowChip',
-                                      date: addDays(currDate,1)
-                                  })}
-                                  isSelected={!!(selectedDate
-                                      && selectedDate.dateComponentType==='tomorrowChip')}
-                            >내일</Chip>
-                            <DropdownChip onChange={(selectedItems)=>setSelectedDate(()=>{
-                                              const [{value:sunday}, {value:dist}] = selectedItems;
-                                              if(sunday instanceof Date && typeof dist === 'number')
-                                                  return {
-                                                      dateComponentType: 'dropdownChip',
-                                                      date :addDays(sunday, dist)
-                                                  }
-                                              return null;
-                                          })}
-                                          isSelected={!!(selectedDate &&
-                                              selectedDate.dateComponentType==='dropdownChip')}
-                            >
-                                <DropdownChip.DropdownMenu
-                                    items = {[
-                                        {label: '이번주', value: previousSunday(currDate)},
-                                        {label: '다음주', value: nextSunday(currDate)},
-                                    ]}
-                                    defaultIndex = {1}
-                                />
-                                <DropdownChip.DropdownMenu
-                                    items = {['월','화','수','목','금'].map((day, idx)=>{
-                                        return {label:day, value: idx+1}
-                                    })}
-                                    defaultIndex = {0}
-                                />
+                            <div className={"flex items-center gap-3 pb-3"}>
+                                <Chip outline={true}
+                                      classNames={"px-3 py-1"}
+                                      onClick={() => setSelectedDate({
+                                          dateComponentType: 'todayChip',
+                                          date: currDate
+                                      })}
+                                      isSelected={!!(selectedDate
+                                          && selectedDate.dateComponentType === 'todayChip')}
+                                >오늘</Chip>
+                                <Chip outline={true}
+                                      classNames={"px-3 py-1"}
+                                      onClick={() => setSelectedDate({
+                                          dateComponentType: 'tomorrowChip',
+                                          date: addDays(currDate, 1)
+                                      })}
+                                      isSelected={!!(selectedDate
+                                          && selectedDate.dateComponentType === 'tomorrowChip')}
+                                >내일</Chip>
+                                <DropdownChip onChange={(selectedItems) => setSelectedDate(() => {
+                                    const [{value: sunday}, {value: dist}] = selectedItems;
+                                    if (sunday instanceof Date && typeof dist === 'number')
+                                        return {
+                                            dateComponentType: 'dropdownChip',
+                                            date: addDays(sunday, dist)
+                                        }
+                                    return null;
+                                })}
+                                              isSelected={!!(selectedDate &&
+                                                  selectedDate.dateComponentType === 'dropdownChip')}
+                                >
+                                    <DropdownChip.DropdownMenu
+                                        items={[
+                                            {label: '이번주', value: previousSunday(currDate)},
+                                            {label: '다음주', value: nextSunday(currDate)},
+                                        ]}
+                                        defaultIndex={1}
+                                    />
+                                    <DropdownChip.DropdownMenu
+                                        items={['월', '화', '수', '목', '금'].map((day, idx) => {
+                                            return {label: day, value: idx + 1}
+                                        })}
+                                        defaultIndex={0}
+                                    />
 
-                            </DropdownChip>
-                        </div>
-                        <div>
-                            <span>휴가종료</span>
-                            <div>
-                                <div className={"relative"}>
-                                    <input type={"text"}
-                                           readOnly={true}
-                                           className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
-                                           value={leaveDateRange?
-                                               format(leaveDateRange.end,'yyyy.M.d(EE)',{locale: ko}) :
-                                               ''
-                                           }
-                                    />
-                                    <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
-                                            onClick={openModal}
-                                    >
-                                        {datePickerSvg}
-                                    </button>
-                                </div>
+                                </DropdownChip>
                             </div>
-                        </div>
+                        </>}
+                        {leaveDateRange &&
+                            <>
+                                <div className={"flex items-center pb-2"}>
+                                    <span className={"flex-1"}>휴가시작</span>
+                                    <div>
+                                        <div className={"relative"}>
+                                            <input type={"text"}
+                                                   readOnly={true}
+                                                   className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
+                                                   value={leaveDateRange ?
+                                                       format(leaveDateRange.start, 'yyyy.M.d(EE)', {locale: ko}) :
+                                                       ''
+                                                   }
+                                            />
+                                            <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
+                                                    onClick={openModal}
+                                            >
+                                                {datePickerSvg}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={"flex items-center pb-2"}>
+                                    <span className={"flex-1"}>휴가종료</span>
+                                    <div>
+                                        <div className={"relative"}>
+                                            <input type={"text"}
+                                                   readOnly={true}
+                                                   className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
+                                                   value={leaveDateRange ?
+                                                       format(leaveDateRange.end, 'yyyy.M.d(EE)', {locale: ko}) :
+                                                       ''
+                                                   }
+                                            />
+                                            <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
+                                                    onClick={openModal}
+                                            >
+                                                {datePickerSvg}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        }
                     </Card.Content>
                 </Card>
             </div>
@@ -285,11 +312,14 @@ function LeaveApplicationPage() {
                     >
                         <Card.Content>
                             <TeamCalendar
-                                onDateChange={(date, dateRange) => {
-                                    if(dateRange)
-                                        setLeaveDateRange({start: dateRange[0], end: dateRange[1]});
-                                    else
-                                        setSelectedDate({dateComponentType: 'datePicker', date})
+                                onDateChange={(dateInfo, dateRange) => {
+                                    if(dateRange) {
+                                        setLeaveDateRange({start: dateRange[0].date, end: dateRange[1].date});
+                                        setSelectedDate(null);
+                                    }else {
+                                        setSelectedDate({dateComponentType: 'datePicker', date: dateInfo.date});
+                                        setLeaveDateRange(null);
+                                    }
                                 }}
                                 dateRangePickerMode = {true}
                             />

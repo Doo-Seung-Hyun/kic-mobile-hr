@@ -5,11 +5,11 @@ import useDailyAttendance from "./useDailyAttendance.ts";
 import TeamDailyAttendanceList from "./TeamDailyAttendanceList.tsx";
 import {parse} from "date-fns";
 import {useDateSelection} from "./useDateSelection.ts";
-import type {DateSelectionGridProps} from "../../../types/calendar.ts";
+import type {DateInfo, DateSelectionGridProps} from "../../../types/calendar.ts";
 
 interface TeamCalendarProps {
     className? : string;
-    onDateChange? : (selectedDate:Date, selectedDateRange?:Date[])=>void;
+    onDateChange? : (selectedDate:DateInfo, selectedDateRange?:DateInfo[])=>void;
     dateRangePickerMode? : boolean;
 }
 
@@ -36,7 +36,7 @@ const TeamCalendar = ({
         handleDateSelect,
         didSetRangeOfDates,
         selectedDateRange
-    } = useDateSelection(dateRangePickerMode);
+    } = useDateSelection(dateRangePickerMode,onDateChangeCallback);
 
     const attendanceList = useDailyAttendance(selectedDate.yyyyMMdd, orgId);
 
@@ -59,10 +59,7 @@ const TeamCalendar = ({
                           onTransitionEnd={onTransitionEnd}
                           dateSelectionGridProps={dateSelectionGridProps}
                           onDateClick={yyyyMMdd => {
-                              const newDate = parse(yyyyMMdd, 'yyyyMMdd', new Date());
                               handleDateSelect(yyyyMMdd);
-                              if(onDateChangeCallback)
-                                onDateChangeCallback(newDate);
                           }}
             />
             <TeamDailyAttendanceList date={selectedDate.date}

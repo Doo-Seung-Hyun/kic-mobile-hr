@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {format, isAfter, parse} from "date-fns";
 import type {DateInfo, DateSelectionGridProps} from "../../../types/calendar.ts";
 
@@ -12,6 +12,7 @@ const TODAY = new Date();
  * 날짜 선택 로직 관리 훅
  *
  * @param isDateRangePickerMode - true면 날짜범위선택 / false면 단일날짜선택
+ * @param onDateSelect - 날짜 선택 시 콜백함수
  * @example
  * // 단일날짜 선택
  * const {handleDateSelect, selectedDate} = useDateSelection
@@ -19,7 +20,10 @@ const TODAY = new Date();
  * // 날짜범위 선택
  * const {handleDateSelect, selectedDateRange} = useDateSelection(true)
  */
-const useDateSelection = (isDateRangePickerMode: boolean = false) => {
+const useDateSelection = (
+    isDateRangePickerMode: boolean = false,
+    onDateSelect?: (selectedDate:DateInfo, selectedDateRange?:DateInfo[])=>void,
+) => {
 
     const [selectedDates, setSelectedDates] = useState<DateInfo[]>([{
         date : TODAY,
@@ -28,6 +32,16 @@ const useDateSelection = (isDateRangePickerMode: boolean = false) => {
 
     //false : 첫번째 날짜 선택차례 / true: 두번째 날짜 선택차례
     const [isSelectingRange, setIsSelectingRange] = useState(false);
+
+    useEffect(() => {
+        if(onDateSelect){
+            //데이트레인지 모드가 아니거나 데이트레인지 날짜가 하나만 선택된 경우
+            if(!isDateRangePickerMode || selectedDates?.length==1)
+                onDateSelect(selectedDates[0])
+            else
+                onDateSelect(selectedDates[1], selectedDates)
+        }
+    }, [selectedDates]);
 
     /**
      * 캘린더(데이트피커)에서 날짜가 선택될때 실행해야 할 콜백함수
