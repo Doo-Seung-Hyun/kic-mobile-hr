@@ -13,12 +13,12 @@ interface BaseDropdownOption {
 
 interface InternalDropdownOption extends BaseDropdownOption{
     isMenuOpen? : boolean;
-    openMenuHandler : ()=>void;
+    openMenuHandler : (event: React.MouseEvent<HTMLButtonElement>)=>void;
     selectedItem : DropdownItem | null;
     hasPreviousMenu : boolean;
     isLastMenu : boolean;
     isDropdownSelected : boolean
-    onClickDropdownMenuItem : (dropdownItem:DropdownItem)=>void;
+    onClickDropdownMenuItem : (dropdownItem:DropdownItem, event: React.MouseEvent<HTMLButtonElement>)=>void;
 }
 
 interface DropdownChipProps {
@@ -71,7 +71,7 @@ const DropdownMenu = ({
                     {items.map(dropdownItem=>
                         <li key={String(dropdownItem.value)}>
                             <button className={"w-full text-left"}
-                                    onClick={()=>onClickDropdownMenuItem(dropdownItem)}>
+                                    onClick={event=>onClickDropdownMenuItem(dropdownItem,event)}>
                                 {dropdownItem.label}
                             </button>
                         </li>
@@ -101,29 +101,42 @@ const DropdownChip = ({
     );
 
     useEffect(() => {
-        if(handleToChange && selectedItems)
-            handleToChange(selectedItems)
-    }, [selectedItems]);
+        const onBackgroundClickHandler = ()=>setOpenedMenuIndex(-1);
+
+        if(openedMenuIndex>-1){
+            document.addEventListener('click', onBackgroundClickHandler);
+        }
+        return ()=>document.removeEventListener('click',onBackgroundClickHandler);
+    }, [openedMenuIndex]);
 
     const enhancedChildren = dropdownMenus.map((menu,index)=> {
         const injectedProps:InternalDropdownOption = {
             ...menu.props,
             isMenuOpen: index === openedMenuIndex,
-            openMenuHandler: () => setOpenedMenuIndex(index),
+            openMenuHandler: event => {
+                event.stopPropagation();
+                setOpenedMenuIndex(index);
+            },
             selectedItem: selectedItems ? selectedItems[index] : null,
             hasPreviousMenu: index > 0,
             isLastMenu: index == dropdownMenus.length - 1,
             isDropdownSelected: isSelected,
-            onClickDropdownMenuItem: selectedItem => {
-                setSelectedItems(prev => {
-                    if (prev) {
-                        prev[index] = selectedItem;
-                        return [...prev];
-                    }
-                    return null;
-                });
+            onClickDropdownMenuItem: (selectedItem,event) => {
+
+                event.stopPropagation();
+
+                const newSelectedItems = selectedItems? [...selectedItems] : [];
+                newSelectedItems[index] = selectedItem;
+
+                //드롭다운 선택옵션 상태값 갱신
+                setSelectedItems(newSelectedItems);
+
+                //열린 드롭다운 메뉴 닫힘처리
                 setOpenedMenuIndex(-1);
 
+                //드롭다운 선택옵션 변경시 콜백함수 처리
+                if(handleToChange)
+                    handleToChange(newSelectedItems);
             }
         };
         return cloneElement(menu,

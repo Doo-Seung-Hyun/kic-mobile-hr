@@ -3,11 +3,13 @@ import CalendarGrid from "../../../components/ui/Calendar/CalendarGrid.tsx";
 import useCalendarData from "./useCalendarData.ts";
 import useDailyAttendance from "./useDailyAttendance.ts";
 import TeamDailyAttendanceList from "./TeamDailyAttendanceList.tsx";
-import {parse} from "date-fns";
 import {useDateSelection} from "./useDateSelection.ts";
 import type {DateInfo, DateSelectionGridProps} from "../../../types/calendar.ts";
+import {format} from "date-fns";
 
 interface TeamCalendarProps {
+    initialSelectedDate? : Date|string;
+    initialSelectedDateRange? : DateInfo[]|Date[]|string[];
     className? : string;
     onDateChange? : (selectedDate:DateInfo, selectedDateRange?:DateInfo[])=>void;
     dateRangePickerMode? : boolean;
@@ -15,7 +17,11 @@ interface TeamCalendarProps {
 
 const orgId = '95';
 
+const TODAY = new Date();
+
 const TeamCalendar = ({
+    initialSelectedDate = TODAY,
+    initialSelectedDateRange,
     className = '',
     onDateChange: onDateChangeCallback,
     dateRangePickerMode = false
@@ -32,11 +38,14 @@ const TeamCalendar = ({
     } = useCalendarData();
 
     const {
-        selectedDate,
+        selectedDate = {
+            date : TODAY,
+            yyyyMMdd : format(TODAY,'yyyyMMdd')
+        },
         handleDateSelect,
         didSetRangeOfDates,
         selectedDateRange
-    } = useDateSelection(dateRangePickerMode,onDateChangeCallback);
+    } = useDateSelection(dateRangePickerMode,onDateChangeCallback, initialSelectedDate, initialSelectedDateRange);
 
     const attendanceList = useDailyAttendance(selectedDate.yyyyMMdd, orgId);
 

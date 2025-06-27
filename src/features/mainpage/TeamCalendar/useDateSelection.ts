@@ -8,9 +8,53 @@ interface DateSelectionResult extends DateSelectionGridProps{
 
 const TODAY = new Date();
 
+const initializeSelectedDate = (
+    initialSelectedDate?: DateInfo|Date|string|null,
+    initialSelectedDateRange?: DateInfo[]|Date[]|string[]|null
+) => {
+    if(initialSelectedDateRange && initialSelectedDateRange.length==2){
+        return initialSelectedDateRange.map(inputDate => {
+            let dateInfo:DateInfo;
+            if(typeof inputDate ==='string'){
+                dateInfo = {
+                    date : parse(inputDate,'yyyyMMdd',TODAY),
+                    yyyyMMdd : inputDate
+                }
+            }else if(inputDate instanceof Date){
+                dateInfo = {
+                    date : inputDate,
+                    yyyyMMdd : format(inputDate,'yyyyMMdd')
+                }
+            }else{
+                dateInfo = inputDate
+            }
+            return dateInfo;
+        })
+    }else if(initialSelectedDate){
+        let dateInfo:DateInfo;
+        if(typeof initialSelectedDate ==='string'){
+            dateInfo = {
+                date : parse(initialSelectedDate,'yyyyMMdd',TODAY),
+                yyyyMMdd : initialSelectedDate
+            }
+        }else if(initialSelectedDate instanceof Date){
+            dateInfo = {
+                date : initialSelectedDate,
+                yyyyMMdd : format(initialSelectedDate,'yyyyMMdd')
+            }
+        }else{
+            dateInfo = initialSelectedDate
+        }
+        return [dateInfo];
+    }
+    return null;
+}
+
 /**
  * 날짜 선택 로직 관리 훅
  *
+ * @param initialSelectedDate - 캘린더 초기 선택된 날짜
+ * @param initialSelectedDateRange - 캘린더 초기 선택된 날짜범위(DateRange)
  * @param isDateRangePickerMode - true면 날짜범위선택 / false면 단일날짜선택
  * @param onDateSelect - 날짜 선택 시 콜백함수
  * @example
@@ -23,18 +67,19 @@ const TODAY = new Date();
 const useDateSelection = (
     isDateRangePickerMode: boolean = false,
     onDateSelect?: (selectedDate:DateInfo, selectedDateRange?:DateInfo[])=>void,
+    initialSelectedDate?: Date|string|null,
+    initialSelectedDateRange?: DateInfo[]|Date[]|string[]|null,
 ) => {
 
-    const [selectedDates, setSelectedDates] = useState<DateInfo[]>([{
-        date : TODAY,
-        yyyyMMdd : format(TODAY,'yyyyMMdd')
-    }]);
+    const [selectedDates, setSelectedDates] = useState<DateInfo[]|null>(
+        initializeSelectedDate(initialSelectedDate, initialSelectedDateRange)
+    );
 
     //false : 첫번째 날짜 선택차례 / true: 두번째 날짜 선택차례
     const [isSelectingRange, setIsSelectingRange] = useState(false);
 
     useEffect(() => {
-        if(onDateSelect){
+        if(onDateSelect && selectedDates){
             //데이트레인지 모드가 아니거나 데이트레인지 날짜가 하나만 선택된 경우
             if(!isDateRangePickerMode || selectedDates?.length==1)
                 onDateSelect(selectedDates[0])
@@ -49,6 +94,9 @@ const useDateSelection = (
      * @param selectedDate - 선택된 날짜 (Date 타입 또는 yyyyMMdd 형식의 String 타입)
      */
     const handleDateSelect = (selectedDate: Date|string)=> {
+        if(!selectedDates)
+            return;
+
         if(typeof selectedDate =='string')
             selectedDate = parse(selectedDate, 'yyyyMMdd', TODAY);
 
@@ -76,9 +124,16 @@ const useDateSelection = (
         isDateRangePickerMode,
         handleDateSelect,
         //날짜범위선택 완료 여부
-        didSetRangeOfDates : selectedDates.length==2,
-        selectedDate : {...selectedDates[selectedDates.length-1]},
+        didSetRangeOfDates : selectedDates?.length==2,
     }
+
+    //선택된 날짜가 없는경우 날짜&날짜범위 없이 리턴
+    if(!selectedDates)
+        return result;
+
+    //날짜가 선택된경우 선택날짜 리턴
+    result.selectedDate = {...selectedDates[selectedDates.length-1]};
+
     //날짜범위선택이 완료된 경우 날짜범위 리턴
     if(result.didSetRangeOfDates)
         result.selectedDateRange = [...selectedDates];

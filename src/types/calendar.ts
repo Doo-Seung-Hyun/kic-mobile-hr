@@ -14,8 +14,8 @@ export interface DateInfo {
 
 export interface DateSelectionGridProps {
     isDateRangePickerMode : boolean
-    selectedDate : DateInfo,
     didSetRangeOfDates : boolean,
+    selectedDate? : DateInfo,
     selectedDateRange? : DateInfo[]
 }
 
