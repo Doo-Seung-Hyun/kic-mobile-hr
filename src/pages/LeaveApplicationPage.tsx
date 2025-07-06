@@ -66,7 +66,7 @@ const DimmedBackground = ({
     const baseClasses = 'flex bg-black bg-opacity-70 fixed inset-0 text-gray-800';
 
     const layoutClasses = {
-        bottomSheet : 'flex flex-row-reverse',
+        bottomSheet : 'flex flex-col-reverse',
         modal : 'flex items-center justify-center p-4'
     }
 
@@ -162,19 +162,16 @@ function LeaveApplicationPage() {
                 <div className="font-bold text-xl pt-6 pb-4">휴가 종류를 선택해주세요</div>
                 <Card>
                     <Card.Content>
-                        <div className={`flex flex-row justify-between pb-3 text-gray-800`}>
-                            <span>{selectedLeave.leaveTypeName}</span>
-                            <div>
-                                <span>{selectedLeave.leftLeaveDays}</span>
-                                <span className="text-sm font-normal text-gray-500 pl-1">일</span>
-                            </div>
-                        </div>
-                        <div className={"pt-2 border-t"}>
+                        <div>
                             <Button variant={"none"}
-                                    size={"sm"}
-                                    className={"block w-full font-semibold pt-0 pb-0 underline underline-offset-4"}
-                                    onClick={()=>setIsBottomSheetOpen(true)}
-                            >휴가변경</Button>
+                                    className={`flex flex-row w-full justify-between px-1 text-gray-800`}
+                                    onClick={()=>setIsBottomSheetOpen(true)}>
+                                <span>{selectedLeave.leaveTypeName}</span>
+                                <div>
+                                    <span>{selectedLeave.leftLeaveDays}</span>
+                                    <span className="text-sm font-normal text-gray-500 pl-1">일</span>
+                                </div>
+                            </Button>
                         </div>
                     </Card.Content>
                 </Card>

@@ -37,6 +37,9 @@ const Button: React.FC<ButtonProps> = ({
         },
         outline: {
             borderColor: 'rgb(38,86,201)'
+        },
+        none: {
+
         }
     }
 

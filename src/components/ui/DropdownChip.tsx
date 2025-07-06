@@ -63,7 +63,7 @@ const DropdownMenu = ({
                 {getArrowDownSvg(isDropdownSelected?"#ffffff":"#323234")}
             </button>
 
-            {isMenuOpen && <div className={"absolute top-full mt-2 p-2" +
+            {isMenuOpen && <div className={"absolute z-10 top-full mt-2 p-2" +
                 " border rounded-md bg-white text-gray-700 shadow-lg" +
                 " min-w-16 max-h-40 overflow-auto"    +
                 (hasPreviousMenu ? " -left-2" : " -left-0")}>

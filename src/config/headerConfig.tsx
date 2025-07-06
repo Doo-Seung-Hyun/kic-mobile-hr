@@ -1,20 +1,25 @@
+import MainHeader from "../components/layout/MainHeader.tsx";
+import SubHeader from "../components/layout/SubHeader.tsx";
+import React from "react";
+import MainFooter from "../components/layout/MainFooter.tsx";
+import SubmitFooter from "../components/layout/SubmitFooter.tsx";
+
 interface HeaderConfig {
-    title : string;
-    backButtonIcon : React.ReactNode;
+    headerComponent : React.ReactNode;
+    footerType : 'fixed' | 'default';
+    footerComponent : React.ReactNode;
 }
 
-const DefaultBackButtonIcon = <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <path d="M15 18L9 12L15 6"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-    />
-</svg>
-
 export const headerConfigs: Record<string, HeaderConfig> = {
+    '/' : {
+        headerComponent : <MainHeader />,
+        footerType : "default",
+        footerComponent : <MainFooter />
+    },
+
     '/leave/apply' : {
-        title : '휴가 신청',
-        backButtonIcon : DefaultBackButtonIcon
+        headerComponent: <SubHeader title={'휴가 신청'} />,
+        footerType : 'fixed',
+        footerComponent : <SubmitFooter text={'휴가 신청하기'} />
     }
 }
