@@ -3,6 +3,7 @@ import Header from "./Header.tsx";
 import Footer from "./Footer.tsx";
 import {headerConfigs} from "../../config/headerConfig.tsx";
 import {useLocation} from "react-router-dom";
+import BottomSheet from "../ui/BottomSheet.tsx";
 
 interface LayoutProps{
     children: React.ReactNode;
@@ -19,6 +20,7 @@ function RootLayout(props: LayoutProps) {
                 {props.children}
             </main>
             <Footer />
+            <BottomSheet />
         </div>
     );
 }

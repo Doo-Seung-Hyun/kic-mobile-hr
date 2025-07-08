@@ -9,6 +9,7 @@ import {addDays, format, nextSunday, previousSunday} from "date-fns";
 import {ko} from "date-fns/locale";
 import {Checkbox} from "../components/ui/Checkbox.tsx";
 import type {DateInfo} from "../types/calendar.ts";
+import useBottomSheet from "../features/mainpage/leaveApplication/hooks/useBottomSheet.ts";
 
 const myLeaveDays : LeaveType[] = [
     {leaveTypeCode: '001', leaveTypeName: '연차휴가', leftLeaveDays: 10},
@@ -108,15 +109,18 @@ function LeaveApplicationPage() {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
+    const {openBottomSheet} = useBottomSheet();
+
+    const handleLeaveTypeClick = () =>{
+        //todo : 바텀시트 휴가타입 선택 전환구현
+        const content = <LeaveTypeSelectionBottomSheetContent>
+
+        </LeaveTypeSelectionBottomSheetContent>
+        openBottomSheet(content);
+    }
+
     // 휴가기간정보
-    const [selectedLeaveProps, setSelectedLeaveProps] = useState<SelectedLeaveProps>({
-        dateComponentType: 'tomorrowChip',
-        leaveDates: [
-            {
-                dateInfo : {date:addDays(currDate, 1), yyyyMMdd: format(addDays(currDate,1),'yyyyMMdd')},
-            }
-        ]
-    });
+    const [selectedLeaveProps, setSelectedLeaveProps] = useState<SelectedLeaveProps | null>(null);
 
     const onLeaveItemClickOfBottomSheet = (leaveTypeCode: string) => {
         const selectedLeave = myLeaveDays.find(leave=>
@@ -145,6 +149,8 @@ function LeaveApplicationPage() {
             (halfLeaveType.halfLeaveTypeCd === toFind.halfLeaveTypeCd);
     }
 
+    //1일 휴가여부 (false는 휴가기간 설정)
+    const isOneDayLeave = selectedLeaveProps?.leaveDates.length==1;
 
     useEffect(() => {
         if(isBottomSheetOpen)
@@ -180,8 +186,8 @@ function LeaveApplicationPage() {
             <div>
                 <div className="font-bold text-xl pt-6 pb-4">언제 가시나요?</div>
                 <Card>
-                    <Card.Header>휴가기간</Card.Header>
                     <Card.Content className={"font-normal px-2"}>
+                        <div className={"py-2"}>날짜를 선택해주세요</div>
                         {selectedLeaveProps?.leaveDates.length==1 && <>
                             <div className={"flex items-center pb-4"}>
                                 <span className={"flex-1"}>휴가일자</span>
@@ -325,33 +331,49 @@ function LeaveApplicationPage() {
                     </Card.Content>
                 </Card>
 
-                <Card className={"mt-4"}>
-                    <Card.Header>반차 설정</Card.Header>
+                {
+                    isOneDayLeave &&
+                    <Card className={"mt-4"}>
+                        <Card.Header>반차 설정</Card.Header>
+                        <Card.Content>
+                            <div className={"flex items-center gap-2"}>{
+                                getHalfLeaveTypes('AM').map(halfLeaveType=>
+                                    <Chip outline={true}
+                                          classNames={"flex-1 px-2 py-1"}
+                                          onClick={()=>handleHalfLeaveSelect(0,halfLeaveType)}
+                                          isSelected={isHalfLeaveSelected(0,halfLeaveType)}
+                                    >
+                                        {halfLeaveType.halfLeaveTypeCdName}
+                                    </Chip>)
+                            }</div>
+                            <div className={"flex items-center gap-2 mt-3"}>{
+                                getHalfLeaveTypes('PM').map(halfLeaveType=>
+                                    <Chip outline={true}
+                                          classNames={"flex-1 px-2 py-1"}
+                                          onClick={()=>handleHalfLeaveSelect(0,halfLeaveType)}
+                                          isSelected={isHalfLeaveSelected(0,halfLeaveType)}
+                                    >
+                                        {halfLeaveType.halfLeaveTypeCdName}
+                                    </Chip>)
+                            }</div>
+                            {selectedLeaveProps.leaveDates[0].halfLeaveType?.halfLeaveTypeCd==='A' &&
+                                selectedLeaveProps.leaveDates[0].halfLeaveType.dayOffTypeCd==='H' && <div className={"pt-4"}>
+                                <Checkbox className={"font-normal text-sm"}>8:00 출근 (12:00 퇴근)</Checkbox>
+                            </div>}
+                        </Card.Content>
+                    </Card>
+                }
+            </div>
+
+            <div>
+                <div className="font-bold text-xl pt-6 pb-4">휴가사유를 입력해주세요</div>
+                <Card>
+                    <Card.Header>휴가 사유</Card.Header>
                     <Card.Content>
-                        <div className={"flex items-center gap-2"}>{
-                            getHalfLeaveTypes('AM').map(halfLeaveType=>
-                                <Chip outline={true}
-                                      classNames={"flex-1 px-2 py-1"}
-                                      onClick={()=>handleHalfLeaveSelect(0,halfLeaveType)}
-                                      isSelected={isHalfLeaveSelected(0,halfLeaveType)}
-                                >
-                                    {halfLeaveType.halfLeaveTypeCdName}
-                                </Chip>)
-                        }</div>
-                        <div className={"flex items-center gap-2 mt-3"}>{
-                            getHalfLeaveTypes('PM').map(halfLeaveType=>
-                                <Chip outline={true}
-                                      classNames={"flex-1 px-2 py-1"}
-                                      onClick={()=>handleHalfLeaveSelect(0,halfLeaveType)}
-                                      isSelected={isHalfLeaveSelected(0,halfLeaveType)}
-                                >
-                                    {halfLeaveType.halfLeaveTypeCdName}
-                                </Chip>)
-                        }</div>
-                        {selectedLeaveProps.leaveDates[0].halfLeaveType?.halfLeaveTypeCd==='A' &&
-                            selectedLeaveProps.leaveDates[0].halfLeaveType.dayOffTypeCd==='H' && <div className={"pt-4"}>
-                            <Checkbox className={"font-normal text-sm"}>8:00 출근 (12:00 퇴근)</Checkbox>
-                        </div>}
+                        <textarea className={"appearance-none border w-full h-40 " +
+                            "resize-none rounded-md " +
+                            "p-2.5 font-normal " +
+                            "focus: border"}/>
                     </Card.Content>
                 </Card>
             </div>
