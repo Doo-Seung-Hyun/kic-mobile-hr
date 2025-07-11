@@ -2,7 +2,7 @@ import {create} from "zustand";
 
 interface BottomSheetStore {
     isOpen : boolean;
-    isClosing : boolean;
+    isHide : boolean;
     content : React.ReactNode;
 
     openBottomSheet: (content:React.ReactNode)=>void;
@@ -12,21 +12,26 @@ interface BottomSheetStore {
 
 const useBottomSheetStore = create<BottomSheetStore>(set=>({
     isOpen: false,
-    isClosing: false,
+    isHide: false,
     content: null,
 
-    openBottomSheet: (content) => set({
-        isOpen: true,
-        isClosing: false,
-        content: content
-    }),
+    openBottomSheet: (content) => {
+        set({
+            isOpen: true,
+            isHide: true,
+            content: content
+        });
+        requestAnimationFrame(()=>set({
+            isHide: false
+        }))
+    },
 
     closeBottomSheet: () => set({
-        isClosing: true
+        isHide: true
     }),
 
     onClosingAnimationComplete: () => set(state=>{
-        if(state.isClosing)
+        if(state.isHide)
             return {
                 isOpen: false,
                 isClosing: false,

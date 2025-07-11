@@ -10,6 +10,8 @@ import {ko} from "date-fns/locale";
 import {Checkbox} from "../components/ui/Checkbox.tsx";
 import type {DateInfo} from "../types/calendar.ts";
 import useBottomSheet from "../features/mainpage/leaveApplication/hooks/useBottomSheet.ts";
+import LeaveSelectionBottomSheetContent
+    from "../features/mainpage/leaveApplication/components/LeaveSelectionBottomSheetContent.tsx";
 
 const myLeaveDays : LeaveType[] = [
     {leaveTypeCode: '001', leaveTypeName: '연차휴가', leftLeaveDays: 10},
@@ -80,16 +82,6 @@ const DimmedBackground = ({
     );
 }
 
-const checkedSvg = <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                        data-seed-icon="true" data-seed-icon-version="0.0.21" width="18"
-                        height="18" className="_1ks49b8e">
-    <g>
-        <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M22.2424 3.55704C22.7631 3.96703 22.8528 4.72151 22.4428 5.24222L10.632 20.2422C10.4171 20.5151 10.0945 20.6816 9.7475 20.6984C9.40053 20.7153 9.06327 20.581 8.82289 20.3302L1.6337 12.8302C1.17509 12.3518 1.19116 11.5922 1.6696 11.1336C2.14804 10.675 2.90767 10.691 3.36628 11.1695L9.60029 17.673L20.5572 3.75749C20.9672 3.23679 21.7216 3.14705 22.2424 3.55704Z"
-              fill="rgb(38, 86, 201)"></path>
-    </g>
-</svg>;
-
 const datePickerSvg = <svg className="w-5 text-gray-500"
                            aria-hidden="true" viewBox="0 0 24 24">
     <path
@@ -109,23 +101,84 @@ function LeaveApplicationPage() {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
-    const {openBottomSheet} = useBottomSheet();
+    const {openBottomSheet, closeBottomSheet} = useBottomSheet();
 
+    // 휴가종류 선택 핸들러
     const handleLeaveTypeClick = () =>{
-        //todo : 바텀시트 휴가타입 선택 전환구현
-        const content = <LeaveTypeSelectionBottomSheetContent>
-
-        </LeaveTypeSelectionBottomSheetContent>
+        const content =
+            <LeaveSelectionBottomSheetContent
+                selectedLeave={selectedLeave}
+                onLeaveSelect={newSelectedLeave => {
+                    if(newSelectedLeave) setSelectedLeave(newSelectedLeave)
+                }}
+                closeBottomSheet={closeBottomSheet}
+            />
         openBottomSheet(content);
     }
 
     // 휴가기간정보
     const [selectedLeaveProps, setSelectedLeaveProps] = useState<SelectedLeaveProps | null>(null);
 
-    const onLeaveItemClickOfBottomSheet = (leaveTypeCode: string) => {
-        const selectedLeave = myLeaveDays.find(leave=>
-            leave.leaveTypeCode===leaveTypeCode);
-        setSelectedLeave(selectedLeave);
+    // 휴가기간 선택 핸들러
+    const handleLeaveDateClick = () => {
+        const content =
+            <div onClick={e=>e.stopPropagation()}>
+                <div className={"font-bold text-xl pb-8"}>날짜를 선택해주세요</div>
+                <div>날짜 선택</div>
+                <TeamCalendar
+                    initialSelectedDate={selectedLeaveProps?.leaveDates[0].dateInfo.date}
+                    initialSelectedDateRange={selectedLeaveProps?.leaveDates.length === 2 ?
+                        [...selectedLeaveProps.leaveDates.map(leaveDate => leaveDate.dateInfo)] : undefined}
+                    onDateChange={(dateInfo, dateRange) => {
+                        setSelectedLeaveProps(prev => {
+                            const newSelectedLeaveProps: SelectedLeaveProps = {
+                                dateComponentType: 'datePicker',
+                                leaveDates: []
+                            };
+                            if (dateRange)
+                                newSelectedLeaveProps.leaveDates.push({dateInfo: dateRange[0]});
+
+                            newSelectedLeaveProps.leaveDates.push({dateInfo});
+
+                            return newSelectedLeaveProps;
+                        })
+                    }}
+                    dateRangePickerMode={true}
+                />
+                {
+                    selectedLeaveProps &&
+                    <div>
+                        <div>반차 설정</div>
+                        <div className={"flex items-center gap-2"}>{
+                            getHalfLeaveTypes('AM').map(halfLeaveType =>
+                                <Chip outline={true}
+                                      classNames={"flex-1 px-2 py-1"}
+                                      onClick={() => handleHalfLeaveSelect(0, halfLeaveType)}
+                                      isSelected={isHalfLeaveSelected(0, halfLeaveType)}
+                                >
+                                    {halfLeaveType.halfLeaveTypeCdName}
+                                </Chip>)
+                        }</div>
+                        <div className={"flex items-center gap-2 mt-3"}>{
+                            getHalfLeaveTypes('PM').map(halfLeaveType =>
+                                <Chip outline={true}
+                                      classNames={"flex-1 px-2 py-1"}
+                                      onClick={() => handleHalfLeaveSelect(0, halfLeaveType)}
+                                      isSelected={isHalfLeaveSelected(0, halfLeaveType)}
+                                >
+                                    {halfLeaveType.halfLeaveTypeCdName}
+                                </Chip>)
+                        }</div>
+                        {selectedLeaveProps?.leaveDates[0].halfLeaveType?.halfLeaveTypeCd === 'A' &&
+                            selectedLeaveProps?.leaveDates[0].halfLeaveType.dayOffTypeCd === 'H' &&
+                            <div className={"pt-4"}>
+                                <Checkbox className={"font-normal text-sm"}>8:00 출근 (12:00 퇴근)</Checkbox>
+                            </div>}
+                    </div>
+                }
+            </div>
+
+        openBottomSheet(content);
     }
 
     //반차 선택 핸들러
@@ -142,6 +195,8 @@ function LeaveApplicationPage() {
 
     //해당 반차가 선택되었는지 확인하는 함수
     const isHalfLeaveSelected = (leaveDateIndex:number, toFind:HalfLeaveType) =>{
+        if(!selectedLeaveProps)
+            return false;
         const {leaveDates} = selectedLeaveProps;
         const {halfLeaveType} = leaveDates[leaveDateIndex];
         return halfLeaveType &&
@@ -171,7 +226,7 @@ function LeaveApplicationPage() {
                         <div>
                             <Button variant={"none"}
                                     className={`flex flex-row w-full justify-between px-1 text-gray-800`}
-                                    onClick={()=>setIsBottomSheetOpen(true)}>
+                                    onClick={handleLeaveTypeClick}>
                                 <span>{selectedLeave.leaveTypeName}</span>
                                 <div>
                                     <span>{selectedLeave.leftLeaveDays}</span>
@@ -187,7 +242,11 @@ function LeaveApplicationPage() {
                 <div className="font-bold text-xl pt-6 pb-4">언제 가시나요?</div>
                 <Card>
                     <Card.Content className={"font-normal px-2"}>
-                        <div className={"py-2"}>날짜를 선택해주세요</div>
+                        <div className={"py-2"}
+                             onClick={handleLeaveDateClick}
+                        >
+                            날짜를 선택해주세요
+                        </div>
                         {selectedLeaveProps?.leaveDates.length==1 && <>
                             <div className={"flex items-center pb-4"}>
                                 <span className={"flex-1"}>휴가일자</span>
@@ -377,42 +436,6 @@ function LeaveApplicationPage() {
                     </Card.Content>
                 </Card>
             </div>
-
-            {
-                isBottomSheetOpen &&
-                <DimmedBackground type={"bottomSheet"}
-                                  onBackgroundClick={()=>setHideBottomSheet(true)} >
-                    <div className={"rounded-t-2xl max-h-[75%] overflow-auto bg-white p-6"}
-                         style={{transition: 'transform 0.3s',
-                             transform: `translateY(${hideBottomSheet ? '100%' : '0'})`
-                         }}
-                         onTransitionEnd={()=> {
-                             if(hideBottomSheet)
-                                setIsBottomSheetOpen(false);
-                         }}
-                    >
-                        <div className={"font-bold text-xl"}>휴가 현황</div>
-                        <ul className={"pt-4"}>
-                            {myLeaveDays.map(leave=>
-                            <li key={leave.leaveTypeCode}
-                                className={"block w-full [&:not(:first-child)]:border-t"}>
-                                <button onClick={()=>onLeaveItemClickOfBottomSheet(leave.leaveTypeCode)}
-                                        className={"flex w-full justify-between py-3 items-center " +
-                                            `${leave.leaveTypeCode===selectedLeave.leaveTypeCode && 'text-blue-700'}`}>
-                                    <div className={"flex flex-col text-left"}>
-                                        <span className={"font-bold"}>{leave.leaveTypeName}</span>
-                                        <span className={"text-sm"}>{leave.leftLeaveDays}일</span>
-                                    </div>
-                                    <div>
-                                        {leave.leaveTypeCode===selectedLeave.leaveTypeCode &&
-                                        checkedSvg}
-                                    </div>
-                                </button>
-                            </li>)}
-                        </ul>
-                    </div>
-                </DimmedBackground>
-            }
             {
                 isModalOpen &&
                 <DimmedBackground type={"modal"}
@@ -423,7 +446,7 @@ function LeaveApplicationPage() {
                         <Card.Content>
                             <TeamCalendar
                                 initialSelectedDate={selectedLeaveProps?.leaveDates[0].dateInfo.date}
-                                initialSelectedDateRange={selectedLeaveProps.leaveDates.length===2 ?
+                                initialSelectedDateRange={selectedLeaveProps?.leaveDates.length===2 ?
                                     [...selectedLeaveProps.leaveDates.map(leaveDate=>leaveDate.dateInfo)] : undefined}
                                 onDateChange={(dateInfo, dateRange) => {
                                     setSelectedLeaveProps(prev=>{

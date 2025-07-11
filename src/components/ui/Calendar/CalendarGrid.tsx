@@ -88,6 +88,14 @@ const Grid = ({
 
                                     </div>
                                 }
+                                {
+                                    !isDateToRenderCircle(fullDate) &&
+                                    todayYyyyMMdd===fullDate &&
+                                    <div className={"absolute h-full top-0 z-[4] " +
+                                        "left-1/2 transform -translate-x-1/2 aspect-square rounded-full " +
+                                        "border border-gray-500"}>
+                                    </div>
+                                }
                                 {didSetRangeOfDates && fullDate && fullDate >= rangeStart && fullDate <= rangeEnd &&
                                     <div className={["absolute h-full top-0 bg-blue-700/20",
                                         'left-0 right-0',
