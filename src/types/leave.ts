@@ -1,3 +1,5 @@
+import type {DateInfo} from "./calendar.ts";
+
 export interface LeaveType {
     leaveTypeCode: string;
     leaveTypeName: string;
@@ -9,4 +11,15 @@ export interface HalfLeaveType {
     dayOffTypeCdName : '반차' | '반반차';
     halfLeaveTypeCd : 'A' | 'M' | 'E';
     halfLeaveTypeCdName : string;
+}
+
+export interface SelectedLeaveProps {
+    dateComponentType : 'todayChip' | 'tomorrowChip'
+        | 'dropdownChip' | 'datePicker';
+    leaveDates : LeaveDate[];
+}
+
+export interface LeaveDate {
+    dateInfo : DateInfo;
+    halfLeaveType? : HalfLeaveType;
 }

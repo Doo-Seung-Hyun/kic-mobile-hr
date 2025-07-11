@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
-import type {HalfLeaveType, LeaveType} from "../types/leave.ts";
+import type {HalfLeaveType, LeaveType, SelectedLeaveProps} from "../types/leave.ts";
 import TeamCalendar from "../features/mainpage/TeamCalendar/TeamCalendar.tsx";
 import Chip from "../components/ui/Chip.tsx";
 import DropdownChip from "../components/ui/DropdownChip.tsx";
 import {addDays, format, nextSunday, previousSunday} from "date-fns";
 import {ko} from "date-fns/locale";
 import {Checkbox} from "../components/ui/Checkbox.tsx";
-import type {DateInfo} from "../types/calendar.ts";
 import useBottomSheet from "../features/mainpage/leaveApplication/hooks/useBottomSheet.ts";
 import LeaveSelectionBottomSheetContent
     from "../features/mainpage/leaveApplication/components/LeaveSelectionBottomSheetContent.tsx";
+import LeavePeriodBottomSheet from "../features/mainpage/leaveApplication/components/LeavePeriodBottomSheet.tsx";
 
 const myLeaveDays : LeaveType[] = [
     {leaveTypeCode: '001', leaveTypeName: '연차휴가', leftLeaveDays: 10},
@@ -35,24 +35,7 @@ const myLeaveDays : LeaveType[] = [
     // {leaveTypeCode: '004', leaveTypeName: '공가', leftLeaveDays: 1}
 ];
 
-const halfTypeCdList: HalfLeaveType[] =[
-    {dayOffTypeCd: 'H', dayOffTypeCdName: '반차', halfLeaveTypeCd: 'M', halfLeaveTypeCdName: '오전반차'},
-    {dayOffTypeCd: 'P', dayOffTypeCdName: '반반차', halfLeaveTypeCd: 'M', halfLeaveTypeCdName: '오전반반차'},
-    {dayOffTypeCd: 'H', dayOffTypeCdName: '반차', halfLeaveTypeCd: 'A', halfLeaveTypeCdName: '오후반차'},
-    {dayOffTypeCd: 'P', dayOffTypeCdName: '반반차', halfLeaveTypeCd: 'A', halfLeaveTypeCdName: '오후반반차'},
-    {dayOffTypeCd: 'H', dayOffTypeCdName: '반차', halfLeaveTypeCd: 'E', halfLeaveTypeCdName: '8:00 출근 (12:00 퇴근)'},
-];
 
-interface SelectedLeaveProps {
-    dateComponentType : 'todayChip' | 'tomorrowChip'
-        | 'dropdownChip' | 'datePicker';
-    leaveDates : LeaveDate[];
-}
-
-interface LeaveDate {
-    dateInfo : DateInfo;
-    halfLeaveType? : HalfLeaveType;
-}
 
 interface DimmedBackgroundProps {
     onBackgroundClick : React.MouseEventHandler<HTMLDivElement>;
@@ -121,87 +104,10 @@ function LeaveApplicationPage() {
 
     // 휴가기간 선택 핸들러
     const handleLeaveDateClick = () => {
-        const content =
-            <div onClick={e=>e.stopPropagation()}>
-                <div className={"font-bold text-xl pb-8"}>날짜를 선택해주세요</div>
-                <div>날짜 선택</div>
-                <TeamCalendar
-                    initialSelectedDate={selectedLeaveProps?.leaveDates[0].dateInfo.date}
-                    initialSelectedDateRange={selectedLeaveProps?.leaveDates.length === 2 ?
-                        [...selectedLeaveProps.leaveDates.map(leaveDate => leaveDate.dateInfo)] : undefined}
-                    onDateChange={(dateInfo, dateRange) => {
-                        setSelectedLeaveProps(prev => {
-                            const newSelectedLeaveProps: SelectedLeaveProps = {
-                                dateComponentType: 'datePicker',
-                                leaveDates: []
-                            };
-                            if (dateRange)
-                                newSelectedLeaveProps.leaveDates.push({dateInfo: dateRange[0]});
-
-                            newSelectedLeaveProps.leaveDates.push({dateInfo});
-
-                            return newSelectedLeaveProps;
-                        })
-                    }}
-                    dateRangePickerMode={true}
-                />
-                {
-                    selectedLeaveProps &&
-                    <div>
-                        <div>반차 설정</div>
-                        <div className={"flex items-center gap-2"}>{
-                            getHalfLeaveTypes('AM').map(halfLeaveType =>
-                                <Chip outline={true}
-                                      classNames={"flex-1 px-2 py-1"}
-                                      onClick={() => handleHalfLeaveSelect(0, halfLeaveType)}
-                                      isSelected={isHalfLeaveSelected(0, halfLeaveType)}
-                                >
-                                    {halfLeaveType.halfLeaveTypeCdName}
-                                </Chip>)
-                        }</div>
-                        <div className={"flex items-center gap-2 mt-3"}>{
-                            getHalfLeaveTypes('PM').map(halfLeaveType =>
-                                <Chip outline={true}
-                                      classNames={"flex-1 px-2 py-1"}
-                                      onClick={() => handleHalfLeaveSelect(0, halfLeaveType)}
-                                      isSelected={isHalfLeaveSelected(0, halfLeaveType)}
-                                >
-                                    {halfLeaveType.halfLeaveTypeCdName}
-                                </Chip>)
-                        }</div>
-                        {selectedLeaveProps?.leaveDates[0].halfLeaveType?.halfLeaveTypeCd === 'A' &&
-                            selectedLeaveProps?.leaveDates[0].halfLeaveType.dayOffTypeCd === 'H' &&
-                            <div className={"pt-4"}>
-                                <Checkbox className={"font-normal text-sm"}>8:00 출근 (12:00 퇴근)</Checkbox>
-                            </div>}
-                    </div>
-                }
-            </div>
-
-        openBottomSheet(content);
-    }
-
-    //반차 선택 핸들러
-    const handleHalfLeaveSelect = (leaveDateIndex:number, halfLeaveType : HalfLeaveType) => {
-        const newSelectedLeaveProps = {...selectedLeaveProps};
-        const {leaveDates} = newSelectedLeaveProps;
-        if(leaveDates[leaveDateIndex].halfLeaveType === halfLeaveType)
-            delete leaveDates[leaveDateIndex].halfLeaveType;
-        else
-            leaveDates[leaveDateIndex].halfLeaveType = halfLeaveType;
-
-        setSelectedLeaveProps(newSelectedLeaveProps);
-    }
-
-    //해당 반차가 선택되었는지 확인하는 함수
-    const isHalfLeaveSelected = (leaveDateIndex:number, toFind:HalfLeaveType) =>{
-        if(!selectedLeaveProps)
-            return false;
-        const {leaveDates} = selectedLeaveProps;
-        const {halfLeaveType} = leaveDates[leaveDateIndex];
-        return halfLeaveType &&
-            (halfLeaveType.dayOffTypeCd === toFind.dayOffTypeCd) &&
-            (halfLeaveType.halfLeaveTypeCd === toFind.halfLeaveTypeCd);
+        openBottomSheet(<LeavePeriodBottomSheet
+            selectedLeaveProps={selectedLeaveProps}
+            onConfirm={setSelectedLeaveProps}
+        />);
     }
 
     //1일 휴가여부 (false는 휴가기간 설정)
@@ -212,10 +118,7 @@ function LeaveApplicationPage() {
             setHideBottomSheet(false);
     }, [isBottomSheetOpen]);
 
-    const getHalfLeaveTypes = (halfLeaveDivision:'AM'|'PM') => {
-        const halfLeaveTypeCd = halfLeaveDivision==='AM' ? 'M' : 'A';
-        return halfTypeCdList.filter(halfLeaveType => halfLeaveType.halfLeaveTypeCd === halfLeaveTypeCd);
-    }
+
 
     return (
         <div className={"flex flex-col gap-4"}>
@@ -319,74 +222,7 @@ function LeaveApplicationPage() {
                                 </DropdownChip>
                             </div>
                         </>}
-                        {selectedLeaveProps?.leaveDates.length==2 &&
-                            <>
-                                <div className={"pb-2"}>
-                                    <div className={"flex items-center pb-2"}>
-                                        <span className={"flex-1"}>휴가시작</span>
-                                        <div>
-                                            <div className={"relative"}>
-                                                <input type={"text"}
-                                                       readOnly={true}
-                                                       className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
-                                                       value={format(selectedLeaveProps.leaveDates[0].dateInfo.date, 'yyyy.M.d(EE)', {locale: ko})}
-                                                />
-                                                <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
-                                                        onClick={openModal}
-                                                >
-                                                    {datePickerSvg}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className={"flex items-center gap-2 pb-1"}>{
-                                        getHalfLeaveTypes('PM').map(halfLeaveType=>
-                                            <Chip outline={true}
-                                                  classNames={"flex-1 px-2 py-1"}
-                                                  onClick={()=>handleHalfLeaveSelect(0, halfLeaveType)}
-                                                  isSelected={isHalfLeaveSelected(0, halfLeaveType)}
-                                            >
-                                                {halfLeaveType.halfLeaveTypeCdName}
-                                            </Chip>)
-                                    }</div>
-                                    <div>
-                                        <Checkbox className={["font-normal text-sm",
-                                            selectedLeaveProps.leaveDates[0].halfLeaveType?.dayOffTypeCd!=='H' && "invisible"
-                                        ].filter(Boolean).join(' ')}
-                                        >
-                                            8:00 출근 (12:00 퇴근)
-                                        </Checkbox>
-                                    </div>
-                                </div>
-                                <div className={"flex items-center pb-2"}>
-                                    <span className={"flex-1"}>휴가종료</span>
-                                    <div>
-                                        <div className={"relative"}>
-                                            <input type={"text"}
-                                                   readOnly={true}
-                                                   className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
-                                                   value={format(selectedLeaveProps.leaveDates[1].dateInfo.date, 'yyyy.M.d(EE)', {locale: ko})}
-                                            />
-                                            <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
-                                                    onClick={openModal}
-                                            >
-                                                {datePickerSvg}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={"flex items-center gap-2"}>{
-                                    getHalfLeaveTypes('AM').map(halfLeaveType=>
-                                        <Chip outline={true}
-                                              classNames={"flex-1 px-2 py-1"}
-                                              onClick={()=>handleHalfLeaveSelect(1, halfLeaveType)}
-                                              isSelected={isHalfLeaveSelected(1, halfLeaveType)}
-                                        >
-                                            {halfLeaveType.halfLeaveTypeCdName}
-                                        </Chip>)
-                                }</div>
-                            </>
-                        }
+
                     </Card.Content>
                 </Card>
 
