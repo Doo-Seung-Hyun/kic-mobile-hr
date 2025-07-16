@@ -77,9 +77,6 @@ const currDate = new Date();
 function LeaveApplicationPage() {
     const [selectedLeave, setSelectedLeave] = useState<LeaveType>(myLeaveDays.find(leave => leave.leaveTypeCode === '001'));
 
-    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false);
-    const [hideBottomSheet, setHideBottomSheet] = useState<boolean>(true);
-
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
@@ -112,13 +109,6 @@ function LeaveApplicationPage() {
 
     //1일 휴가여부 (false는 휴가기간 설정)
     const isOneDayLeave = selectedLeaveProps?.leaveDates.length==1;
-
-    useEffect(() => {
-        if(isBottomSheetOpen)
-            setHideBottomSheet(false);
-    }, [isBottomSheetOpen]);
-
-
 
     return (
         <div className={"flex flex-col gap-4"}>

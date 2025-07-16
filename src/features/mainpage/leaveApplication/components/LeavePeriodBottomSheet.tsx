@@ -64,7 +64,6 @@ const LeavePeriodBottomSheet = ({
     return (
         <div onClick={e => e.stopPropagation()}>
             <div className={"font-bold text-xl pb-8"}>날짜를 선택해주세요</div>
-            <div>날짜 선택</div>
             <TeamCalendar
                 initialSelectedDate={leavePeriodProps?.leaveDates[0].dateInfo.date}
                 initialSelectedDateRange={leavePeriodProps?.leaveDates.length === 2 ?
@@ -85,62 +84,54 @@ const LeavePeriodBottomSheet = ({
                 }}
                 dateRangePickerMode={true}
             />
+            <div className={"font-bold text-xl pb-8"}>반차를 사용하시나요?</div>
             {
-                leavePeriodProps &&
-                <div>
-                    <div>반차 설정</div>
-                    <div className={"flex items-center gap-2"}>{
-                        getHalfLeaveTypes('AM').map(halfLeaveType =>
-                            <Chip outline={true}
-                                  classNames={"flex-1 px-2 py-1"}
-                                  onClick={() => handleHalfLeaveSelect(0, halfLeaveType)}
-                                  isSelected={isHalfLeaveSelected(0, halfLeaveType)}
-                            >
-                                {halfLeaveType.halfLeaveTypeCdName}
-                            </Chip>)
-                    }</div>
-                    <div className={"flex items-center gap-2 mt-3"}>{
-                        getHalfLeaveTypes('PM').map(halfLeaveType =>
-                            <Chip outline={true}
-                                  classNames={"flex-1 px-2 py-1"}
-                                  onClick={() => handleHalfLeaveSelect(0, halfLeaveType)}
-                                  isSelected={isHalfLeaveSelected(0, halfLeaveType)}
-                            >
-                                {halfLeaveType.halfLeaveTypeCdName}
-                            </Chip>)
-                    }</div>
-                    {leavePeriodProps?.leaveDates[0].halfLeaveType?.halfLeaveTypeCd === 'A' &&
-                        leavePeriodProps?.leaveDates[0].halfLeaveType.dayOffTypeCd === 'H' &&
-                        <div className={"pt-4"}>
-                            <Checkbox className={"font-normal text-sm"}>8:00 출근 (12:00 퇴근)</Checkbox>
-                        </div>}
-                </div>
+                leavePeriodProps?.leaveDates.length==1 &&
+                    // 1일 휴가인 경우
+                    <div>
+                        <div className={"flex items-center gap-2"}>{
+                            getHalfLeaveTypes('AM').map(halfLeaveType =>
+                                <Chip outline={true}
+                                      classNames={"flex-1 px-2 py-1"}
+                                      onClick={() => handleHalfLeaveSelect(0, halfLeaveType)}
+                                      isSelected={isHalfLeaveSelected(0, halfLeaveType)}
+                                >
+                                    {halfLeaveType.halfLeaveTypeCdName}
+                                </Chip>)
+                        }</div>
+                        <div className={"flex items-center gap-2 mt-3"}>{
+                            getHalfLeaveTypes('PM').map(halfLeaveType =>
+                                <Chip outline={true}
+                                      classNames={"flex-1 px-2 py-1"}
+                                      onClick={() => handleHalfLeaveSelect(0, halfLeaveType)}
+                                      isSelected={isHalfLeaveSelected(0, halfLeaveType)}
+                                >
+                                    {halfLeaveType.halfLeaveTypeCdName}
+                                </Chip>)
+                        }</div>
+                        {leavePeriodProps?.leaveDates[0].halfLeaveType?.halfLeaveTypeCd === 'A' &&
+                            leavePeriodProps?.leaveDates[0].halfLeaveType.dayOffTypeCd === 'H' &&
+                            <div className={"pt-4"}>
+                                <Checkbox className={"font-normal text-sm"}>8:00 출근 (12:00 퇴근)</Checkbox>
+                            </div>}
+                    </div>
             }
-            {selectedLeaveProps?.leaveDates.length==2 &&
-                <>
+            {
+                leavePeriodProps?.leaveDates.length==2 &&
+                // 기간 휴가인 경우
+                <div>
                     <div className={"pb-2"}>
                         <div className={"flex items-center pb-2"}>
                             <span className={"flex-1"}>휴가시작</span>
                             <div>
-                                <div className={"relative"}>
-                                    <input type={"text"}
-                                           readOnly={true}
-                                           className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
-                                           value={format(selectedLeaveProps.leaveDates[0].dateInfo.date, 'yyyy.M.d(EE)', {locale: ko})}
-                                    />
-                                    <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
-                                            onClick={openModal}
-                                    >
-                                        {datePickerSvg}
-                                    </button>
-                                </div>
+                                {format(leavePeriodProps.leaveDates[0].dateInfo.date, 'yyyy.M.d(EE)', {locale: ko})}
                             </div>
                         </div>
                         <div className={"flex items-center gap-2 pb-1"}>{
-                            getHalfLeaveTypes('PM').map(halfLeaveType=>
+                            getHalfLeaveTypes('PM').map(halfLeaveType =>
                                 <Chip outline={true}
                                       classNames={"flex-1 px-2 py-1"}
-                                      onClick={()=>handleHalfLeaveSelect(0, halfLeaveType)}
+                                      onClick={() => handleHalfLeaveSelect(0, halfLeaveType)}
                                       isSelected={isHalfLeaveSelected(0, halfLeaveType)}
                                 >
                                     {halfLeaveType.halfLeaveTypeCdName}
@@ -148,7 +139,7 @@ const LeavePeriodBottomSheet = ({
                         }</div>
                         <div>
                             <Checkbox className={["font-normal text-sm",
-                                selectedLeaveProps.leaveDates[0].halfLeaveType?.dayOffTypeCd!=='H' && "invisible"
+                                leavePeriodProps.leaveDates[0].halfLeaveType?.dayOffTypeCd !== 'H' && "invisible"
                             ].filter(Boolean).join(' ')}
                             >
                                 8:00 출근 (12:00 퇴근)
@@ -158,18 +149,7 @@ const LeavePeriodBottomSheet = ({
                     <div className={"flex items-center pb-2"}>
                         <span className={"flex-1"}>휴가종료</span>
                         <div>
-                            <div className={"relative"}>
-                                <input type={"text"}
-                                       readOnly={true}
-                                       className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
-                                       value={format(selectedLeaveProps.leaveDates[1].dateInfo.date, 'yyyy.M.d(EE)', {locale: ko})}
-                                />
-                                <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
-                                        onClick={openModal}
-                                >
-                                    {datePickerSvg}
-                                </button>
-                            </div>
+                            {format(leavePeriodProps.leaveDates[1].dateInfo.date, 'yyyy.M.d(EE)', {locale: ko})}
                         </div>
                     </div>
                     <div className={"flex items-center gap-2"}>{
@@ -182,11 +162,9 @@ const LeavePeriodBottomSheet = ({
                                 {halfLeaveType.halfLeaveTypeCdName}
                             </Chip>)
                     }</div>
-                </>
+                </div>
             }
-            <Button onClick={handleConfirm}>
-                날짜 선택
-            </Button>
+
         </div>
     )
 }

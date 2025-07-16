@@ -5,7 +5,8 @@ import {format} from "date-fns";
 const DaysHeader: React.FC = () =>
     <div className="flex flex-row h-8 text-gray-600">
         {['S', 'M', "T", 'W', 'T', 'F', 'S'].map((day, index) =>
-            <div className={`flex-1 ${(index == 0 || index == 6) && 'text-gray-400'}`}>{day}</div>
+            <div key={index}
+                 className={`flex-1 ${(index == 0 || index == 6) && 'text-gray-400'}`}>{day}</div>
         )}
     </div>;
 

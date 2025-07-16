@@ -1,26 +1,48 @@
 import {create} from "zustand";
+import React from "react";
 
 interface BottomSheetStore {
     isOpen : boolean;
     isHide : boolean;
-    content : React.ReactNode;
+    type : 'basic' | 'withButton';
+    bottomSheetContent : React.ReactNode;
+    bottomSheetContentState : any;
+    buttonText : string;
 
-    openBottomSheet: (content:React.ReactNode)=>void;
+    openBottomSheet: (type?: 'basic'|'withButton',
+                      bottomSheetContent? : React.ReactNode,
+                      buttonText? : string,
+                      onButtonClick? : (bottomSheetContentState:any)=>void)=>void;
     closeBottomSheet: ()=>void;
     onClosingAnimationComplete: ()=>void;
+    setContentState: (contentState:any)=>void;
 }
 
-const useBottomSheetStore = create<BottomSheetStore>(set=>({
+const initialState = {
     isOpen: false,
     isHide: false,
-    content: null,
+    type: 'basic' as const,
+    bottomSheetContent: null,
+    bottomSheetContentState: null,
+    buttonText: '확인',
+}
 
-    openBottomSheet: (content) => {
-        set({
+const useBottomSheetStore = create<BottomSheetStore>((set)=>({
+    isOpen: false,
+    isHide: false,
+    type: 'basic',
+    bottomSheetContent: null,
+    bottomSheetContentState: null,
+    buttonText: '확인',
+
+    openBottomSheet: (type, bottomSheetContent, buttonText, onButtonClick) => {
+        set(()=>({
             isOpen: true,
             isHide: true,
-            content: content
-        });
+            ...(type && {type}),
+            ...(bottomSheetContent && {bottomSheetContent}),
+            ...(buttonText && {buttonText}),
+        }));
         requestAnimationFrame(()=>set({
             isHide: false
         }))
@@ -32,13 +54,13 @@ const useBottomSheetStore = create<BottomSheetStore>(set=>({
 
     onClosingAnimationComplete: () => set(state=>{
         if(state.isHide)
-            return {
-                isOpen: false,
-                isClosing: false,
-                content: null,
-            };
+            return {...state, ...initialState};
         return state;
-    })
+    }),
+
+    setContentState: (bottomSheetContentState)=>{
+        set({bottomSheetContentState})
+    }
 }));
 
 export default useBottomSheetStore;
