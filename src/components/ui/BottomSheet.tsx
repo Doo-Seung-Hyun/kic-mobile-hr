@@ -4,11 +4,10 @@ import Button from "./Button.tsx";
 import React from "react";
 
 const BottomSheet = () => {
-    const {isOpen, isHide, bottomSheetConfig, closeBottomSheet, onClosingAnimationComplete} = useBottomSheetStore();
+    const {isOpen, isHide, type, bottomSheetContent, setContentState, buttonText, onButtonClick, closeBottomSheet, onClosingAnimationComplete} = useBottomSheetStore();
     if(!isOpen)
         return null;
 
-    const {type, bottomSheetContent, buttonText, buttonComponent, onButtonClick} = bottomSheetConfig;
     const bottomSheetPaddingBottom = type==='withButton' ? 'pb-16':'';
 
     return <DimmedBackground type={"bottomSheet"}
@@ -19,11 +18,15 @@ const BottomSheet = () => {
              }}
              onTransitionEnd={onClosingAnimationComplete}
         >
-            {bottomSheetContent && bottomSheetContent()}
+            {
+                typeof bottomSheetContent ==='function' ?
+                    bottomSheetContent(setContentState) : // 함수면 바텀시트콘텐트 상태 setter 전달
+                    bottomSheetContent
+            }
         </div>
         {
             type==='withButton' &&
-            <Button onClick={e=>onButtonClick}
+            <Button onClick={onButtonClick}
                     className={'fixed left-4 right-4 bottom-4 h-10'}
             >
                 {buttonText}

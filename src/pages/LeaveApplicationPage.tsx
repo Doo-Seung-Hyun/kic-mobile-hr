@@ -101,10 +101,16 @@ function LeaveApplicationPage() {
 
     // 휴가기간 선택 핸들러
     const handleLeaveDateClick = () => {
-        openBottomSheet(<LeavePeriodBottomSheet
-            selectedLeaveProps={selectedLeaveProps}
-            onConfirm={setSelectedLeaveProps}
-        />);
+        openBottomSheet(
+            setContentState =>
+                <LeavePeriodBottomSheet
+                    selectedLeaveProps={selectedLeaveProps}
+                    setBottomSheetContentState={setContentState}
+                />,
+            'withButton',
+            '휴가날짜 선택',
+            leavePeriodProps=> setSelectedLeaveProps(leavePeriodProps)
+        );
     }
 
     //1일 휴가여부 (false는 휴가기간 설정)

@@ -1,9 +1,8 @@
 import TeamCalendar from "../../TeamCalendar/TeamCalendar.tsx";
 import type {HalfLeaveType, SelectedLeaveProps} from "../../../../types/leave.ts";
-import React, {useState} from "react";
+import {useEffect, useState} from "react";
 import Chip from "../../../../components/ui/Chip.tsx";
 import {Checkbox} from "../../../../components/ui/Checkbox.tsx";
-import Button from "../../../../components/ui/Button.tsx";
 import {format} from "date-fns";
 import {ko} from "date-fns/locale";
 
@@ -17,14 +16,18 @@ const halfTypeCdList: HalfLeaveType[] =[
 
 interface LeavePeriodBottomSheetProps {
     selectedLeaveProps?: SelectedLeaveProps | null;
-    onConfirm: (leaveProps: SelectedLeaveProps | null) => void;
+    setBottomSheetContentState? : (bottomSheetContentState:any)=>void;
 }
 
 const LeavePeriodBottomSheet = ({
     selectedLeaveProps = null,
-    onConfirm
+    setBottomSheetContentState
 }: LeavePeriodBottomSheetProps) => {
     const [leavePeriodProps, setLeavePeriodProps] = useState<SelectedLeaveProps|null>(selectedLeaveProps);
+    useEffect(() => {
+        if(setBottomSheetContentState)
+            setBottomSheetContentState(leavePeriodProps);
+    }, [leavePeriodProps]);
 
     const getHalfLeaveTypes = (halfLeaveDivision:'AM'|'PM') => {
         const halfLeaveTypeCd = halfLeaveDivision==='AM' ? 'M' : 'A';
@@ -54,11 +57,6 @@ const LeavePeriodBottomSheet = ({
         return halfLeaveType &&
             (halfLeaveType.dayOffTypeCd === toFind.dayOffTypeCd) &&
             (halfLeaveType.halfLeaveTypeCd === toFind.halfLeaveTypeCd);
-    }
-
-    // 날짜 선택 버튼 클릭
-    const handleConfirm = ()=>{
-        onConfirm(leavePeriodProps);
     }
 
     return (
