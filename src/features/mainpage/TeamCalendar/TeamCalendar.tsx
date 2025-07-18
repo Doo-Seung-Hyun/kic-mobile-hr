@@ -5,7 +5,6 @@ import useDailyAttendance from "./useDailyAttendance.ts";
 import TeamDailyAttendanceList from "./TeamDailyAttendanceList.tsx";
 import {useDateSelection} from "./useDateSelection.ts";
 import type {DateInfo, DateSelectionGridProps} from "../../../types/calendar.ts";
-import {format} from "date-fns";
 
 interface TeamCalendarProps {
     initialSelectedDate? : Date|string;
@@ -13,18 +12,21 @@ interface TeamCalendarProps {
     className? : string;
     onDateChange? : (selectedDate:DateInfo, selectedDateRange?:DateInfo[])=>void;
     dateRangePickerMode? : boolean;
+
+    hideAttendanceList? : boolean;
+    fixedHeightOfAttendanceList? : boolean;
 }
 
 const orgId = '95';
 
-const TODAY = new Date();
-
 const TeamCalendar = ({
-    initialSelectedDate = TODAY,
+    initialSelectedDate,
     initialSelectedDateRange,
     className = '',
     onDateChange: onDateChangeCallback,
-    dateRangePickerMode = false
+    dateRangePickerMode = false,
+    hideAttendanceList = false,
+    fixedHeightOfAttendanceList = true
 }:TeamCalendarProps) => {
     const {
         currentYear,
@@ -38,16 +40,13 @@ const TeamCalendar = ({
     } = useCalendarData();
 
     const {
-        selectedDate = {
-            date : TODAY,
-            yyyyMMdd : format(TODAY,'yyyyMMdd')
-        },
+        selectedDate,
         handleDateSelect,
         didSetRangeOfDates,
         selectedDateRange
     } = useDateSelection(dateRangePickerMode,onDateChangeCallback, initialSelectedDate, initialSelectedDateRange);
 
-    const attendanceList = useDailyAttendance(selectedDate.yyyyMMdd, orgId);
+    const attendanceList = useDailyAttendance(selectedDate? selectedDate.yyyyMMdd : '', orgId);
 
     const dateSelectionGridProps:DateSelectionGridProps = {
         isDateRangePickerMode : dateRangePickerMode,
@@ -71,9 +70,18 @@ const TeamCalendar = ({
                               handleDateSelect(yyyyMMdd);
                           }}
             />
-            <TeamDailyAttendanceList date={selectedDate.date}
-                                     attendanceList={attendanceList}
-            />
+            {!hideAttendanceList && (
+                <div className={"pt-3 border-t"}>
+                    {selectedDate ?
+                    <TeamDailyAttendanceList date={selectedDate.date}
+                                             attendanceList={attendanceList}
+                                             fixedHeightOfAttendanceList={fixedHeightOfAttendanceList}
+                    /> :
+                    <div className={"py-3 text-center"}>
+                        팀원 근태를 확인하려면 날짜를 선택해주세요
+                    </div>}
+                </div>
+            )}
         </div>
     );
 };

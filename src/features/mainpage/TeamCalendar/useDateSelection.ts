@@ -94,9 +94,6 @@ const useDateSelection = (
      * @param selectedDate - 선택된 날짜 (Date 타입 또는 yyyyMMdd 형식의 String 타입)
      */
     const handleDateSelect = (selectedDate: Date|string)=> {
-        if(!selectedDates)
-            return;
-
         if(typeof selectedDate =='string')
             selectedDate = parse(selectedDate, 'yyyyMMdd', TODAY);
 
@@ -109,7 +106,7 @@ const useDateSelection = (
 
         if(isDateRangePickerMode) {
             //날짜범위선택 모드이고 두번째 날짜선택이 첫번째보다 이후인 경우
-            if (isSelectingRange && isAfter(selectedDate, selectedDates[0].date)) {
+            if (selectedDates && isSelectingRange && isAfter(selectedDate, selectedDates[0].date)) {
                 newSelectedDates.push(selectedDates[0]);
                 setIsSelectingRange(false);
             } else {

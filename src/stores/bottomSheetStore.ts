@@ -1,22 +1,32 @@
 import {create} from "zustand";
 import React from "react";
+import {useShallow} from "zustand/react/shallow";
 
-interface BottomSheetStore {
+interface withButtonConfig<T>{
+    buttonText? : string;
+    onButtonClick? : (bottomSheetContentState:T)=>void;
+    validation? : boolean
+}
+
+interface BottomSheetStore<T=unknown> {
     isOpen : boolean;
     isHide : boolean;
     type : 'basic' | 'withButton';
-    bottomSheetContent : ((setContentState:(contentState:any)=>void)=>React.ReactNode) | React.ReactNode;
-    bottomSheetContentState : any;
+    bottomSheetContent : ((setContentState:(contentState:T)=>void)=>React.ReactNode) | React.ReactNode;
+    bottomSheetContentState : T;
     buttonText : string;
+    bottomSheetClasses? : string;
+    validation? : boolean;
 
-    openBottomSheet: (bottomSheetContent? : ((setContentState:(contentState:any)=>void)=>React.ReactNode) | React.ReactNode,
+    openBottomSheet: (bottomSheetContent? : ((setContentState:(contentState:T)=>void)=>React.ReactNode) | React.ReactNode,
                       type?: 'basic'|'withButton',
-                      buttonText? : string,
-                      onButtonClick? : (bottomSheetContentState:any)=>void)=>void;
+                      withButtonConfig? : withButtonConfig<T>,
+                      bottomSheetClasses? : string,)=>void;
     closeBottomSheet: ()=>void;
     onClosingAnimationComplete: ()=>void;
-    setContentState: (contentState:any)=>void;
+    setContentState: (contentState:T)=>void;
     onButtonClick? : ()=>void;
+    setValidation? : (validation:boolean)=>void;
 }
 
 const initialState = {
@@ -26,23 +36,31 @@ const initialState = {
     bottomSheetContent: null,
     bottomSheetContentState: null,
     buttonText: '확인',
+    validation: false,
 }
 
-const useBottomSheetStore = create<BottomSheetStore>((set,get)=>({
+const _useBottomSheetStore = create<BottomSheetStore>((set,get)=>({
     ...initialState,
 
-    openBottomSheet: (bottomSheetContent, type, buttonText, onButtonClick) => {
+    openBottomSheet: (bottomSheetContent,
+                      type,
+                      withButtonConfig,
+                      bottomSheetClasses,
+                      ) => {
+        const {buttonText, onButtonClick, validation} = withButtonConfig || {};
         set(()=>({
             isOpen: true,
             isHide: true,
             ...(type && {type}),
             ...(bottomSheetContent && {bottomSheetContent}),
             ...(buttonText && {buttonText}),
+            ...(validation && {validation}),
             ...(onButtonClick && {
                 onButtonClick : ()=>{
                     onButtonClick(get().bottomSheetContentState);
                 }
-            })
+            }),
+            ...(bottomSheetClasses && {bottomSheetClasses})
         }));
         requestAnimationFrame(()=>set({
             isHide: false
@@ -63,6 +81,25 @@ const useBottomSheetStore = create<BottomSheetStore>((set,get)=>({
         set({bottomSheetContentState})
     },
 
+    setValidation: validation => set({
+        validation
+    })
+
 }));
 
-export default useBottomSheetStore;
+export const useBottomSheetStore = <T>() => {
+    return _useBottomSheetStore() as unknown as BottomSheetStore<T>
+}
+
+export const useBottomSheetValidation = <T>() =>
+    _useBottomSheetStore(useShallow(state => ({
+        validation : state.validation,
+        setValidation : state.setValidation
+    }))) as unknown as BottomSheetStore<T>
+
+export const useBottomSheetToggle = <T>() =>
+    _useBottomSheetStore(useShallow(state => ({
+        openBottomSheet : state.openBottomSheet,
+        closeBottomSheet : state.closeBottomSheet
+    }))) as unknown as BottomSheetStore<T>
+

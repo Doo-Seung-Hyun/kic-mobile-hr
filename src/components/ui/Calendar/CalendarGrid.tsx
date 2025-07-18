@@ -1,5 +1,5 @@
 import React from "react";
-import type {CalendarGridProps, DateInfo} from "../../../types/calendar.ts";
+import type {CalendarGridProps} from "../../../types/calendar.ts";
 import {format} from "date-fns";
 
 const DaysHeader: React.FC = () =>
@@ -28,7 +28,7 @@ const Grid = ({
 
     //선택된 날짜 그리드 정보
     const {
-        selectedDate = {date: today, yyyyMMdd: todayYyyyMMdd},
+        selectedDate,
         didSetRangeOfDates = false,
         selectedDateRange
     } = dateSelectionGridProps || {};
@@ -41,7 +41,7 @@ const Grid = ({
 
     const isDateToRenderCircle = (yyyyMMdd:string|undefined) =>
         yyyyMMdd && (
-            (!didSetRangeOfDates && selectedDate.yyyyMMdd === yyyyMMdd) ||
+            (!didSetRangeOfDates && selectedDate?.yyyyMMdd === yyyyMMdd) ||
             (didSetRangeOfDates && rangeStart === yyyyMMdd) ||
             (didSetRangeOfDates && rangeEnd === yyyyMMdd)
         );

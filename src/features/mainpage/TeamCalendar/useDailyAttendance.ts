@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {addBusinessDays, format} from "date-fns";
+import {addBusinessDays, format, isValid, parse} from "date-fns";
 import type {AttendanceData} from "../../../types/attendanceData.ts";
 
 
@@ -98,6 +98,13 @@ const getTeamAttendanceList = (
     return mockData.filter(data => data.ymd===date);
 }
 
+const isValidYyyyMmDd = (dateString: string): boolean => {
+    if (!dateString || dateString.length !== 8) return false;
+
+    const parsedDate = parse(dateString, 'yyyyMMdd', new Date());
+    return isValid(parsedDate);
+};
+
 const useDailyAttendance = (yyyyMMdd: string, orgId: string) => {
 
     const [attendanceList, setAttendanceList] = useState<AttendanceData[]>([]);
@@ -110,6 +117,10 @@ const useDailyAttendance = (yyyyMMdd: string, orgId: string) => {
             setAttendanceList(getTeamAttendanceList(date ,
                 // orgId
             ))
+        }
+        if(!isValidYyyyMmDd(yyyyMMdd)) {
+            setAttendanceList([]);
+            return;
         }
 
         getAttendanceList(

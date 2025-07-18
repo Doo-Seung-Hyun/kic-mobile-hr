@@ -7,19 +7,24 @@ import Chip from '../../../components/ui/Chip.tsx';
 interface TeamDailyAttendanceListProps {
     date: Date;
     attendanceList: AttendanceData[];
+    fixedHeightOfAttendanceList?: boolean;
 }
 
 const TeamDailyAttendanceList = ({
     date,
-    attendanceList
+    attendanceList,
+    fixedHeightOfAttendanceList = true
 }:TeamDailyAttendanceListProps) => {
 
+    //높이 계산
+    const heightClass = fixedHeightOfAttendanceList ? 'h-28' : 'max-h-28';
+
     return (
-        <div>
-            <div className={"py-3 border-t mt-3"}>
+        <>
+            <div className={"pb-3"}>
                 {format(date,'M월 d일 EEEE', {locale: ko})}
             </div>
-            <div className={"h-28 font-normal text-sm overflow-auto"}>
+            <div className={`font-normal text-sm overflow-auto ${heightClass}`.trim()}>
                 {attendanceList.length === 0 && '일정이 없습니다'}
                 {attendanceList.sort((a,b)=>{
                     const isALeave = isLeaveAttendance(a);
@@ -56,7 +61,7 @@ const TeamDailyAttendanceList = ({
                     </div>);
                 })
             }</div>
-        </div>
+        </>
     );
 };
 
