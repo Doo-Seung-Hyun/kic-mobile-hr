@@ -62,7 +62,12 @@ function LeaveApplicationPage() {
     }
 
     // 휴가기간정보
-    const [selectedLeaveProps, setSelectedLeaveProps] = useState<SelectedLeaveProps | null>(null);
+    const [selectedLeaveProps, setSelectedLeaveProps] = useState<SelectedLeaveProps | null>({
+        dateComponentType:'datePicker',
+        leaveDates:[
+            {dateInfo: {date:addDays(new Date(),1), yyyyMMdd:format(new Date,'yyyyMMdd')}}
+        ]
+    });
 
     // 휴가기간 선택 핸들러
     const handleLeaveDateClick = () => {
@@ -108,33 +113,23 @@ function LeaveApplicationPage() {
             <div>
                 <div className="font-bold text-xl pt-6 pb-4">언제 가시나요?</div>
                 <Card>
-                    <Card.Content className={"font-normal px-2"}>
-                        <div className={"py-2"}
-                             onClick={handleLeaveDateClick}
-                        >
-                            날짜를 선택해주세요
-                        </div>
-                        {selectedLeaveProps?.leaveDates.length==1 && <>
-                            <div className={"flex items-center pb-4"}>
-                                <span className={"flex-1"}>휴가일자</span>
+                    <Card.Content className={"font-semibold"}>
+                        <Button variant={"none"}
+                                className={`flex flex-row w-full justify-between px-1  py-2text-gray-800`}
+                                onClick={handleLeaveDateClick}>
+                            {selectedLeaveProps===null &&
+                                <>
+                                    날짜를 선택해주세요
+                                </>}
+                            {selectedLeaveProps?.leaveDates.length==1 && <>
+                                <span className={"text-gray-600"}>휴가일자</span>
                                 <div>
-                                    <div className={"relative"}>
-                                        <input type={"text"}
-                                               readOnly={true}
-                                               className={"border rounded-md p-1 px-2 w-32 text-sm font-semibold"}
-                                               value={format(selectedLeaveProps?.leaveDates[0].dateInfo.date, 'yyyy.M.d(EE)', {locale: ko})}
-                                        />
-                                        <button className={"absolute right-1 top-1/2 transform -translate-y-1/2"}
-                                                onClick={openModal}
-                                        >
-                                            {datePickerSvg}
-                                        </button>
-                                    </div>
+                                    <span>
+                                        {format(selectedLeaveProps?.leaveDates[0].dateInfo.date, 'M월 d일(EE)', {locale: ko})}
+                                    </span>
                                 </div>
-                            </div>
-
-                        </>}
-
+                            </>}
+                        </Button>
                     </Card.Content>
                 </Card>
             </div>

@@ -11,12 +11,13 @@ interface LayoutProps{
 
 function RootLayout(props: LayoutProps) {
     const location = useLocation().pathname;
-    const hasFixedTypeFooter = headerConfigs[location].footerType==='fixed';
+    const hasFixedTypeFooter = headerConfigs[location]?.footerType==='fixed';
+    const mainClassNames = headerConfigs[location]?.mainClassNames;
     const paddingBottomClassName = hasFixedTypeFooter ? ' pb-20' : '';
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
-            <main className={"flex-1 px-4" + paddingBottomClassName}>
+            <main className={`flex-1 px-4 ${paddingBottomClassName} ${mainClassNames}`.trim()}>
                 {props.children}
             </main>
             <Footer />
