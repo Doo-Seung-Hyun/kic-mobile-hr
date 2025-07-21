@@ -2,7 +2,7 @@ import {useState} from 'react';
 import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
 import type {LeaveType, SelectedLeaveProps} from "../types/leave.ts";
-import {addDays, format, nextSunday, previousSunday} from "date-fns";
+import {addDays, format} from "date-fns";
 import {ko} from "date-fns/locale";
 import LeaveSelectionBottomSheetContent
     from "../features/mainpage/leaveApplication/components/LeaveSelectionBottomSheetContent.tsx";
@@ -40,7 +40,7 @@ const datePickerSvg = <svg className="w-5 text-gray-500"
 
 
 function LeaveApplicationPage() {
-    const [selectedLeave, setSelectedLeave] = useState<LeaveType>(myLeaveDays.find(leave => leave.leaveTypeCode === '001'));
+    const [selectedLeave, setSelectedLeave] = useState<LeaveType>(myLeaveDays.find(leave => leave.leaveTypeCode === '001') as LeaveType);
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const openModal = () => setIsModalOpen(true);
@@ -62,12 +62,7 @@ function LeaveApplicationPage() {
     }
 
     // 휴가기간정보
-    const [selectedLeaveProps, setSelectedLeaveProps] = useState<SelectedLeaveProps | null>({
-        dateComponentType:'datePicker',
-        leaveDates:[
-            {dateInfo: {date:addDays(new Date(),1), yyyyMMdd:format(new Date,'yyyyMMdd')}}
-        ]
-    });
+    const [selectedLeaveProps, setSelectedLeaveProps] = useState<SelectedLeaveProps | null>(null);
 
     // 휴가기간 선택 핸들러
     const handleLeaveDateClick = () => {
@@ -86,9 +81,6 @@ function LeaveApplicationPage() {
         );
     }
 
-    //1일 휴가여부 (false는 휴가기간 설정)
-    const isOneDayLeave = selectedLeaveProps?.leaveDates.length==1;
-
     return (
         <div className={"flex flex-col gap-4"}>
             <div>
@@ -97,9 +89,11 @@ function LeaveApplicationPage() {
                     <Card.Content>
                         <div>
                             <Button variant={"none"}
-                                    className={`flex flex-row w-full justify-between px-1 text-gray-800`}
+                                    size={"md"}
+                                    className={`flex flex-row w-full justify-between text-gray-800`}
+                                    style={{paddingTop: '0.375rem', paddingBottom: '0.375rem'}}
                                     onClick={handleLeaveTypeClick}>
-                                <span>{selectedLeave.leaveTypeName}</span>
+                                <span className={"font-normal"}>{selectedLeave.leaveTypeName}</span>
                                 <div>
                                     <span>{selectedLeave.leftLeaveDays}</span>
                                     <span className="text-sm font-normal text-gray-500 pl-1">일</span>
@@ -113,20 +107,24 @@ function LeaveApplicationPage() {
             <div>
                 <div className="font-bold text-xl pt-6 pb-4">언제 가시나요?</div>
                 <Card>
-                    <Card.Content className={"font-semibold"}>
+                    <Card.Content className={""}>
                         <Button variant={"none"}
-                                className={`flex flex-row w-full justify-between px-1  py-2text-gray-800`}
+                                className={`flex flex-row w-full justify-between px-1 py-1.5 text-gray-800`}
+                                style={{paddingTop: '0.375rem', paddingBottom: '0.375rem'}}
                                 onClick={handleLeaveDateClick}>
                             {selectedLeaveProps===null &&
-                                <>
+                                <span className={"font-normal"}>
                                     날짜를 선택해주세요
-                                </>}
-                            {selectedLeaveProps?.leaveDates.length==1 && <>
-                                <span className={"text-gray-600"}>휴가일자</span>
+                                </span>}
+                            {selectedLeaveProps?.leaveDates && selectedLeaveProps?.leaveDates.length>=1 && <>
+                                <span className={"text-gray-600 font-normal"}>휴가일자</span>
                                 <div>
                                     <span>
-                                        {format(selectedLeaveProps?.leaveDates[0].dateInfo.date, 'M월 d일(EE)', {locale: ko})}
+                                        {format(selectedLeaveProps.leaveDates[0].dateInfo.date, 'M월 d일(EE)', {locale: ko})}
                                     </span>
+                                    {selectedLeaveProps.leaveDates.length===2 && <span>
+                                        {format(selectedLeaveProps.leaveDates[1].dateInfo.date, ' - M월 d일(EE)', {locale: ko})}
+                                    </span>}
                                 </div>
                             </>}
                         </Button>
@@ -137,9 +135,8 @@ function LeaveApplicationPage() {
             <div>
                 <div className="font-bold text-xl pt-6 pb-4">휴가사유를 입력해주세요</div>
                 <Card>
-                    <Card.Header>휴가 사유</Card.Header>
                     <Card.Content>
-                        <textarea className={"appearance-none border w-full h-40 " +
+                        <textarea className={"appearance-none border w-full h-52 " +
                             "resize-none rounded-md " +
                             "p-2.5 font-normal " +
                             "focus: border"}/>

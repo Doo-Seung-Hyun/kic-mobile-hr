@@ -115,29 +115,6 @@ const scheduledLeaves : ScheduledLeavesType[] = [
         parse(b.scheduledLeaveStartDate+b.scheduledLeaveStartTime,'yyyyMMddHH:mm',new Date())
     ));
 
-const getCalendarGrid = (yyyyMM : string)=>{
-    const calendarStart = startOfWeek(parse(yyyyMM+'01','yyyyMMdd',new Date()), {weekStartsOn: 0});
-    const calendarEnd = endOfWeek(endOfMonth(parse(yyyyMM,'yyyyMM',new Date())),{weekStartsOn: 0});
-
-    const daysOfMonth = eachDayOfInterval({
-        start: calendarStart,
-        end: calendarEnd
-    });
-
-    const calendarGrid : Date[][] = [];
-    daysOfMonth.forEach((day,index)=>{
-        if(index%7===0){
-            calendarGrid.push([]);
-        }
-        calendarGrid[calendarGrid.length-1].push(day);
-    });
-    return calendarGrid;
-}
-
-const yyyyMMdd = startOfMonth(new Date());
-const calendarGrid = getCalendarGrid(format(yyyyMMdd,'yyyyMM'));
-console.log(calendarGrid);
-
 function MainPage(props) {
     const navigate = useNavigate();
 
@@ -234,7 +211,8 @@ function MainPage(props) {
             <div className="font-bold text-2xl pt-6">📅 캘린더</div>
             <Card>
                 <Card.Content>
-                    <TeamCalendar />
+                    <TeamCalendar initialSelectedDate={new Date()}
+                    />
                 </Card.Content>
             </Card>
         </div>

@@ -1,23 +1,29 @@
 interface toggleSwitchProps {
     isOn: boolean;
     onClick?: ()=>void;
-    classesName?: string;
+    classNames?: string;
 }
 
 const ToggleSwitch = ({
     isOn = false,
-    onClick,
-    classesName
+    onClick: handleButtonClick,
+    classNames
 }:toggleSwitchProps)=>{
     const backGroundClassName = !isOn ?
         'bg-black opacity-40'
-        : 'bg-blue-700 opacity-30';
+        : 'bg-blue-700';
+    const hasWidth = !!classNames?.match(/w-/);
     return (
-        <button className={`p-0.5 rounded-full w-12 ${classesName} ${backGroundClassName}`}
-                style={{aspectRatio: 2}}
-        >
-            <div className={'w-1/2 aspect-square rounded-full bg-white'}></div>
-        </button>
+        <span className={'inline-block text-[0px] leading-none'}>
+            <button className={`p-0.5 rounded-full ${classNames} ${backGroundClassName} ${!hasWidth ? 'w-12':''}`}
+                    style={{aspectRatio: 2}}
+                    onClick={handleButtonClick}
+            >
+                <div className={'w-1/2 aspect-square rounded-full bg-white ' +
+                    'transition-transform ' +
+                    `transform ${isOn ? 'translate-x-full' : 'translate-x-0'}`}></div>
+            </button>
+        </span>
     )
 }
 

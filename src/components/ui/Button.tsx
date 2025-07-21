@@ -12,6 +12,7 @@ const Button: React.FC<ButtonProps> = ({
                                            className = '',
                                            disabled = false,
                                            children,
+                                           style,
                                            ...props
                                        }) => {
     const baseClasses = 'font-semiBold rounded-lg transition-colors focus:outline-none';
@@ -51,11 +52,10 @@ const Button: React.FC<ButtonProps> = ({
     }
 
     const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
-
     return (
         <button
             className={combinedClasses}
-            style={variantStyles[variant]}
+            style={{...style, ...variantStyles[variant]}}
             disabled={disabled}
             {...props}
         >

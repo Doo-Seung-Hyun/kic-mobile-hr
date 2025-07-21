@@ -3,7 +3,7 @@ import {Checkbox} from "../../../../components/ui/Checkbox.tsx";
 import {format} from "date-fns";
 import {ko} from "date-fns/locale";
 import type {HalfLeaveType, SelectedLeaveProps} from "../../../../types/leave.ts";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import ToggleSwitch from "../../../../components/ui/ToggleSwitch.tsx";
 
 interface HalfLeaveSelectionProps {
@@ -31,6 +31,16 @@ const HalfLeaveSelection =({
         return halfTypeCdList.filter(halfLeaveType => halfLeaveType.halfLeaveTypeCd === halfLeaveTypeCd);
     }
 
+    const scrollIntoRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if(scrollIntoRef.current)
+            scrollIntoRef.current.scrollIntoView({
+                behavior:'smooth',
+                block : 'start'
+            })
+    }, [showArea]);
+
     //해당 반차가 선택되었는지 확인하는 함수
     const isHalfLeaveSelected = (leaveDateIndex:number, toFind:HalfLeaveType) =>{
         if(!leavePeriodProps)
@@ -43,13 +53,18 @@ const HalfLeaveSelection =({
     }
 
     return <>
-        <div className={"font-bold text-xl pb-4"}>반차를 사용하시나요?</div>
-        <ToggleSwitch
-            isOn={showArea}
-            onClick={()=>setShowArea(prev=>!prev)}
-        />
+        <div className={"font-bold text-xl pb-4 flex justify-between items-center"}
+             ref={scrollIntoRef}
+        >
+            <span>반차를 사용하시나요?</span>
+            <ToggleSwitch
+                isOn={showArea}
+                onClick={()=>setShowArea(prev=>!prev)}
+                classNames={'w-10'}
+            />
+        </div>
         {
-            leavePeriodProps?.leaveDates.length==1 &&
+            showArea && leavePeriodProps?.leaveDates.length==1 &&
             // 1일 휴가인 경우
             <div>
                 <div className={"flex items-center gap-2"}>{
@@ -80,7 +95,7 @@ const HalfLeaveSelection =({
             </div>
         }
         {
-            leavePeriodProps?.leaveDates.length==2 &&
+            showArea && leavePeriodProps?.leaveDates.length==2 &&
             // 기간 휴가인 경우
             <div>
                 <div className={"pb-2"}>
