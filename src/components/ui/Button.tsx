@@ -34,8 +34,8 @@ const Button: React.FC<ButtonProps> = ({
 
     const sizeClasses = {
         sm: 'py-1.5 text-sm',
-        md: 'py-2 text-base',
-        lg: 'py-3 text-lg'
+        md: 'py-3 text-base',
+        lg: 'py-5 text-lg'
     };
 
     const variantStyles = {

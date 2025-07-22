@@ -1,14 +1,10 @@
 import Card from "../components/ui/Card.tsx";
-import {useEffect, useMemo, useRef, useState} from "react";
 import {
     compareAsc,
-    differenceInCalendarDays, eachDayOfInterval,
-    endOfMonth, endOfWeek,
+    differenceInCalendarDays,
     format,
     parse,
     startOfDay,
-    startOfMonth,
-    startOfWeek
 } from "date-fns";
 import ExpandableCard from "../components/ui/ExpandableCard.tsx";
 import Button from "../components/ui/Button.tsx";
@@ -115,7 +111,7 @@ const scheduledLeaves : ScheduledLeavesType[] = [
         parse(b.scheduledLeaveStartDate+b.scheduledLeaveStartTime,'yyyyMMddHH:mm',new Date())
     ));
 
-function MainPage(props) {
+function MainPage() {
     const navigate = useNavigate();
 
     return (
@@ -162,8 +158,9 @@ function MainPage(props) {
 
             {/*휴가신청 버튼*/}
             <Button className={"mb-2"}
-                    onClick={()=>navigate('/leave/apply')}
-            >휴가 신청하기</Button>
+                    onClick={()=>navigate('/leave/apply')}>
+                휴가 신청하기
+            </Button>
 
             {/*가족과 함께하는 날*/}
             <div className="font-bold text-2xl pt-6">🕕 가족과 함께하는 시간</div>
@@ -205,7 +202,9 @@ function MainPage(props) {
             </Card>
 
             {/*가족과 함께하는날 신청 버튼*/}
-            <Button className={"mb-2"}>가족과 함께하는 날 신청하기</Button>
+            <Button className={"mb-2"}>
+                가족과 함께하는 날 신청하기
+            </Button>
 
             {/*캘린더*/}
             <div className="font-bold text-2xl pt-6">📅 캘린더</div>

@@ -1,4 +1,5 @@
 import type {LeaveType} from "../../../../types/leave.ts";
+import Button from "../../../../components/ui/Button.tsx";
 
 interface LeaveSelectionBottomSheetContentProps {
     selectedLeave? : LeaveType | null;
@@ -11,7 +12,7 @@ const myLeaveDays : LeaveType[] = [
     {leaveTypeCode: '002', leaveTypeName: '저축휴가', leftLeaveDays: 2},
     {leaveTypeCode: '003', leaveTypeName: '자녀돌봄', leftLeaveDays: 1},
     {leaveTypeCode: '004', leaveTypeName: '배우자 출산', leftLeaveDays: 2},
-    {leaveTypeCode: '005', leaveTypeName: '배우자 출산', leftLeaveDays: 20},
+    {leaveTypeCode: '005', leaveTypeName: '배우자 유,사산', leftLeaveDays: 3},
     {leaveTypeCode: '006', leaveTypeName: '입양', leftLeaveDays: 20},
     {leaveTypeCode: '007', leaveTypeName: '가족돌봄', leftLeaveDays: 10},
     {leaveTypeCode: '008', leaveTypeName: '본인결혼', leftLeaveDays: 5},
@@ -55,9 +56,11 @@ const LeaveSelectionBottomSheetContent = ({
             {myLeaveDays.map(leave=>
                 <li key={leave.leaveTypeCode}
                     className={"block w-full [&:not(:first-child)]:border-t"}>
-                    <button onClick={()=>handleLeaveSelect(leave.leaveTypeCode)}
+                    <Button onClick={()=>handleLeaveSelect(leave.leaveTypeCode)}
+                            variant={"none"}
                             className={"flex w-full justify-between py-3 items-center " +
-                                `${leave.leaveTypeCode===selectedLeave?.leaveTypeCode && 'text-blue-700'}`}>
+                                `${leave.leaveTypeCode===selectedLeave?.leaveTypeCode && 'text-blue-700'}`}
+                            disabled={leave.leftLeaveDays === 0} >
                         <div className={"flex flex-col text-left"}>
                             <span className={"font-bold"}>{leave.leaveTypeName}</span>
                             <span className={"text-sm"}>{leave.leftLeaveDays}일</span>
@@ -66,7 +69,7 @@ const LeaveSelectionBottomSheetContent = ({
                             {leave.leaveTypeCode===selectedLeave?.leaveTypeCode &&
                                 checkedSvg}
                         </div>
-                    </button>
+                    </Button>
                 </li>)}
         </ul>
     </>);

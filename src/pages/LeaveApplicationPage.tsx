@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
 import type {LeaveType, SelectedLeaveProps} from "../types/leave.ts";
@@ -8,28 +8,8 @@ import LeaveSelectionBottomSheetContent
     from "../features/mainpage/leaveApplication/components/LeaveSelectionBottomSheetContent.tsx";
 import LeavePeriodBottomSheet from "../features/mainpage/leaveApplication/components/LeavePeriodBottomSheet.tsx";
 import {useBottomSheetToggle} from "../stores/bottomSheetStore.ts";
-
-const myLeaveDays : LeaveType[] = [
-    {leaveTypeCode: '001', leaveTypeName: '연차휴가', leftLeaveDays: 10},
-    {leaveTypeCode: '002', leaveTypeName: '저축휴가', leftLeaveDays: 2},
-    {leaveTypeCode: '003', leaveTypeName: '자녀돌봄', leftLeaveDays: 1},
-    {leaveTypeCode: '004', leaveTypeName: '배우자 출산', leftLeaveDays: 2},
-    {leaveTypeCode: '005', leaveTypeName: '배우자 출산', leftLeaveDays: 20},
-    {leaveTypeCode: '006', leaveTypeName: '입양', leftLeaveDays: 20},
-    {leaveTypeCode: '007', leaveTypeName: '가족돌봄', leftLeaveDays: 10},
-    {leaveTypeCode: '008', leaveTypeName: '본인결혼', leftLeaveDays: 5},
-    {leaveTypeCode: '009', leaveTypeName: '배우자사망', leftLeaveDays: 5},
-    {leaveTypeCode: '010', leaveTypeName: '본인 및 배우자 부모의 사망', leftLeaveDays: 5},
-    {leaveTypeCode: '011', leaveTypeName: '본인 및 배우자 형제자매 사망', leftLeaveDays: 1},
-    {leaveTypeCode: '012', leaveTypeName: '본인 및 배우자 조부모 사망', leftLeaveDays: 3},
-    {leaveTypeCode: '013', leaveTypeName: '자녀결혼', leftLeaveDays: 1},
-    {leaveTypeCode: '014', leaveTypeName: '백신접종', leftLeaveDays: 1},
-    {leaveTypeCode: '015', leaveTypeName: '건강검진', leftLeaveDays: 1},
-    {leaveTypeCode: '016', leaveTypeName: '예비군', leftLeaveDays: 1},
-    {leaveTypeCode: '017', leaveTypeName: '보상휴가', leftLeaveDays: 0},
-    {leaveTypeCode: '018', leaveTypeName: '대체휴가', leftLeaveDays: 0},
-    // {leaveTypeCode: '004', leaveTypeName: '공가', leftLeaveDays: 1}
-];
+import useSubmitFooterStore from "../stores/submitFooterStore.ts";
+import {useShallow} from "zustand/react/shallow";
 
 const datePickerSvg = <svg className="w-5 text-gray-500"
                            aria-hidden="true" viewBox="0 0 24 24">
@@ -40,11 +20,15 @@ const datePickerSvg = <svg className="w-5 text-gray-500"
 
 
 function LeaveApplicationPage() {
-    const [selectedLeave, setSelectedLeave] = useState<LeaveType>(myLeaveDays.find(leave => leave.leaveTypeCode === '001') as LeaveType);
+    const [selectedLeaveKind, setSelectedLeaveKind] = useState<LeaveType|undefined>(undefined);
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
+
+    const {setValidation} = useSubmitFooterStore(useShallow(state => ({
+        setValidation : state.setValidation,
+    })));
 
     const {openBottomSheet, closeBottomSheet} = useBottomSheetToggle<SelectedLeaveProps>();
 
@@ -52,9 +36,9 @@ function LeaveApplicationPage() {
     const handleLeaveTypeClick = () =>{
         const content =
             <LeaveSelectionBottomSheetContent
-                selectedLeave={selectedLeave}
+                selectedLeave={selectedLeaveKind}
                 onLeaveSelect={newSelectedLeave => {
-                    if(newSelectedLeave) setSelectedLeave(newSelectedLeave)
+                    if(newSelectedLeave) setSelectedLeaveKind(newSelectedLeave)
                 }}
                 closeBottomSheet={closeBottomSheet}
             />
@@ -81,6 +65,26 @@ function LeaveApplicationPage() {
         );
     }
 
+    const validate = () => {
+        //휴가종류 선택여부 확인
+        if(!selectedLeaveKind)
+            return false;
+
+        //휴가기간 선택여부 확인
+        if(!selectedLeaveProps)
+            return false;
+
+        return true;
+    }
+
+    useEffect(() => {
+        setValidation(validate());
+    }, [setValidation]);
+
+    useEffect(() => {
+        setValidation(validate());
+    }, [selectedLeaveKind, selectedLeaveProps]);
+
     return (
         <div className={"flex flex-col gap-4"}>
             <div>
@@ -93,11 +97,18 @@ function LeaveApplicationPage() {
                                     className={`flex flex-row w-full justify-between text-gray-800`}
                                     style={{paddingTop: '0.375rem', paddingBottom: '0.375rem'}}
                                     onClick={handleLeaveTypeClick}>
-                                <span className={"font-normal"}>{selectedLeave.leaveTypeName}</span>
-                                <div>
-                                    <span>{selectedLeave.leftLeaveDays}</span>
-                                    <span className="text-sm font-normal text-gray-500 pl-1">일</span>
-                                </div>
+                                {!selectedLeaveKind && <span className={"font-normal after:content-['*'] after:text-red-500 after:ml-1"}>
+                                    휴가 종류를 선택해주세요
+                                </span>}
+                                {selectedLeaveKind && <>
+                                    <span className={"font-normal"}>
+                                        {selectedLeaveKind.leaveTypeName}
+                                    </span>
+                                    <div>
+                                        <span>{selectedLeaveKind.leftLeaveDays}</span>
+                                        <span className="text-sm font-normal text-gray-500 pl-1">일</span>
+                                    </div>
+                                </>}
                             </Button>
                         </div>
                     </Card.Content>
@@ -113,7 +124,7 @@ function LeaveApplicationPage() {
                                 style={{paddingTop: '0.375rem', paddingBottom: '0.375rem'}}
                                 onClick={handleLeaveDateClick}>
                             {selectedLeaveProps===null &&
-                                <span className={"font-normal"}>
+                                <span className={"font-normal after:content-['*'] after:text-red-500 after:ml-1"}>
                                     날짜를 선택해주세요
                                 </span>}
                             {selectedLeaveProps?.leaveDates && selectedLeaveProps?.leaveDates.length>=1 && <>
