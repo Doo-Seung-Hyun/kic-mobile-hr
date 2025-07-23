@@ -4,7 +4,7 @@ import {useShallow} from "zustand/react/shallow";
 
 interface withButtonConfig<T>{
     buttonText? : string;
-    onButtonClick? : (bottomSheetContentState:T)=>void;
+    onButtonClick? : (bottomSheetResult:T)=>void;
     validation? : boolean
 }
 
@@ -12,19 +12,19 @@ interface BottomSheetStore<T=unknown> {
     isOpen : boolean;
     isHide : boolean;
     type : 'basic' | 'withButton';
-    bottomSheetContent : ((setContentState:(contentState:T)=>void)=>React.ReactNode) | React.ReactNode;
-    bottomSheetContentState : T;
+    bottomSheetContent : ((setResult:(bottomSheetResult:T)=>void)=>React.ReactNode) | React.ReactNode;
+    bottomSheetResult : T;
     buttonText : string;
     bottomSheetClasses? : string;
     validation? : boolean;
 
-    openBottomSheet: (bottomSheetContent? : ((setContentState:(contentState:T)=>void)=>React.ReactNode) | React.ReactNode,
+    openBottomSheet: (bottomSheetContent? : ((setResult:(bottomSheetResult:T)=>void)=>React.ReactNode) | React.ReactNode,
                       type?: 'basic'|'withButton',
                       withButtonConfig? : withButtonConfig<T>,
                       bottomSheetClasses? : string,)=>void;
     closeBottomSheet: ()=>void;
     onClosingAnimationComplete: ()=>void;
-    setContentState: (contentState:T)=>void;
+    setBottomSheetResult: (bottomSheetResult:T)=>void;
     onButtonClick? : ()=>void;
     setValidation? : (validation:boolean)=>void;
 }
@@ -34,7 +34,7 @@ const initialState = {
     isHide: false,
     type: 'basic' as const,
     bottomSheetContent: null,
-    bottomSheetContentState: null,
+    bottomSheetResult: null,
     buttonText: '확인',
     validation: false,
 }
@@ -57,7 +57,7 @@ const _useBottomSheetStore = create<BottomSheetStore>((set,get)=>({
             ...(validation && {validation}),
             ...(onButtonClick && {
                 onButtonClick : ()=>{
-                    onButtonClick(get().bottomSheetContentState);
+                    onButtonClick(get().bottomSheetResult);
                 }
             }),
             ...(bottomSheetClasses && {bottomSheetClasses})
@@ -77,8 +77,8 @@ const _useBottomSheetStore = create<BottomSheetStore>((set,get)=>({
         return state;
     }),
 
-    setContentState: (bottomSheetContentState)=>{
-        set({bottomSheetContentState})
+    setBottomSheetResult: (bottomSheetResult)=>{
+        set({bottomSheetResult})
     },
 
     setValidation: validation => set({

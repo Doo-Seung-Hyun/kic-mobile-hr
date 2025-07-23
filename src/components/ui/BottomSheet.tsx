@@ -3,7 +3,7 @@ import Button from "./Button.tsx";
 import {useBottomSheetStore} from "../../stores/bottomSheetStore.ts";
 
 const BottomSheet = () => {
-    const {isOpen, isHide, type, bottomSheetContent, validation, setContentState, buttonText, onButtonClick, closeBottomSheet, onClosingAnimationComplete, bottomSheetClasses} = useBottomSheetStore();
+    const {isOpen, isHide, type, bottomSheetContent, validation, setBottomSheetResult, buttonText, onButtonClick, closeBottomSheet, onClosingAnimationComplete, bottomSheetClasses} = useBottomSheetStore();
     if(!isOpen)
         return null;
 
@@ -20,7 +20,7 @@ const BottomSheet = () => {
         >
             {
                 typeof bottomSheetContent ==='function' ?
-                    bottomSheetContent(setContentState) : // 함수면 바텀시트콘텐트 상태 setter 전달
+                    bottomSheetContent(setBottomSheetResult) : // 함수면 바텀시트결과 setter 전달
                     bottomSheetContent
             }
         </div>

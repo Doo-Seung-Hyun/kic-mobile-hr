@@ -59,7 +59,10 @@ function LeaveApplicationPage() {
             'withButton',
             {
                 buttonText: '휴가날짜 선택',
-                onButtonClick : leavePeriodProps=> setSelectedLeaveProps(leavePeriodProps),
+                onButtonClick : leavePeriodProps=> {
+                    setSelectedLeaveProps(leavePeriodProps);
+                    if(calculateLeaveDays)
+                },
             },
             'h-[90%]'
         );
