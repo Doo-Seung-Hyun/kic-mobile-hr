@@ -5,6 +5,7 @@ import useDailyAttendance from "./useDailyAttendance.ts";
 import TeamDailyAttendanceList from "./TeamDailyAttendanceList.tsx";
 import {useDateSelection} from "./useDateSelection.ts";
 import type {DateInfo, DateSelectionGridProps} from "../../../types/calendar.ts";
+import {useHolidaysByPeriod} from "../../Calendar/hooks/useHolidays.ts";
 
 interface TeamCalendarProps {
     initialSelectedDate? : Date|string;
@@ -46,6 +47,8 @@ const TeamCalendar = ({
         selectedDateRange
     } = useDateSelection(dateRangePickerMode,onDateChangeCallback, initialSelectedDate, initialSelectedDateRange);
 
+    const {data: holidays=[]} = useHolidaysByPeriod({startDate: `${currentYear}0101`, endDate: `${currentYear}1231`});
+
     const attendanceList = useDailyAttendance(selectedDate? selectedDate.yyyyMMdd : '', orgId);
 
     const dateSelectionGridProps:DateSelectionGridProps = {
@@ -62,6 +65,7 @@ const TeamCalendar = ({
                             title={`${currentYear}년 ${currentMonth}월`}
             />
             <CalendarGrid calendarData={calendarData}
+                          holidays={holidays}
                           hasTransition={hasTransition}
                           translateX={translateX}
                           onTransitionEnd={onTransitionEnd}

@@ -1,6 +1,8 @@
 import MOCK_HOLIDAYS from "../data/mockHolidays.ts";
+import type {HolidayApiParams} from "../../../types/holiday.ts";
 
-const getHolidaysByPeriod = async (startDate: string, endDate: string) => {
+const getHolidaysByPeriod = async (holidayApiParam : HolidayApiParams) => {
+    const {startDate, endDate} = holidayApiParam;
     await new Promise(resolve => setTimeout(resolve,300));
     return MOCK_HOLIDAYS.filter(holiday=>
         (holiday.date>startDate||holiday.date===startDate) &&

@@ -16,6 +16,7 @@ const todayYyyyMMdd = format(today, 'yyyyMMdd');
 const Grid = ({
     hasTransition,
     calendarData,
+    holidays,
     translateX,
     onTransitionEnd,
     dateSelectionGridProps,
@@ -23,8 +24,10 @@ const Grid = ({
 }:CalendarGridProps) => {
 
     //휴무일 여부
-    const isOffDay = (index:number) =>
-        index===0 || index===6 ;
+    const isOffDay = (fullDate:string|undefined, index:number) =>
+        holidays.some(holiday => holiday.date === fullDate) || //공휴일
+        index===0 || //일요일
+        index===6 ; //토요일
 
     //선택된 날짜 그리드 정보
     const {
@@ -64,7 +67,7 @@ const Grid = ({
 
                             //정상
                             return <button className={'flex-1 relative'
-                                                   + `${isOffDay(dayIndex)? ' text-gray-400':''}`}
+                                                   + `${isOffDay(fullDate, dayIndex)? ' text-gray-400':''}`}
                                            key={dayIndex}
                                            onClick={()=> {
                                                if(onDateClick && fullDate)
