@@ -17,6 +17,7 @@ export interface SelectedLeaveProps {
     dateComponentType : 'todayChip' | 'tomorrowChip'
         | 'dropdownChip' | 'datePicker';
     leaveDates : LeaveDate[];
+    leaveDays? : number;
 }
 
 export interface LeaveDate {

@@ -6,7 +6,7 @@ export interface CalendarDay {
     hasLeave?: boolean;
     hasFamilyTime?: boolean;
     isEmpty?: boolean;
-
+    isOffDay?: boolean;
 }
 
 export interface DateInfo {
@@ -28,6 +28,7 @@ export interface CalendarGridProps {
     translateX : number;
     onTransitionEnd : ()=>void;
     onDateClick? : (yyyyMMdd:string) => void;
+    canSelectOffDay? : boolean;
 
     dateSelectionGridProps? : DateSelectionGridProps
 }

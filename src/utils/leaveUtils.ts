@@ -1,5 +1,6 @@
 import type {HalfLeaveType, LeaveDate} from "../types/leave.ts";
 import {eachDayOfInterval, format} from "date-fns";
+import type {Holiday} from "../types/holiday.ts";
 
 /**
  * 반차 종류별 휴가일수
@@ -19,30 +20,41 @@ const calculateHalfLeaveDays = (halfLeaveType?: HalfLeaveType) => {
 }
 
 /**
- * 휴가 기간에 대해 휴가일수
+ * 날짜 기간 내에 실제 영업일수만 계산
+ * @param start
+ * @param end
+ * @param holidays
+ */
+export const calculateBusinessDays = (start: Date, end: Date, holidays?: Holiday[]) => {
+    const businessDates = eachDayOfInterval({start:start, end:end});
+    return businessDates.filter(date => {
+        const dateStr = format(date, "yyyyMMdd");
+        return date.getDay() !== 0 &&
+            date.getDay() !== 6 &&
+            !(holidays?.some(holiday => holiday.yyyyMMdd===dateStr))
+    }).length;
+}
+
+/**
+ * 휴가 기간에 대해 휴가일수 계산 (영업일, 공휴일 제외)
  * @param leaveDates
- * @param excludeDates
+ * @param holidays
  */
 export const calculateBusinessLeaveDays = (
     leaveDates:LeaveDate[],
-    excludeDates?: string[],
+    holidays?: Holiday[],
 ) => {
-    const allDates = eachDayOfInterval({
-        start:leaveDates[0].dateInfo.date,
-        end: leaveDates[1].dateInfo.date,
-    });
-    const businessDates = allDates.filter((date) => {
-        return date.getDay()!==0 && date.getDay()!==6
-            && !excludeDates?.some(excludeDate => excludeDate === format(date, "yyyyMMdd"))
-    })
-    if(!businessDates.length) {
-        return 0;
+    let leaveDays = calculateBusinessDays(
+        leaveDates[0].dateInfo.date,
+        leaveDates[leaveDates.length===2 ? 1:0].dateInfo.date,
+        holidays
+    );
+    if(leaveDays === 0)
+        return leaveDays;
+
+    leaveDays -= (1-calculateHalfLeaveDays(leaveDates[0].halfLeaveType));
+    if(leaveDates.length === 2) {
+        leaveDays -= (1-calculateHalfLeaveDays(leaveDates[1].halfLeaveType));
     }
-    else if(businessDates.length===1) {
-        if(leaveDates.length===1)
-            return calculateHalfLeaveDays(leaveDates[0].halfLeaveType);
-        else
-            return calculateHalfLeaveDays(leaveDates[1].halfLeaveType);
-    }
-    return 0;
+    return leaveDays;
 }

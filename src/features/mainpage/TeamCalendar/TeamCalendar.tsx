@@ -13,6 +13,7 @@ interface TeamCalendarProps {
     className? : string;
     onDateChange? : (selectedDate:DateInfo, selectedDateRange?:DateInfo[])=>void;
     dateRangePickerMode? : boolean;
+    canSelectOffDay? : boolean;
 
     hideAttendanceList? : boolean;
     fixedHeightOfAttendanceList? : boolean;
@@ -26,6 +27,7 @@ const TeamCalendar = ({
     className = '',
     onDateChange: onDateChangeCallback,
     dateRangePickerMode = false,
+    canSelectOffDay = true,
     hideAttendanceList = false,
     fixedHeightOfAttendanceList = true
 }:TeamCalendarProps) => {
@@ -47,7 +49,10 @@ const TeamCalendar = ({
         selectedDateRange
     } = useDateSelection(dateRangePickerMode,onDateChangeCallback, initialSelectedDate, initialSelectedDateRange);
 
-    const {data: holidays=[]} = useHolidaysByPeriod({startDate: `${currentYear}0101`, endDate: `${currentYear}1231`});
+    const {data : holidays=[]} = useHolidaysByPeriod({
+        startDate:`${currentYear}0101`,
+        endDate:`${currentYear}1231`,
+    });
 
     const attendanceList = useDailyAttendance(selectedDate? selectedDate.yyyyMMdd : '', orgId);
 
@@ -70,6 +75,7 @@ const TeamCalendar = ({
                           translateX={translateX}
                           onTransitionEnd={onTransitionEnd}
                           dateSelectionGridProps={dateSelectionGridProps}
+                          canSelectOffDay={canSelectOffDay}
                           onDateClick={yyyyMMdd => {
                               handleDateSelect(yyyyMMdd);
                           }}

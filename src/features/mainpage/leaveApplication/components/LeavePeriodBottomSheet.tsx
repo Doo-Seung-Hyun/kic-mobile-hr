@@ -3,6 +3,7 @@ import type {HalfLeaveType, SelectedLeaveProps} from "../../../../types/leave.ts
 import {useEffect, useState} from "react";
 import HalfLeaveSelection from "./HalfLeaveSelection.tsx";
 import {useBottomSheetValidation} from "../../../../stores/bottomSheetStore.ts";
+import useLeaveCalculation from "../../../Calendar/hooks/useLeaveCalculation.ts";
 
 interface LeavePeriodBottomSheetProps {
     selectedLeaveProps?: SelectedLeaveProps | null;
@@ -14,8 +15,10 @@ const LeavePeriodBottomSheet = ({
     setBottomSheetContentState
 }: LeavePeriodBottomSheetProps) => {
     //휴가 날짜 선택 정보
-    const [leavePeriodProps, setLeavePeriodProps] = useState<SelectedLeaveProps|null>(selectedLeaveProps);
+    const [leavePeriodProps, setLeavePeriodProps] = useState<SelectedLeaveProps|null>(selectedLeaveProps)
 
+    //실제 휴가일수 계산
+    const {leaveDays=0} = useLeaveCalculation(leavePeriodProps?.leaveDates || null);
     const {setValidation} = useBottomSheetValidation();
 
     //휴가 날짜 선택 정보가 변경되면
@@ -48,6 +51,7 @@ const LeavePeriodBottomSheet = ({
                 initialSelectedDate={leavePeriodProps?.leaveDates[0].dateInfo.date}
                 initialSelectedDateRange={leavePeriodProps?.leaveDates.length === 2 ?
                     [...leavePeriodProps.leaveDates.map(leaveDate => leaveDate.dateInfo)] : undefined}
+                canSelectOffDay={false}
                 onDateChange={(dateInfo, dateRange) => {
                     setLeavePeriodProps(() => {
                         const newLeavePeriodProps: SelectedLeaveProps = {

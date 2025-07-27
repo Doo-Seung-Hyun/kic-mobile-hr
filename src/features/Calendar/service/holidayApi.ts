@@ -5,8 +5,8 @@ const getHolidaysByPeriod = async (holidayApiParam : HolidayApiParams) => {
     const {startDate, endDate} = holidayApiParam;
     await new Promise(resolve => setTimeout(resolve,300));
     return MOCK_HOLIDAYS.filter(holiday=>
-        (holiday.date>startDate||holiday.date===startDate) &&
-        (holiday.date<endDate||holiday.date===endDate));
+        (holiday.yyyyMMdd>startDate||holiday.yyyyMMdd===startDate) &&
+        (holiday.yyyyMMdd<endDate||holiday.yyyyMMdd===endDate));
 }
 
 const holidayApi = {

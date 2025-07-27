@@ -20,12 +20,13 @@ const Grid = ({
     translateX,
     onTransitionEnd,
     dateSelectionGridProps,
-    onDateClick
+    onDateClick,
+    canSelectOffDay = true,
 }:CalendarGridProps) => {
 
     //휴무일 여부
     const isOffDay = (fullDate:string|undefined, index:number) =>
-        holidays.some(holiday => holiday.date === fullDate) || //공휴일
+        holidays.some(holiday => holiday.yyyyMMdd === fullDate) || //공휴일
         index===0 || //일요일
         index===6 ; //토요일
 
@@ -69,6 +70,7 @@ const Grid = ({
                             return <button className={'flex-1 relative'
                                                    + `${isOffDay(fullDate, dayIndex)? ' text-gray-400':''}`}
                                            key={dayIndex}
+                                           disabled={!canSelectOffDay && isOffDay(fullDate, dayIndex)}
                                            onClick={()=> {
                                                if(onDateClick && fullDate)
                                                 onDateClick(fullDate);

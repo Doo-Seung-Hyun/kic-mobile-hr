@@ -1,5 +1,6 @@
 export interface Holiday {
-    date: string;
+    yyyyMMdd: string;
+    date: Date;
     name: string;
 }
 

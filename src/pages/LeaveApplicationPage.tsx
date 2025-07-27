@@ -48,6 +48,8 @@ function LeaveApplicationPage() {
     // 휴가기간정보
     const [selectedLeaveProps, setSelectedLeaveProps] = useState<SelectedLeaveProps | null>(null);
 
+
+
     // 휴가기간 선택 핸들러
     const handleLeaveDateClick = () => {
         openBottomSheet(
@@ -61,7 +63,6 @@ function LeaveApplicationPage() {
                 buttonText: '휴가날짜 선택',
                 onButtonClick : leavePeriodProps=> {
                     setSelectedLeaveProps(leavePeriodProps);
-                    if(calculateLeaveDays)
                 },
             },
             'h-[90%]'
