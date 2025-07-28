@@ -89,24 +89,29 @@ const useCalendarData = () =>{
         parseDate: ()=>startOfMonth(TODAY)
     });
 
-    const {data : holidays=[]} = useHolidaysByPeriod({
+    const {data : holidays, isLoading} = useHolidaysByPeriod({
         startDate:`${yyyyMM.year}0101`,
         endDate:`${yyyyMM.year}1231`,
     });
 
-    const [calendarGrids, setCalendarGrids] = useState<CalendarDay[][][]>([
-        getCalendarGrid(format(addMonths(TODAY,-1),'yyyyMM'), holidays),
-        getCalendarGrid(format(TODAY,'yyyyMM'), holidays),
-        getCalendarGrid(format(addMonths(TODAY,+1),'yyyyMM'), holidays)
-    ]);
+    const [calendarGrids, setCalendarGrids] = useState<CalendarDay[][][]>(() => {
+        const initialHolidays: Holiday[] = [];
+        return [
+            getCalendarGrid(format(addMonths(TODAY, -1), 'yyyyMM'), initialHolidays),
+            getCalendarGrid(format(TODAY, 'yyyyMM'), initialHolidays),
+            getCalendarGrid(format(addMonths(TODAY, +1), 'yyyyMM'), initialHolidays)
+        ];
+    });
 
     useEffect(() => {
-        setCalendarGrids([
-            getCalendarGrid(format(addMonths(TODAY,-1),'yyyyMM'), holidays),
-            getCalendarGrid(format(TODAY,'yyyyMM'), holidays),
-            getCalendarGrid(format(addMonths(TODAY,+1),'yyyyMM'), holidays)
-        ])
-    }, [holidays]);
+        if(holidays && holidays.length>0) {
+            setCalendarGrids([
+                getCalendarGrid(format(addMonths(TODAY, -1), 'yyyyMM'), holidays),
+                getCalendarGrid(format(TODAY, 'yyyyMM'), holidays),
+                getCalendarGrid(format(addMonths(TODAY, +1), 'yyyyMM'), holidays)
+            ])
+        }
+    }, [holidays, isLoading]);
 
     const [monthIndex, setMonthIndex] = useState<number>(1);
 
@@ -138,14 +143,14 @@ const useCalendarData = () =>{
                     return [];
                 return [
                     ...prev.slice(1,3),
-                    getCalendarGrid(format(after2Months, 'yyyyMM'), holidays),
+                    getCalendarGrid(format(after2Months, 'yyyyMM'), holidays ? holidays : []),
                 ]
             } else {
                 const before2Months = addMonths(yyyyMM.parseDate(), -2);
                 if(!prev)
                     return [];
                 return [
-                    getCalendarGrid(format(before2Months, 'yyyyMM'), holidays),
+                    getCalendarGrid(format(before2Months, 'yyyyMM'), holidays ? holidays : []),
                     ...prev.slice(0,2),
                 ]
             }
