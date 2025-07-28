@@ -26,6 +26,8 @@ const HalfLeaveSelection =({
 
     const [showArea, setShowArea] = useState(leavePeriodProps.leaveDates.some(leaveDate=>leaveDate.halfLeaveType));
 
+    const prevStartDateInLeavePeriodProps = useRef<string>(undefined);
+
     const getHalfLeaveTypes = (halfLeaveDivision:'AM'|'PM') => {
         const halfLeaveTypeCd = halfLeaveDivision==='AM' ? 'M' : 'A';
         return halfTypeCdList.filter(halfLeaveType => halfLeaveType.halfLeaveTypeCd === halfLeaveTypeCd);
@@ -40,6 +42,13 @@ const HalfLeaveSelection =({
                 block : 'start'
             })
     }, [showArea]);
+
+    useEffect(() => {
+        const prev = prevStartDateInLeavePeriodProps.current;
+        if(showArea) {
+            const curr = leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd;
+        }
+    }, [leavePeriodProps.leaveDates]);
 
     //해당 반차가 선택되었는지 확인하는 함수
     const isHalfLeaveSelected = (leaveDateIndex:number, toFind:HalfLeaveType) =>{

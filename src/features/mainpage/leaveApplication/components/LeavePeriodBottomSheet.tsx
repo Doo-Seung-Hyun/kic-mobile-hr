@@ -1,6 +1,6 @@
 import TeamCalendar from "../../TeamCalendar/TeamCalendar.tsx";
 import type {HalfLeaveType, SelectedLeaveProps} from "../../../../types/leave.ts";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import HalfLeaveSelection from "./HalfLeaveSelection.tsx";
 import {useBottomSheetValidation} from "../../../../stores/bottomSheetStore.ts";
 import useLeaveCalculation from "../../../Calendar/hooks/useLeaveCalculation.ts";
@@ -21,12 +21,21 @@ const LeavePeriodBottomSheet = ({
     const {leaveDays=0} = useLeaveCalculation(leavePeriodProps?.leaveDates || null);
     const {setValidation} = useBottomSheetValidation();
 
+    const leavePeriodPropsWithLeaveDays = useMemo(() => {
+        if(!leavePeriodProps) return null;
+
+        return {
+            ...leavePeriodProps,
+            leaveDays
+        }
+    }, [leavePeriodProps, leaveDays]);
+
     //휴가 날짜 선택 정보가 변경되면
     //외부에서 바텀시트에 선택된 휴가날짜 정보를 확인할수 있도록
     //bottomsheet의 api인 setBottomSheetContentState를 호출
     useEffect(() => {
         if(setBottomSheetContentState)
-            setBottomSheetContentState(leavePeriodProps);
+            setBottomSheetContentState(leavePeriodPropsWithLeaveDays);
     }, [leavePeriodProps])
 
     //반차 선택 핸들러

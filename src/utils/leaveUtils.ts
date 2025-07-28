@@ -27,11 +27,13 @@ const calculateHalfLeaveDays = (halfLeaveType?: HalfLeaveType) => {
  */
 export const calculateBusinessDays = (start: Date, end: Date, holidays?: Holiday[]) => {
     const businessDates = eachDayOfInterval({start:start, end:end});
+    const holidaySet = new Set<string>(holidays?.map(holiday=>holiday.yyyyMMdd));
+
     return businessDates.filter(date => {
         const dateStr = format(date, "yyyyMMdd");
         return date.getDay() !== 0 &&
             date.getDay() !== 6 &&
-            !(holidays?.some(holiday => holiday.yyyyMMdd===dateStr))
+            !(holidaySet.has(dateStr));
     }).length;
 }
 

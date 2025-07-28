@@ -16,19 +16,12 @@ const todayYyyyMMdd = format(today, 'yyyyMMdd');
 const Grid = ({
     hasTransition,
     calendarData,
-    holidays,
     translateX,
     onTransitionEnd,
     dateSelectionGridProps,
     onDateClick,
     canSelectOffDay = true,
 }:CalendarGridProps) => {
-
-    //휴무일 여부
-    const isOffDay = (fullDate:string|undefined, index:number) =>
-        holidays.some(holiday => holiday.yyyyMMdd === fullDate) || //공휴일
-        index===0 || //일요일
-        index===6 ; //토요일
 
     //선택된 날짜 그리드 정보
     const {
@@ -60,7 +53,7 @@ const Grid = ({
                          key={weekIndex}
                     >
                         {week.map((calendarDay, dayIndex) => {
-                            const {date, fullDate, hasLeave, hasFamilyTime, isEmpty} = calendarDay;
+                            const {date, fullDate, hasLeave, hasFamilyTime, isEmpty, isOffDay} = calendarDay;
 
                             //날짜가 없는 경우 (다른 달인 경우)
                             if(isEmpty)
@@ -68,9 +61,9 @@ const Grid = ({
 
                             //정상
                             return <button className={'flex-1 relative'
-                                                   + `${isOffDay(fullDate, dayIndex)? ' text-gray-400':''}`}
+                                                   + `${isOffDay? ' text-gray-400':''}`}
                                            key={dayIndex}
-                                           disabled={!canSelectOffDay && isOffDay(fullDate, dayIndex)}
+                                           disabled={!canSelectOffDay && isOffDay}
                                            onClick={()=> {
                                                if(onDateClick && fullDate)
                                                 onDateClick(fullDate);

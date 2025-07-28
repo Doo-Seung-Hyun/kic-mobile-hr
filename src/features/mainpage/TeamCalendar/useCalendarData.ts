@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
     addMonths,
     endOfMonth,
@@ -6,6 +6,8 @@ import {
     parse, startOfMonth,
 } from "date-fns";
 import type {CalendarDay} from "../../../types/calendar.ts";
+import {useHolidaysByPeriod} from "../../Calendar/hooks/useHolidays.ts";
+import type {Holiday} from "../../../types/holiday.ts";
 
 interface yyyyMMProps {
     year: number;
@@ -15,7 +17,7 @@ interface yyyyMMProps {
 
 const TODAY = new Date();
 
-const getCalendarGrid = (yyyyMM : string)=>{
+const getCalendarGrid = (yyyyMM : string, holidays: Holiday[])=>{
     const startDateOfMonth = parse(yyyyMM+'01','yyyyMMdd',new Date());
     const endDateOfMonth = endOfMonth(parse(yyyyMM,'yyyyMM',new Date()));
 
@@ -26,22 +28,37 @@ const getCalendarGrid = (yyyyMM : string)=>{
         return {isEmpty: true};
     };
 
+    const holidaySetOfMonth = new Set<string>(
+        holidays
+            .filter(holiday => holiday.yyyyMMdd.startsWith(yyyyMM))
+            .map(holiday => holiday.yyyyMMdd)
+    );
+
+    const _isOffDay = (date: string, day: number)=>{
+        return day===0 || day===6 || holidaySetOfMonth.has(date);
+    }
+
     const toCalendarDay = (date:number,
+                           day:number,
                            hasFamilyTime: boolean = false,
                            hasLeave: boolean = false) => {
+        const fullDate = `${yyyyMM}${date<10? '0':''}${date}`;
+        const isOffDay = _isOffDay(fullDate,day);
+
         return {
             date: String(date),
-            fullDate: `${yyyyMM}${date<10? '0':''}${date}`,
+            fullDate,
             hasFamilyTime: hasFamilyTime,
             hasLeave: hasLeave,
             isEmpty : false,
+            isOffDay,
         }
     };
 
     //첫째주 날짜 채우기
     calendarGrid.push([...Array(7).keys()].map(day=>
         day<startDayOfMonth ?
-            toEmptyCalendarDay() :toCalendarDay(day-startDayOfMonth+1)
+            toEmptyCalendarDay() :toCalendarDay(day-startDayOfMonth+1,day)
         )
     );
 
@@ -49,7 +66,8 @@ const getCalendarGrid = (yyyyMM : string)=>{
     for(let date = Number(calendarGrid[0][6].date)+1, count=0; date<=endDateOfMonth.getDate(); date++, count++){
         if(count%7===0)
             calendarGrid.push([]);
-        calendarGrid[calendarGrid.length-1].push(toCalendarDay(date));
+        const day = count%7;
+        calendarGrid[calendarGrid.length-1].push(toCalendarDay(date, day));
     }
 
     // 마지막 날짜가 있는 주 빈칸 채우기
@@ -71,11 +89,24 @@ const useCalendarData = () =>{
         parseDate: ()=>startOfMonth(TODAY)
     });
 
+    const {data : holidays=[]} = useHolidaysByPeriod({
+        startDate:`${yyyyMM.year}0101`,
+        endDate:`${yyyyMM.year}1231`,
+    });
+
     const [calendarGrids, setCalendarGrids] = useState<CalendarDay[][][]>([
-        getCalendarGrid(format(addMonths(TODAY,-1),'yyyyMM')),
-        getCalendarGrid(format(TODAY,'yyyyMM')),
-        getCalendarGrid(format(addMonths(TODAY,+1),'yyyyMM'))
+        getCalendarGrid(format(addMonths(TODAY,-1),'yyyyMM'), holidays),
+        getCalendarGrid(format(TODAY,'yyyyMM'), holidays),
+        getCalendarGrid(format(addMonths(TODAY,+1),'yyyyMM'), holidays)
     ]);
+
+    useEffect(() => {
+        setCalendarGrids([
+            getCalendarGrid(format(addMonths(TODAY,-1),'yyyyMM'), holidays),
+            getCalendarGrid(format(TODAY,'yyyyMM'), holidays),
+            getCalendarGrid(format(addMonths(TODAY,+1),'yyyyMM'), holidays)
+        ])
+    }, [holidays]);
 
     const [monthIndex, setMonthIndex] = useState<number>(1);
 
@@ -103,14 +134,18 @@ const useCalendarData = () =>{
         setCalendarGrids(prev=> {
             if(monthIndex===2) {
                 const after2Months = addMonths(yyyyMM.parseDate(), 2);
+                if(!prev)
+                    return [];
                 return [
                     ...prev.slice(1,3),
-                    getCalendarGrid(format(after2Months, 'yyyyMM')),
+                    getCalendarGrid(format(after2Months, 'yyyyMM'), holidays),
                 ]
             } else {
                 const before2Months = addMonths(yyyyMM.parseDate(), -2);
+                if(!prev)
+                    return [];
                 return [
-                    getCalendarGrid(format(before2Months, 'yyyyMM')),
+                    getCalendarGrid(format(before2Months, 'yyyyMM'), holidays),
                     ...prev.slice(0,2),
                 ]
             }
