@@ -78,16 +78,6 @@ const useDateSelection = (
     //false : 첫번째 날짜 선택차례 / true: 두번째 날짜 선택차례
     const [isSelectingRange, setIsSelectingRange] = useState(false);
 
-    useEffect(() => {
-        if(onDateSelect && selectedDates){
-            //데이트레인지 모드가 아니거나 데이트레인지 날짜가 하나만 선택된 경우
-            if(!isDateRangePickerMode || selectedDates?.length==1)
-                onDateSelect(selectedDates[0])
-            else
-                onDateSelect(selectedDates[1], selectedDates)
-        }
-    }, [selectedDates]);
-
     /**
      * 캘린더(데이트피커)에서 날짜가 선택될때 실행해야 할 콜백함수
      *
@@ -115,6 +105,14 @@ const useDateSelection = (
         }
         newSelectedDates.push(newSelectDate);
         setSelectedDates(newSelectedDates);
+
+        if(onDateSelect){
+            //데이트레인지 모드가 아니거나 데이트레인지 날짜가 하나만 선택된 경우
+            if(!isDateRangePickerMode || newSelectedDates?.length==1)
+                onDateSelect(newSelectedDates[0])
+            else
+                onDateSelect(newSelectedDates[1], newSelectedDates)
+        }
     }
     
     const result:DateSelectionResult = {
