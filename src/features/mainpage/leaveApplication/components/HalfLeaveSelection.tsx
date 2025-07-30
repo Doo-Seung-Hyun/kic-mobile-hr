@@ -19,6 +19,8 @@ const halfTypeCdList: HalfLeaveType[] =[
     {dayOffTypeCd: 'H', dayOffTypeCdName: '반차', halfLeaveTypeCd: 'E', halfLeaveTypeCdName: '8:00 출근 (12:00 퇴근)'},
 ];
 
+const earlyAfternoonHalfLeaveType = halfTypeCdList.find(halfLeaveType => halfLeaveType.halfLeaveTypeCd==='E') as HalfLeaveType;
+
 const HalfLeaveSelection =({
    leavePeriodProps,
    onHalfLeaveOptionClick
@@ -58,7 +60,11 @@ const HalfLeaveSelection =({
         const {halfLeaveType} = leaveDates[leaveDateIndex];
         return halfLeaveType &&
             (halfLeaveType.dayOffTypeCd === toFind.dayOffTypeCd) &&
-            (halfLeaveType.halfLeaveTypeCd === toFind.halfLeaveTypeCd);
+            (halfLeaveType.halfLeaveTypeCd === toFind.halfLeaveTypeCd ||
+                (toFind.halfLeaveTypeCd==='A' &&
+                    toFind.dayOffTypeCd==='H' &&
+                    halfLeaveType.halfLeaveTypeCd === 'E')
+            );
     }
 
     return <>
@@ -96,10 +102,14 @@ const HalfLeaveSelection =({
                             {halfLeaveType.halfLeaveTypeCdName}
                         </Chip>)
                 }</div>
-                {leavePeriodProps?.leaveDates[0].halfLeaveType?.halfLeaveTypeCd === 'A' &&
+                {(leavePeriodProps?.leaveDates[0].halfLeaveType?.halfLeaveTypeCd === 'A' ||
+                        leavePeriodProps?.leaveDates[0].halfLeaveType?.halfLeaveTypeCd === 'E') &&
                     leavePeriodProps?.leaveDates[0].halfLeaveType.dayOffTypeCd === 'H' &&
                     <div className={"pt-4"}>
-                        <Checkbox className={"font-normal text-sm"}>8:00 출근 (12:00 퇴근)</Checkbox>
+                        <Checkbox className={"font-normal text-sm"}
+                                  onChange={() => onHalfLeaveOptionClick(0, earlyAfternoonHalfLeaveType)}
+                                  checked={leavePeriodProps?.leaveDates[0].halfLeaveType?.halfLeaveTypeCd === 'E'}
+                        >8:00 출근 (12:00 퇴근)</Checkbox>
                     </div>}
             </div>
         }
@@ -128,6 +138,8 @@ const HalfLeaveSelection =({
                         <Checkbox className={["font-normal text-sm",
                             leavePeriodProps.leaveDates[0].halfLeaveType?.dayOffTypeCd !== 'H' && "invisible"
                         ].filter(Boolean).join(' ')}
+                                  onChange={() => onHalfLeaveOptionClick(0, earlyAfternoonHalfLeaveType)}
+                                  checked={leavePeriodProps.leaveDates[0].halfLeaveType?.halfLeaveTypeCd === 'E'}
                         >
                             8:00 출근 (12:00 퇴근)
                         </Checkbox>

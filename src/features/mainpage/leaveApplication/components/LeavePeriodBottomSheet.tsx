@@ -34,9 +34,14 @@ const LeavePeriodBottomSheet = ({
     //외부에서 바텀시트에 선택된 휴가날짜 정보를 확인할수 있도록
     //bottomsheet의 api인 setBottomSheetContentState를 호출
     useEffect(() => {
-        if(setBottomSheetContentState)
+        if(setBottomSheetContentState && leavePeriodPropsWithLeaveDays) {
             setBottomSheetContentState(leavePeriodPropsWithLeaveDays);
-    }, [leavePeriodProps])
+
+            //validation 활성화
+            if(setValidation)
+                setValidation(true);
+        }
+    }, [leavePeriodPropsWithLeaveDays])
 
     //반차 선택 핸들러
     const handleHalfLeaveSelect = (leaveDateIndex:number, halfLeaveType : HalfLeaveType) => {
@@ -75,9 +80,7 @@ const LeavePeriodBottomSheet = ({
                         return newLeavePeriodProps;
                     });
 
-                    //validation 활성화
-                    if(setValidation)
-                        setValidation(true);
+
                 }}
                 dateRangePickerMode={true}
             />

@@ -4,23 +4,27 @@ interface CheckboxProps {
     checked?: boolean;
     className? : string;
     children : string;
+    onChange?: () => void;
 }
 
 export const Checkbox = ({
     checked = false,
     className,
-    children
+    children,
+    onChange
 }:CheckboxProps) => {
     const [isChecked, setIsChecked] = useState(checked)
 
-    return (<label className={[
-        "relative pl-10",
-        className
-    ].filter(Boolean).join(" ")}>
+    return (<label className={["relative pl-10",className].filter(Boolean).join(" ")}
+    >
         <input type={"checkbox"}
                className={"opacity-0 w-0 h-0"}
                checked={isChecked}
-               onChange={event=>setIsChecked(event.target.checked)}
+               onChange={event=> {
+                   if(onChange)
+                       onChange();
+                   setIsChecked(event.target.checked);
+               }}
         />
         <span className={[
             "absolute w-4 h-4 border rounded-[4px] left-0 top-1/2 transform -translate-y-1/2",

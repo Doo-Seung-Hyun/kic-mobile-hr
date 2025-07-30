@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {format, isAfter, parse} from "date-fns";
 import type {DateInfo, DateSelectionGridProps} from "../../../types/calendar.ts";
 

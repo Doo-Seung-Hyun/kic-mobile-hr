@@ -1,14 +1,14 @@
-import React from "react";
+import React, {memo} from "react";
 import type {CalendarGridProps} from "../../../types/calendar.ts";
 import {format} from "date-fns";
 
-const DaysHeader: React.FC = () =>
+const DaysHeader: React.FC = memo(() =>
     <div className="flex flex-row h-8 text-gray-600">
         {['S', 'M', "T", 'W', 'T', 'F', 'S'].map((day, index) =>
             <div key={index}
                  className={`flex-1 ${(index == 0 || index == 6) && 'text-gray-400'}`}>{day}</div>
         )}
-    </div>;
+    </div>);
 
 const today = new Date();
 const todayYyyyMMdd = format(today, 'yyyyMMdd');
@@ -43,6 +43,7 @@ const Grid = ({
             (didSetRangeOfDates && rangeEnd === yyyyMMdd)
         );
 
+    //todo : 캘린더 그리드 최적화 필요 - 리렌더링 시 년월이 바뀌지 않은 경우 전월/익월 그리드는 그대로 재활용
     return <div className={`flex w-[300%] ${hasTransition&&'transition-transform duration-300'}`}
                 style={{transform : `translateX(${translateX}%)`}}
                 onTransitionEnd={onTransitionEnd}>

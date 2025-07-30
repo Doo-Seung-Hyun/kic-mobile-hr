@@ -1,9 +1,9 @@
 import DimmedBackground from "./DimmedBackground.tsx";
 import Button from "./Button.tsx";
-import {useBottomSheetStore} from "../../stores/bottomSheetStore.ts";
+import {useBottomSheetUI} from "../../stores/bottomSheetStore.ts";
 
 const BottomSheet = () => {
-    const {isOpen, isHide, type, bottomSheetContent, validation, setBottomSheetResult, buttonText, onButtonClick, closeBottomSheet, onClosingAnimationComplete, bottomSheetClasses} = useBottomSheetStore();
+    const {isOpen, isHide, type, bottomSheetContent, validation, setBottomSheetResult, buttonText, onButtonClick, closeBottomSheet, onClosingAnimationComplete, bottomSheetClasses} = useBottomSheetUI();
     if(!isOpen)
         return null;
 

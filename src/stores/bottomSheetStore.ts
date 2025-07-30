@@ -103,3 +103,17 @@ export const useBottomSheetToggle = <T>() =>
         closeBottomSheet : state.closeBottomSheet
     }))) as unknown as BottomSheetStore<T>
 
+export const useBottomSheetUI = <T>() =>
+    _useBottomSheetStore(useShallow(state => ({
+        isOpen: state.isOpen,
+        isHide: state.isHide,
+        type: state.type,
+        bottomSheetContent: state.bottomSheetContent,
+        validation: state.validation,
+        setBottomSheetResult: state.setBottomSheetResult,
+        buttonText: state.buttonText,
+        onButtonClick: state.onButtonClick,
+        closeBottomSheet: state.closeBottomSheet,
+        onClosingAnimationComplete: state.onClosingAnimationComplete,
+        bottomSheetClasses: state.bottomSheetClasses
+    }))) as unknown as BottomSheetStore<T>;
