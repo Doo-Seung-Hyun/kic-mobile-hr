@@ -16,7 +16,7 @@ const BottomSheet = () => {
              style={{transition: 'transform 0.3s',
                  transform: `translateY(${isHide ? '100%' : '0'})`
              }}
-             onTransitionEnd={onClosingAnimationComplete}
+             onTransitionEnd={()=>isHide&&onClosingAnimationComplete()}
         >
             {
                 typeof bottomSheetContent ==='function' ?

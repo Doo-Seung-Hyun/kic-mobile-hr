@@ -117,25 +117,31 @@ const useCalendarData = () =>{
 
     const [hasTransition, setHasTransition] = useState(false);
 
-    const goToNextMonth = () => {
-        setHasTransition(true);
-        setMonthIndex(2);
-    }
-
-    const goToPrevMonth = () => {
-        setHasTransition(true);
-        setMonthIndex(0);
-    }
-
-    const onTransitionEnd = () => {
+    const refreshYyyyMm = (newMonthIndex:number) => {
         setYyyyMM(prev => {
-            const nextMonth = addMonths(prev.parseDate(), monthIndex===2? 1:-1);
+            const nextMonth = addMonths(prev.parseDate(), newMonthIndex===2? 1:-1);
             return {
                 year: nextMonth.getFullYear(),
                 month: nextMonth.getMonth()+1,
                 parseDate: ()=>nextMonth
             }
         });
+    }
+
+    const goToNextMonth = () => {
+        setHasTransition(true);
+        setMonthIndex(2);
+        refreshYyyyMm(2);
+    }
+
+    const goToPrevMonth = () => {
+        setHasTransition(true);
+        setMonthIndex(0);
+        refreshYyyyMm(0);
+    }
+
+    const onTransitionEnd = () => {
+
         setCalendarGrids(prev=> {
             if(monthIndex===2) {
                 const after2Months = addMonths(yyyyMM.parseDate(), 2);

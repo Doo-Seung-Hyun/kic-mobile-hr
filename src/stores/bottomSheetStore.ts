@@ -72,9 +72,7 @@ const _useBottomSheetStore = create<BottomSheetStore>((set,get)=>({
     }),
 
     onClosingAnimationComplete: () => set(state=>{
-        if(state.isHide)
-            return {...state, ...initialState};
-        return state;
+        return {...state, ...initialState};
     }),
 
     setBottomSheetResult: (bottomSheetResult)=>{
