@@ -29,6 +29,7 @@ export interface CalendarGridProps {
     onTransitionEnd : ()=>void;
     onDateClick? : (yyyyMMdd:string) => void;
     canSelectOffDay? : boolean;
+    mountId? : number;
 
     dateSelectionGridProps? : DateSelectionGridProps
 }

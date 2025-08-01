@@ -10,6 +10,8 @@ interface MonthGridProps {
     monthKey : string;
 }
 
+type CachedMonthGridProps = MonthGridProps & {mountId : number}
+
 const DaysHeader: React.FC = memo(() =>
     <div className="flex flex-row h-8 text-gray-600">
         {['S', 'M', "T", 'W', 'T', 'F', 'S'].map((day, index) =>
@@ -23,7 +25,7 @@ const todayYyyyMMdd = format(today, 'yyyyMMdd');
 
 const monthGridCache = new Map<string, ReactElement>();
 
-const MonthGrid = memo(({
+const MonthGrid = ({
     calendarMonthData,
     dateSelectionGridProps,
     onDateClick,
@@ -114,23 +116,26 @@ const MonthGrid = memo(({
             </div>
         )}
     </div>
-})
+}
 
-const CachedMonthGrid = (monthGridProps:MonthGridProps)=>{
+const CachedMonthGrid = (cachedMonthGridProps:CachedMonthGridProps)=>{
     const {
         dateSelectionGridProps,
-        monthKey
-    } = monthGridProps;
+        monthKey,
+        mountId
+    } = cachedMonthGridProps;
 
     const getCacheKey = () => {
-        const [rangeStart='', rangeEnd=''] = dateSelectionGridProps?.selectedDateRange?.map(
+        const selectedDate = dateSelectionGridProps?.selectedDate?.yyyyMMdd;
+        const [rangeStart=selectedDate?selectedDate:'', rangeEnd=''] = dateSelectionGridProps?.selectedDateRange?.map(
             date=>date.yyyyMMdd
         ) || [];
+
 
         const hasDateSelection = (!!rangeStart && rangeStart.substring(0,6)===monthKey) ||
             (!!rangeEnd && rangeEnd.substring(0,6)===monthKey);
 
-        return `${monthKey}-${hasDateSelection}-${rangeStart}-${rangeEnd}`;
+        return `${mountId}-${monthKey}-${hasDateSelection ? rangeStart:''}-${hasDateSelection ? rangeEnd:''}`;
     }
 
     const cacheKey = getCacheKey();
@@ -140,11 +145,11 @@ const CachedMonthGrid = (monthGridProps:MonthGridProps)=>{
         return monthGridCache.get(cacheKey);
 
     //캐시에 없으면 새로 생성
-    const monthGrid = <MonthGrid {...monthGridProps} />;
+    const monthGrid = <MonthGrid {...cachedMonthGridProps} />;
 
     [...monthGridCache.keys()].filter(cachedKey => {
         const currentMonthKey = monthKey;
-        const cachedMonthKey = cachedKey.substring(0, 6);
+        const cachedMonthKey = cachedKey.split("-")[1];
 
         // 같은 년월이 존재하는 경우 삭제
         if(currentMonthKey == cachedMonthKey)
@@ -169,6 +174,7 @@ const Grid = ({
     dateSelectionGridProps,
     onDateClick,
     canSelectOffDay = true,
+    mountId = 0
 }:CalendarGridProps) => {
 
     return <div className={`flex w-[300%] ${hasTransition&&'transition-transform duration-300'}`}
@@ -183,6 +189,7 @@ const Grid = ({
                                  canSelectOffDay = {canSelectOffDay}
                                  key = {monthKey}
                                  monthKey = {monthKey}
+                                 mountId = {mountId}
             />);
         })}
     </div>

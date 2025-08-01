@@ -42,7 +42,8 @@ const TeamCalendar = memo(({
         translateX,
         hasTransition,
         onTransitionEnd,
-        holidays
+        holidays,
+        mountId
     } = useCalendarData();
 
     const {
@@ -74,6 +75,7 @@ const TeamCalendar = memo(({
                           onTransitionEnd={onTransitionEnd}
                           dateSelectionGridProps={dateSelectionGridProps}
                           canSelectOffDay={canSelectOffDay}
+                          mountId={mountId}
                           onDateClick={yyyyMMdd => {
                               handleDateSelect(yyyyMMdd);
                           }}

@@ -103,6 +103,8 @@ const useCalendarData = () =>{
         ];
     });
 
+    const [mountId] = useState(Date.now());
+
     useEffect(() => {
         if(holidays && holidays.length>0) {
             setCalendarGrids([
@@ -175,7 +177,8 @@ const useCalendarData = () =>{
         translateX : monthIndex * -33.333,
         hasTransition,
         onTransitionEnd,
-        holidays
+        holidays,
+        mountId
     }
 }
 
