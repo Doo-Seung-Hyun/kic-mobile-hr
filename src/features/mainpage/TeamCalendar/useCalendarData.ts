@@ -174,7 +174,8 @@ const useCalendarData = () =>{
         calendarData : calendarGrids,
         translateX : monthIndex * -33.333,
         hasTransition,
-        onTransitionEnd
+        onTransitionEnd,
+        holidays
     }
 }
 

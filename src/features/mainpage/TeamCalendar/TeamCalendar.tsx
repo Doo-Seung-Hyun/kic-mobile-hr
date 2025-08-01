@@ -42,6 +42,7 @@ const TeamCalendar = memo(({
         translateX,
         hasTransition,
         onTransitionEnd,
+        holidays
     } = useCalendarData();
 
     const {
@@ -50,11 +51,6 @@ const TeamCalendar = memo(({
         didSetRangeOfDates,
         selectedDateRange
     } = useDateSelection(dateRangePickerMode,onDateChangeCallback, initialSelectedDate, initialSelectedDateRange);
-
-    const {data : holidays=[]} = useHolidaysByPeriod({
-        startDate:`${currentYear}0101`,
-        endDate:`${currentYear}1231`,
-    });
 
     const attendanceList = useDailyAttendance(selectedDate? selectedDate.yyyyMMdd : '', orgId);
 

@@ -170,12 +170,11 @@ const Grid = ({
     onDateClick,
     canSelectOffDay = true,
 }:CalendarGridProps) => {
-    //todo : 캘린더 그리드 최적화 필요 - 리렌더링 시 년월이 바뀌지 않은 경우 전월/익월 그리드는 그대로 재활용
 
     return <div className={`flex w-[300%] ${hasTransition&&'transition-transform duration-300'}`}
                 style={{transform : `translateX(${translateX}%)`}}
                 onTransitionEnd={onTransitionEnd}>
-        {calendarData.map(calendarMonthData=> {
+        {calendarData.map((calendarMonthData, index)=> {
             const monthKey = calendarMonthData[0][6]?.fullDate?.substring(0, 6)||'';
             return (
                 <CachedMonthGrid calendarMonthData = {calendarMonthData}
