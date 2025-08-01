@@ -144,7 +144,7 @@ const useCalendarData = () =>{
 
         setCalendarGrids(prev=> {
             if(monthIndex===2) {
-                const after2Months = addMonths(yyyyMM.parseDate(), 2);
+                const after2Months = addMonths(yyyyMM.parseDate(), 1);
                 if(!prev)
                     return [];
                 return [
@@ -152,7 +152,7 @@ const useCalendarData = () =>{
                     getCalendarGrid(format(after2Months, 'yyyyMM'), holidays ? holidays : []),
                 ]
             } else {
-                const before2Months = addMonths(yyyyMM.parseDate(), -2);
+                const before2Months = addMonths(yyyyMM.parseDate(), -1);
                 if(!prev)
                     return [];
                 return [
