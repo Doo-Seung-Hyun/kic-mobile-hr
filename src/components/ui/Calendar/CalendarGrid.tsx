@@ -180,7 +180,7 @@ const Grid = ({
     return <div className={`flex w-[300%] ${hasTransition&&'transition-transform duration-300'}`}
                 style={{transform : `translateX(${translateX}%)`}}
                 onTransitionEnd={onTransitionEnd}>
-        {calendarData.map((calendarMonthData, index)=> {
+        {calendarData.map((calendarMonthData)=> {
             const monthKey = calendarMonthData[0][6]?.fullDate?.substring(0, 6)||'';
             return (
                 <CachedMonthGrid calendarMonthData = {calendarMonthData}

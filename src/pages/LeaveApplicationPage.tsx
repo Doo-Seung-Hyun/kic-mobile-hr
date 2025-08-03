@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
-import type {LeaveType, SelectedLeaveProps} from "../types/leave.ts";
+import type {LeaveDate, LeaveType, SelectedLeaveProps} from "../types/leave.ts";
 import {addDays, format} from "date-fns";
 import {ko} from "date-fns/locale";
 import LeaveSelectionBottomSheetContent
@@ -10,6 +10,7 @@ import LeavePeriodBottomSheet from "../features/mainpage/leaveApplication/compon
 import {useBottomSheetToggle} from "../stores/bottomSheetStore.ts";
 import useSubmitFooterStore from "../stores/submitFooterStore.ts";
 import {useShallow} from "zustand/react/shallow";
+import Chip from "../components/ui/Chip.tsx";
 
 const datePickerSvg = <svg className="w-5 text-gray-500"
                            aria-hidden="true" viewBox="0 0 24 24">
@@ -48,8 +49,6 @@ function LeaveApplicationPage() {
     // 휴가기간정보
     const [selectedLeaveProps, setSelectedLeaveProps] = useState<SelectedLeaveProps | null>(null);
 
-
-
     // 휴가기간 선택 핸들러
     const handleLeaveDateClick = () => {
         openBottomSheet(
@@ -80,6 +79,30 @@ function LeaveApplicationPage() {
 
         return true;
     }
+
+    const renderLeaveDate = (leaveDate : LeaveDate, leaveDateLength: number) => {
+        const {
+            halfLeaveType,
+            dateInfo
+        } = leaveDate;
+        const {date} = dateInfo;
+        const isMultipleLeaveDates = leaveDateLength>1;
+
+        return (<div className={`flex ${isMultipleLeaveDates ? 'flex-col':''}`.trim()}>
+            <span>
+                {format(date, 'M월 d일(EE)', {locale: ko})}
+            </span>
+            <span className={"text-left"}>
+                {halfLeaveType && <Chip classNames={"text-xs"}>
+                    {(halfLeaveType.halfLeaveTypeCd === 'M' ? '오전' : '오후') +
+                        halfLeaveType.dayOffTypeCdName}
+                </Chip>}
+                {halfLeaveType?.halfLeaveTypeCd==='E' && <Chip classNames={"text-xs"}>
+                    8:00
+                </Chip>}
+            </span>
+        </div>)
+    };
 
     useEffect(() => {
         setValidation(validate());
@@ -133,13 +156,12 @@ function LeaveApplicationPage() {
                                 </span>}
                             {selectedLeaveProps?.leaveDates && selectedLeaveProps?.leaveDates.length>=1 && <>
                                 <span className={"text-gray-600 font-normal"}>휴가일자</span>
-                                <div>
-                                    <span>
-                                        {format(selectedLeaveProps.leaveDates[0].dateInfo.date, 'M월 d일(EE)', {locale: ko})}
-                                    </span>
-                                    {selectedLeaveProps.leaveDates.length===2 && <span>
-                                        {format(selectedLeaveProps.leaveDates[1].dateInfo.date, ' - M월 d일(EE)', {locale: ko})}
-                                    </span>}
+                                <div className={"flex flex-row"}>
+                                    {renderLeaveDate(selectedLeaveProps.leaveDates[0], selectedLeaveProps.leaveDates.length)}
+                                    {selectedLeaveProps.leaveDates.length===2 && <>
+                                        <span className={"px-2"}>-</span>
+                                        {renderLeaveDate(selectedLeaveProps.leaveDates[1], selectedLeaveProps.leaveDates.length)}
+                                    </>}
                                 </div>
                             </>}
                         </Button>
