@@ -68,7 +68,6 @@ const TeamCalendar = memo(({
                             title={`${currentYear}년 ${currentMonth}월`}
             />
             <CalendarGrid calendarData={calendarData}
-                          holidaysByMonth={holidaysByMonth}
                           hasTransition={hasTransition}
                           translateX={translateX}
                           onTransitionEnd={onTransitionEnd}

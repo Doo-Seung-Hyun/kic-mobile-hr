@@ -1,5 +1,3 @@
-import type {Holiday} from "./holiday.ts";
-
 export interface CalendarDay {
     date?: string;
     fullDate?: string;
@@ -24,7 +22,6 @@ export interface DateSelectionGridProps {
 export interface CalendarGridProps {
     hasTransition : boolean;
     calendarData : CalendarDay[][][];
-    holidaysByMonth : Map<string, Holiday[]>;
     translateX : number;
     onTransitionEnd : ()=>void;
     onDateClick? : (yyyyMMdd:string) => void;

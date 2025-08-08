@@ -8,6 +8,7 @@ import {
 import type {CalendarDay} from "../../../types/calendar.ts";
 import {useHolidaysByPeriod} from "../../Calendar/hooks/useHolidays.ts";
 import type {Holiday} from "../../../types/holiday.ts";
+import {clearCalendarCache} from "../../../components/ui/Calendar/CalendarGrid.tsx";
 
 interface yyyyMMProps {
     year: number;
@@ -111,6 +112,7 @@ const useCalendarData = () =>{
         const nextYyyyMM = format(addMonths(TODAY, +1), 'yyyyMM');
 
         if(holidays && holidays.length>0) {
+            clearCalendarCache();
             setCalendarGrids([
                 getCalendarGrid(prevYyyyMM, holidaysByMonth.get(prevYyyyMM) || []),
                 getCalendarGrid(currYyyyMM, holidaysByMonth.get(currYyyyMM) || []),

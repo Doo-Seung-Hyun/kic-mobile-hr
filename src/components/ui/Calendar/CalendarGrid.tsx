@@ -1,7 +1,6 @@
 import React, {memo, type ReactElement} from "react";
 import type {CalendarDay, CalendarGridProps, DateSelectionGridProps} from "../../../types/calendar.ts";
 import {differenceInMonths, format, parse} from "date-fns";
-import type {Holiday} from "../../../types/holiday.ts";
 
 interface MonthGridProps {
     calendarMonthData : CalendarDay[][];
@@ -9,7 +8,6 @@ interface MonthGridProps {
     onDateClick? : (yyyyMMdd:string) => void;
     canSelectOffDay? : boolean;
     monthKey : string;
-    holidaysByMonth : Map<string, Holiday[]>;
 }
 
 type CachedMonthGridProps = MonthGridProps & {mountId : number}
@@ -125,7 +123,6 @@ const CachedMonthGrid = (cachedMonthGridProps:CachedMonthGridProps)=>{
         dateSelectionGridProps,
         monthKey,
         mountId,
-        holidaysByMonth
     } = cachedMonthGridProps;
 
     const getCacheKey = () => {
@@ -134,15 +131,10 @@ const CachedMonthGrid = (cachedMonthGridProps:CachedMonthGridProps)=>{
             date=>date.yyyyMMdd
         ) || [];
 
-
         const hasDateSelection = (!!rangeStart && rangeStart.substring(0,6)===monthKey) ||
             (!!rangeEnd && rangeEnd.substring(0,6)===monthKey);
 
-        const holidaysString = holidaysByMonth.get(monthKey)
-            ?.map(holiday=>holiday.yyyyMMdd)
-            .join('-') ?? 'none';
-
-        return `${mountId}-${monthKey}-${hasDateSelection ? rangeStart:''}-${hasDateSelection ? rangeEnd:''}-${holidaysString}`;
+        return `${mountId}-${monthKey}-${hasDateSelection ? rangeStart:''}-${hasDateSelection ? rangeEnd:''}`;
     }
 
     const cacheKey = getCacheKey();
@@ -182,7 +174,6 @@ const Grid = ({
     onDateClick,
     canSelectOffDay = true,
     mountId = 0,
-    holidaysByMonth
 }:CalendarGridProps) => {
 
     return <div className={`flex w-[300%] ${hasTransition&&'transition-transform duration-300'}`}
@@ -198,12 +189,15 @@ const Grid = ({
                                  key = {monthKey}
                                  monthKey = {monthKey}
                                  mountId = {mountId}
-                                 holidaysByMonth = {holidaysByMonth}
             />);
         })}
     </div>
 
 }
+
+export const clearCalendarCache = () => {
+    monthGridCache.clear();
+};
 
 const CalendarGrid = (props: CalendarGridProps) =>
     <div className={"font-normal text-sm text-center overflow-hidden"}>
