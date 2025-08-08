@@ -5,7 +5,6 @@ import useDailyAttendance from "./useDailyAttendance.ts";
 import TeamDailyAttendanceList from "./TeamDailyAttendanceList.tsx";
 import {useDateSelection} from "./useDateSelection.ts";
 import type {DateInfo, DateSelectionGridProps} from "../../../types/calendar.ts";
-import {useHolidaysByPeriod} from "../../Calendar/hooks/useHolidays.ts";
 import {memo} from "react";
 import {isSameDay} from "date-fns";
 
@@ -42,7 +41,7 @@ const TeamCalendar = memo(({
         translateX,
         hasTransition,
         onTransitionEnd,
-        holidays,
+        holidaysByMonth,
         mountId
     } = useCalendarData();
 
@@ -69,7 +68,7 @@ const TeamCalendar = memo(({
                             title={`${currentYear}년 ${currentMonth}월`}
             />
             <CalendarGrid calendarData={calendarData}
-                          holidays={holidays}
+                          holidaysByMonth={holidaysByMonth}
                           hasTransition={hasTransition}
                           translateX={translateX}
                           onTransitionEnd={onTransitionEnd}

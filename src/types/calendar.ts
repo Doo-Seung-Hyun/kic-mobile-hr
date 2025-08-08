@@ -24,7 +24,7 @@ export interface DateSelectionGridProps {
 export interface CalendarGridProps {
     hasTransition : boolean;
     calendarData : CalendarDay[][][];
-    holidays : Holiday[];
+    holidaysByMonth : Map<string, Holiday[]>;
     translateX : number;
     onTransitionEnd : ()=>void;
     onDateClick? : (yyyyMMdd:string) => void;
