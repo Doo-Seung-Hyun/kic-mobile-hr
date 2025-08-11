@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header from "./Header.tsx";
 import Footer from "./Footer.tsx";
 import {headerConfigs} from "../../config/headerConfig.tsx";
 import {useLocation} from "react-router-dom";
 import BottomSheet from "../ui/BottomSheet.tsx";
+import useStoreReset from "../../stores/useStoreReset.ts";
 
 interface LayoutProps{
     children: React.ReactNode;
@@ -11,9 +12,15 @@ interface LayoutProps{
 
 function RootLayout(props: LayoutProps) {
     const location = useLocation().pathname;
+    const {resetAllStores} = useStoreReset();
+
     const hasFixedTypeFooter = headerConfigs[location]?.footerType==='fixed';
     const mainClassNames = headerConfigs[location]?.mainClassNames;
     const paddingBottomClassName = hasFixedTypeFooter ? ' pb-20' : '';
+
+    useEffect(() => {
+        resetAllStores();
+    }, [location]);
     return (
         <div className="min-h-screen flex flex-col">
             <Header />

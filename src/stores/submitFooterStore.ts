@@ -5,7 +5,9 @@ interface SubmitFooterStore {
     setValidation : (isValid:boolean) => void;
 
     submitHandler : (()=>void) | null;
-    setSubmitHandler : (submitHandler : ()=>void)=>void;
+    setSubmitHandler : (submitHandler : (()=>void) | null)=>void;
+
+    reset : ()=>void;
 }
 
 const useSubmitFooterStore = create<SubmitFooterStore>(set=>({
@@ -16,6 +18,11 @@ const useSubmitFooterStore = create<SubmitFooterStore>(set=>({
     submitHandler : null,
     setSubmitHandler : submitHandler => set({
         submitHandler
+    }),
+
+    reset : () => set({
+        isValid : true,
+        submitHandler : null
     })
 }));
 

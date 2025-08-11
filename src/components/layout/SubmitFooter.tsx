@@ -6,7 +6,6 @@ import {useShallow} from "zustand/react/shallow";
 const SubmitFooter = ({
                           text = '제출하기',
                           linkTo = '/',
-                          useValidation = false
                       }: { text?: string, linkTo?: string, useValidation?: boolean }) =>{
     const navigate = useNavigate();
     const {isValid, submitHandler} = useSubmitFooterStore(useShallow(state => ({
@@ -14,9 +13,10 @@ const SubmitFooter = ({
         submitHandler : state.submitHandler
     })));
 
+    // todo : 신청 후 프로그레스바 만들기
     return <Button className={"w-full py-3"}
                    onClick={()=> {
-                       if(useValidation && submitHandler)
+                       if(submitHandler)
                            submitHandler();
                        else
                            navigate(linkTo);

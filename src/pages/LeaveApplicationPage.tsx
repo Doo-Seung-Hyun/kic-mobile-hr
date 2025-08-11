@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
 import type {LeaveDate, LeaveType, SelectedLeaveProps} from "../types/leave.ts";
@@ -11,6 +11,7 @@ import {useBottomSheetToggle} from "../stores/bottomSheetStore.ts";
 import useSubmitFooterStore from "../stores/submitFooterStore.ts";
 import {useShallow} from "zustand/react/shallow";
 import Chip from "../components/ui/Chip.tsx";
+import useSubmitLeaveApplication from "../features/Leave/hooks/useSubmitLeaveApplication.tsx";
 
 const datePickerSvg = <svg className="w-5 text-gray-500"
                            aria-hidden="true" viewBox="0 0 24 24">
@@ -27,8 +28,9 @@ function LeaveApplicationPage() {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
-    const {setValidation} = useSubmitFooterStore(useShallow(state => ({
+    const {setValidation, setSubmitHandler} = useSubmitFooterStore(useShallow(state => ({
         setValidation : state.setValidation,
+        setSubmitHandler : state.setSubmitHandler
     })));
 
     const {openBottomSheet, closeBottomSheet} = useBottomSheetToggle<SelectedLeaveProps>();
@@ -80,6 +82,34 @@ function LeaveApplicationPage() {
         return true;
     }
 
+
+    //휴가신청사유 ref
+    const rmkRef = useRef<HTMLTextAreaElement>(null);
+
+    //휴가신청 api 훅
+    const leaveApplicationMutation = useSubmitLeaveApplication({
+        leaveType : selectedLeaveKind!,
+        leavePeriodProps : selectedLeaveProps!
+    });
+
+    useEffect(() => {
+        setValidation(validate());
+
+        //submit 처리
+        if(selectedLeaveKind && selectedLeaveProps) {
+            setSubmitHandler(async () => {
+                await leaveApplicationMutation.mutateAsync({
+                    empNo: 2230104,
+                    leaveType: selectedLeaveKind,
+                    leavePeriodProps : selectedLeaveProps,
+                    rmk : rmkRef?.current?.value
+                });
+
+            })
+        }
+    }, [selectedLeaveKind, selectedLeaveProps, setValidation]);
+
+
     const renderLeaveDate = (leaveDate : LeaveDate, leaveDateLength: number) => {
         const {
             halfLeaveType,
@@ -104,13 +134,6 @@ function LeaveApplicationPage() {
         </div>)
     };
 
-    useEffect(() => {
-        setValidation(validate());
-    }, [setValidation]);
-
-    useEffect(() => {
-        setValidation(validate());
-    }, [selectedLeaveKind, selectedLeaveProps]);
 
     return (
         <div className={"flex flex-col gap-4"}>
@@ -176,7 +199,9 @@ function LeaveApplicationPage() {
                         <textarea className={"appearance-none border w-full h-52 " +
                             "resize-none rounded-md " +
                             "p-2.5 font-normal " +
-                            "focus: border"}/>
+                            "focus: border"}
+                                  ref={rmkRef}
+                        />
                     </Card.Content>
                 </Card>
             </div>

@@ -27,6 +27,8 @@ interface BottomSheetStore<T=unknown> {
     setBottomSheetResult: (bottomSheetResult:T)=>void;
     onButtonClick? : ()=>void;
     setValidation? : (validation:boolean)=>void;
+
+    reset : ()=>void;
 }
 
 const initialState = {
@@ -81,8 +83,11 @@ const _useBottomSheetStore = create<BottomSheetStore>((set,get)=>({
 
     setValidation: validation => set({
         validation
-    })
+    }),
 
+    reset : ()=> set({
+        ...initialState,
+    })
 }));
 
 export const useBottomSheetStore = <T>() => {
@@ -115,3 +120,6 @@ export const useBottomSheetUI = <T>() =>
         onClosingAnimationComplete: state.onClosingAnimationComplete,
         bottomSheetClasses: state.bottomSheetClasses
     }))) as unknown as BottomSheetStore<T>;
+
+export const useBottomSheetReset = () =>
+    _useBottomSheetStore(state => state.reset)
