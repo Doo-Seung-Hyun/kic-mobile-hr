@@ -28,9 +28,10 @@ function LeaveApplicationPage() {
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
-    const {setValidation, setSubmitHandler} = useSubmitFooterStore(useShallow(state => ({
+    const {setValidation, setSubmitHandler, setIsSubmitting} = useSubmitFooterStore(useShallow(state => ({
         setValidation : state.setValidation,
-        setSubmitHandler : state.setSubmitHandler
+        setSubmitHandler : state.setSubmitHandler,
+        setIsSubmitting : state.setIsSubmitting
     })));
 
     const {openBottomSheet, closeBottomSheet} = useBottomSheetToggle<SelectedLeaveProps>();
@@ -107,7 +108,11 @@ function LeaveApplicationPage() {
 
             })
         }
-    }, [selectedLeaveKind, selectedLeaveProps, setValidation]);
+
+        //서브밋버튼 로딩스피너 설정
+        setIsSubmitting(leaveApplicationMutation.isPending);
+
+    }, [selectedLeaveKind, selectedLeaveProps, setValidation, leaveApplicationMutation.isPending]);
 
 
     const renderLeaveDate = (leaveDate : LeaveDate, leaveDateLength: number) => {

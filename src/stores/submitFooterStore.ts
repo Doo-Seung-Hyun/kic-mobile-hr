@@ -7,6 +7,9 @@ interface SubmitFooterStore {
     submitHandler : (()=>void) | null;
     setSubmitHandler : (submitHandler : (()=>void) | null)=>void;
 
+    isSubmitting : boolean;
+    setIsSubmitting: (isSubmitting:boolean) => void;
+
     reset : ()=>void;
 }
 
@@ -20,9 +23,15 @@ const useSubmitFooterStore = create<SubmitFooterStore>(set=>({
         submitHandler
     }),
 
+    isSubmitting : false,
+    setIsSubmitting : (isSubmitting:boolean) => set({
+        isSubmitting
+    }),
+
     reset : () => set({
         isValid : true,
-        submitHandler : null
+        submitHandler : null,
+        isSubmitting : false
     })
 }));
 

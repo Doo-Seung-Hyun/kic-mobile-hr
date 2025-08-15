@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import Card from "./Card.tsx";
 
 interface ExpandableCardProps<T> {
-    title: string;
+    title: React.ReactNode;
     items: T[];
     itemRenderFunc: (item: T) => React.ReactNode;
     listItemClassName?: string

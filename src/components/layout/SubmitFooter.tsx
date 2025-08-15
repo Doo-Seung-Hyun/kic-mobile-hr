@@ -2,18 +2,19 @@ import Button from "../ui/Button.tsx";
 import {useNavigate} from "react-router-dom";
 import useSubmitFooterStore from "../../stores/submitFooterStore.ts";
 import {useShallow} from "zustand/react/shallow";
+import {LoadingSpinner} from "../ui/LoadingSpinner.tsx";
 
 const SubmitFooter = ({
                           text = '제출하기',
                           linkTo = '/',
                       }: { text?: string, linkTo?: string, useValidation?: boolean }) =>{
     const navigate = useNavigate();
-    const {isValid, submitHandler} = useSubmitFooterStore(useShallow(state => ({
+    const {isValid, submitHandler, isSubmitting} = useSubmitFooterStore(useShallow(state => ({
         isValid : state.isValid,
-        submitHandler : state.submitHandler
+        submitHandler : state.submitHandler,
+        isSubmitting : state.isSubmitting,
     })));
 
-    // todo : 신청 후 프로그레스바 만들기
     return <Button className={"w-full py-3"}
                    onClick={()=> {
                        if(submitHandler)
@@ -21,9 +22,15 @@ const SubmitFooter = ({
                        else
                            navigate(linkTo);
                    }}
-                   disabled={!isValid}
+                   disabled={!isValid || isSubmitting}
     >
-        {text}
+        {isSubmitting ? <div className={"text-center"}>
+            <LoadingSpinner size={24}
+                            strokeWidth={18}
+                            color={"#66666666"}
+                            className={"inline-block"}
+            />
+        </div> : text}
     </Button>
 };
 

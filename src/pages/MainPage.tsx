@@ -11,6 +11,7 @@ import Button from "../components/ui/Button.tsx";
 import TeamCalendar from "../features/mainpage/TeamCalendar/TeamCalendar.tsx";
 import type {LeaveType} from "../types/leave.ts";
 import {useNavigate} from "react-router-dom";
+import chevronDownIconUrl from '/src/assets/images/chevron-down.svg?url'
 
 
 // 로더로 이관 예정
@@ -133,7 +134,10 @@ function MainPage() {
 
             {/*예정 휴가*/}
             <ExpandableCard
-                title='예정된 휴가'
+                title={<div className={"flex justify-between"}>
+                    <span>예정된 휴가</span>
+                    <button>휴가내역 <img src={chevronDownIconUrl}  alt={'더보기'}/></button>
+                </div>}
                 items={scheduledLeaves}
                 itemRenderFunc= {leave => <>
                     <div className="flex-1 text-blue-600">
