@@ -3,6 +3,7 @@ import MainPage from "./MainPage.tsx";
 import RootLayout from "../components/layout/RootLayout.tsx";
 import LeaveApplicationPage from "./LeaveApplicationPage.tsx";
 import LeaveResultPage from "./LeaveResultPage.tsx";
+import LeaveHistoryPage from "./LeaveHistoryPage.tsx";
 
 function AppRouter() {
     return (
@@ -14,6 +15,7 @@ function AppRouter() {
                             <Route path="" element={<MainPage/>}/>
                             <Route path={"leave/apply"} element={<LeaveApplicationPage/>} />
                             <Route path={"leave/result"} element={<LeaveResultPage/>} />
+                            <Route path={"leave/history"} element={<LeaveHistoryPage/>} />
                         </Routes>
                     </RootLayout>
                 }/>

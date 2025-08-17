@@ -28,5 +28,9 @@ export const headerConfigs: Record<string, HeaderConfig> = {
         footerType: 'fixed',
         footerComponent : <SubmitFooter text={'홈으로'} linkTo={'/'}/>,
         mainClassNames : 'bg-gradient-to-b from-blue-200 to-blue-50'
+    },
+
+    '/leave/history' : {
+        headerComponent: <SubHeader title={'휴가 내역'} />,
     }
 }

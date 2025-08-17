@@ -17,7 +17,7 @@ export default function ExpandableCard<T>({
     itemRenderFunc,
     listItemClassName = '',
     visibleCount = 1,
-    expandText = '더보기',
+    expandText = '펼치기',
     collapseText = '접기'
 }: ExpandableCardProps<T>){
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
