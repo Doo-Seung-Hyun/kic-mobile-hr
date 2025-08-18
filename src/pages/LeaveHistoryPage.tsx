@@ -1,8 +1,16 @@
 import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
 import Chip from "../components/ui/Chip.tsx";
+import {useGetLeaveApplicationHistory} from "../features/Leave/hooks/useLeaveApplication.tsx";
+import {format} from "date-fns";
 
 const LeaveHistoryPage = () => {
+    const empNo = 2230103;
+    const TODAY = new Date();
+    const {isLoading, leaveApplicationHistory} = useGetLeaveApplicationHistory(empNo, `${TODAY.getFullYear()}0101`, format(TODAY, 'yyyyMMdd'));
+    if(isLoading)
+        return <div>...로딩중</div>;
+    
     return (<div>
         <div>
             <button>진행중</button>

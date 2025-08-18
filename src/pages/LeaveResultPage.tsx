@@ -1,6 +1,6 @@
 import {useLocation} from "react-router-dom";
 import ProcessResultLayout from "../components/layout/ProcessResultLayout.tsx";
-import type {LeaveType, SelectedLeaveProps} from "../types/leave.ts";
+import type {LeaveType, SelectedLeaveProps} from "../features/Leave/types/leave.ts";
 import {format} from "date-fns";
 import {ko} from "date-fns/locale";
 

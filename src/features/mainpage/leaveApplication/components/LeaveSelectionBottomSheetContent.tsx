@@ -1,31 +1,31 @@
-import type {LeaveType} from "../../../../types/leave.ts";
+import type {LeaveType, UserLeaveBalance} from "../../../Leave/types/leave.ts";
 import Button from "../../../../components/ui/Button.tsx";
 
 interface LeaveSelectionBottomSheetContentProps {
     selectedLeave? : LeaveType | null;
-    onLeaveSelect : (selectedLeave:LeaveType | undefined)=>void;
+    onLeaveSelect : (selectedLeave:LeaveType | undefined, leaveBalance:number)=>void;
     closeBottomSheet : ()=>void;
 }
 
-const myLeaveDays : LeaveType[] = [
-    {leaveTypeCode: '001', leaveTypeName: '연차휴가', leftLeaveDays: 10},
-    {leaveTypeCode: '002', leaveTypeName: '저축휴가', leftLeaveDays: 2},
-    {leaveTypeCode: '003', leaveTypeName: '자녀돌봄', leftLeaveDays: 1},
-    {leaveTypeCode: '004', leaveTypeName: '배우자 출산', leftLeaveDays: 2},
-    {leaveTypeCode: '005', leaveTypeName: '배우자 유,사산', leftLeaveDays: 3},
-    {leaveTypeCode: '006', leaveTypeName: '입양', leftLeaveDays: 20},
-    {leaveTypeCode: '007', leaveTypeName: '가족돌봄', leftLeaveDays: 10},
-    {leaveTypeCode: '008', leaveTypeName: '본인결혼', leftLeaveDays: 5},
-    {leaveTypeCode: '009', leaveTypeName: '배우자사망', leftLeaveDays: 5},
-    {leaveTypeCode: '010', leaveTypeName: '본인 및 배우자 부모의 사망', leftLeaveDays: 5},
-    {leaveTypeCode: '011', leaveTypeName: '본인 및 배우자 형제자매 사망', leftLeaveDays: 1},
-    {leaveTypeCode: '012', leaveTypeName: '본인 및 배우자 조부모 사망', leftLeaveDays: 3},
-    {leaveTypeCode: '013', leaveTypeName: '자녀결혼', leftLeaveDays: 1},
-    {leaveTypeCode: '014', leaveTypeName: '백신접종', leftLeaveDays: 1},
-    {leaveTypeCode: '015', leaveTypeName: '건강검진', leftLeaveDays: 1},
-    {leaveTypeCode: '016', leaveTypeName: '예비군', leftLeaveDays: 1},
-    {leaveTypeCode: '017', leaveTypeName: '보상휴가', leftLeaveDays: 0},
-    {leaveTypeCode: '018', leaveTypeName: '대체휴가', leftLeaveDays: 0},
+const myLeaveBalances : UserLeaveBalance[] = [
+    {leaveType: {leaveTypeCode: '001', leaveTypeName: '연차휴가'}, leftLeaveDays: 10, totalLeaveDays: 15},
+    {leaveType: {leaveTypeCode: '002', leaveTypeName: '저축휴가'}, leftLeaveDays: 2, totalLeaveDays: 4},
+    {leaveType: {leaveTypeCode: '003', leaveTypeName: '자녀돌봄'}, leftLeaveDays: 1, totalLeaveDays: 2},
+    {leaveType: {leaveTypeCode: '004', leaveTypeName: '배우자 출산'}, leftLeaveDays: 2, totalLeaveDays: 2},
+    {leaveType: {leaveTypeCode: '005', leaveTypeName: '배우자 유,사산'}, leftLeaveDays: 3, totalLeaveDays: 3},
+    {leaveType: {leaveTypeCode: '006', leaveTypeName: '입양'}, leftLeaveDays: 20, totalLeaveDays: 20},
+    {leaveType: {leaveTypeCode: '007', leaveTypeName: '가족돌봄'}, leftLeaveDays: 10, totalLeaveDays: 10},
+    {leaveType: {leaveTypeCode: '008', leaveTypeName: '본인결혼'}, leftLeaveDays: 5, totalLeaveDays: 5},
+    {leaveType: {leaveTypeCode: '009', leaveTypeName: '배우자사망'}, leftLeaveDays: 5, totalLeaveDays: 5},
+    {leaveType: {leaveTypeCode: '010', leaveTypeName: '본인 및 배우자 부모의 사망'}, leftLeaveDays: 5, totalLeaveDays: 5},
+    {leaveType: {leaveTypeCode: '011', leaveTypeName: '본인 및 배우자 형제자매 사망'}, leftLeaveDays: 1, totalLeaveDays: 1},
+    {leaveType: {leaveTypeCode: '012', leaveTypeName: '본인 및 배우자 조부모 사망'}, leftLeaveDays: 3, totalLeaveDays: 3},
+    {leaveType: {leaveTypeCode: '013', leaveTypeName: '자녀결혼'}, leftLeaveDays: 1, totalLeaveDays: 1},
+    {leaveType: {leaveTypeCode: '014', leaveTypeName: '백신접종'}, leftLeaveDays: 1, totalLeaveDays: 1},
+    {leaveType: {leaveTypeCode: '015', leaveTypeName: '건강검진'}, leftLeaveDays: 1, totalLeaveDays: 1},
+    {leaveType: {leaveTypeCode: '016', leaveTypeName: '예비군'}, leftLeaveDays: 1, totalLeaveDays: 1},
+    {leaveType: {leaveTypeCode: '017', leaveTypeName: '보상휴가'}, leftLeaveDays: 0, totalLeaveDays: 2},
+    {leaveType: {leaveTypeCode: '018', leaveTypeName: '대체휴가'}, leftLeaveDays: 0, totalLeaveDays: 2},
     // {leaveTypeCode: '004', leaveTypeName: '공가', leftLeaveDays: 1}
 ];
 
@@ -44,29 +44,31 @@ const LeaveSelectionBottomSheetContent = ({
     onLeaveSelect,
     closeBottomSheet
 }:LeaveSelectionBottomSheetContentProps) => {
+
     const handleLeaveSelect = (selectedLeaveTypeCode: string) => {
-        const selectedLeave = myLeaveDays.find(leave => leave.leaveTypeCode === selectedLeaveTypeCode)
-        onLeaveSelect(selectedLeave);
+        const selectedLeave = myLeaveBalances.find(leaveBalance =>
+            leaveBalance.leaveType.leaveTypeCode === selectedLeaveTypeCode)
+        onLeaveSelect(selectedLeave?.leaveType, selectedLeave!.leftLeaveDays);
         closeBottomSheet();
     }
 
     return (<>
         <div className={"font-bold text-xl"}>휴가 현황</div>
         <ul className={"pt-4"}>
-            {myLeaveDays.map(leave=>
-                <li key={leave.leaveTypeCode}
+            {myLeaveBalances.map(leaveBalance=>
+                <li key={leaveBalance.leaveType.leaveTypeCode}
                     className={"block w-full [&:not(:first-child)]:border-t"}>
-                    <Button onClick={()=>handleLeaveSelect(leave.leaveTypeCode)}
+                    <Button onClick={()=>handleLeaveSelect(leaveBalance.leaveType.leaveTypeCode)}
                             variant={"none"}
                             className={"flex w-full justify-between py-3 items-center " +
-                                `${leave.leaveTypeCode===selectedLeave?.leaveTypeCode && 'text-blue-700'}`}
-                            disabled={leave.leftLeaveDays === 0} >
+                                `${leaveBalance.leaveType.leaveTypeCode===selectedLeave?.leaveTypeCode && 'text-blue-700'}`}
+                            disabled={leaveBalance.leftLeaveDays === 0} >
                         <div className={"flex flex-col text-left"}>
-                            <span className={"font-bold"}>{leave.leaveTypeName}</span>
-                            <span className={"text-sm"}>{leave.leftLeaveDays}일</span>
+                            <span className={"font-bold"}>{leaveBalance.leaveType.leaveTypeName}</span>
+                            <span className={"text-sm"}>{leaveBalance.leftLeaveDays}일</span>
                         </div>
                         <div>
-                            {leave.leaveTypeCode===selectedLeave?.leaveTypeCode &&
+                            {leaveBalance.leaveType.leaveTypeCode===selectedLeave?.leaveTypeCode &&
                                 checkedSvg}
                         </div>
                     </Button>

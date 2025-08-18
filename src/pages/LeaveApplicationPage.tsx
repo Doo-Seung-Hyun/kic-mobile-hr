@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
-import type {LeaveDate, LeaveType, SelectedLeaveProps} from "../types/leave.ts";
+import type {LeaveDate, LeaveType, SelectedLeaveProps} from "../features/Leave/types/leave.ts";
 import {addDays, format} from "date-fns";
 import {ko} from "date-fns/locale";
 import LeaveSelectionBottomSheetContent
@@ -11,7 +11,7 @@ import {useBottomSheetToggle} from "../stores/bottomSheetStore.ts";
 import useSubmitFooterStore from "../stores/submitFooterStore.ts";
 import {useShallow} from "zustand/react/shallow";
 import Chip from "../components/ui/Chip.tsx";
-import useSubmitLeaveApplication from "../features/Leave/hooks/useSubmitLeaveApplication.tsx";
+import useSubmitLeaveApplication from "../features/Leave/hooks/useLeaveApplication.tsx";
 
 const datePickerSvg = <svg className="w-5 text-gray-500"
                            aria-hidden="true" viewBox="0 0 24 24">
@@ -23,6 +23,7 @@ const datePickerSvg = <svg className="w-5 text-gray-500"
 
 function LeaveApplicationPage() {
     const [selectedLeaveKind, setSelectedLeaveKind] = useState<LeaveType|undefined>(undefined);
+    const [selectedLeaveBalance, setSelectedLeaveBalance] = useState<number>(0);
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const openModal = () => setIsModalOpen(true);
@@ -41,8 +42,11 @@ function LeaveApplicationPage() {
         const content =
             <LeaveSelectionBottomSheetContent
                 selectedLeave={selectedLeaveKind}
-                onLeaveSelect={newSelectedLeave => {
-                    if(newSelectedLeave) setSelectedLeaveKind(newSelectedLeave)
+                onLeaveSelect={(newSelectedLeave, leaveBalance) => {
+                    if(newSelectedLeave) {
+                        setSelectedLeaveKind(newSelectedLeave)
+                        setSelectedLeaveBalance(leaveBalance)
+                    }
                 }}
                 closeBottomSheet={closeBottomSheet}
             />
@@ -160,7 +164,7 @@ function LeaveApplicationPage() {
                                         {selectedLeaveKind.leaveTypeName}
                                     </span>
                                     <div>
-                                        <span>{selectedLeaveKind.leftLeaveDays}</span>
+                                        <span>{selectedLeaveBalance}</span>
                                         <span className="text-sm font-normal text-gray-500 pl-1">일</span>
                                     </div>
                                 </>}

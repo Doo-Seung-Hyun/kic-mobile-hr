@@ -1,4 +1,4 @@
-import type {HalfLeaveType, LeaveDate} from "../types/leave.ts";
+import type {HalfLeaveType, LeaveDate} from "../features/Leave/types/leave.ts";
 import {eachDayOfInterval, format} from "date-fns";
 import type {Holiday} from "../types/holiday.ts";
 

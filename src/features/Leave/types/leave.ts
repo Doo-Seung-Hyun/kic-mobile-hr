@@ -1,9 +1,14 @@
-import type {DateInfo} from "./calendar.ts";
+import type {DateInfo} from "../../../types/calendar.ts";
 
 export interface LeaveType {
     leaveTypeCode: string;
     leaveTypeName: string;
+}
+
+export interface UserLeaveBalance {
+    leaveType : LeaveType
     leftLeaveDays: number;
+    totalLeaveDays?: number;
 }
 
 export interface HalfLeaveType {
@@ -23,4 +28,22 @@ export interface SelectedLeaveProps {
 export interface LeaveDate {
     dateInfo : DateInfo;
     halfLeaveType? : HalfLeaveType;
+}
+
+
+export interface LeaveApplicationRequest {
+    empNo: number;
+    leaveType : LeaveType;
+    leavePeriodProps : SelectedLeaveProps
+    rmk? : string;
+}
+
+export interface LeaveApplicationHistoryItem {
+    empNo: number;
+    leaveType : LeaveType;
+    leavePeriodProps : SelectedLeaveProps
+    statusCd : string;
+    appliedAt : string;
+    approvedAt?: string;
+    rmk? : string;
 }

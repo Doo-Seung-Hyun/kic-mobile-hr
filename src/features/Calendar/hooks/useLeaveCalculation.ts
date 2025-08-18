@@ -1,4 +1,4 @@
-import type {LeaveDate} from "../../../types/leave.ts";
+import type {LeaveDate} from "../../Leave/types/leave.ts";
 import {useHolidaysByPeriod} from "./useHolidays.ts";
 import {calculateBusinessLeaveDays} from "../../../utils/leaveUtils.ts";
 

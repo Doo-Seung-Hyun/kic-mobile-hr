@@ -1,5 +1,5 @@
 import TeamCalendar from "../../TeamCalendar/TeamCalendar.tsx";
-import type {HalfLeaveType, SelectedLeaveProps} from "../../../../types/leave.ts";
+import type {HalfLeaveType, SelectedLeaveProps} from "../../../Leave/types/leave.ts";
 import {useEffect, useMemo, useState} from "react";
 import HalfLeaveSelection from "./HalfLeaveSelection.tsx";
 import {useBottomSheetValidation} from "../../../../stores/bottomSheetStore.ts";

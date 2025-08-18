@@ -41,7 +41,6 @@ const TeamCalendar = memo(({
         translateX,
         hasTransition,
         onTransitionEnd,
-        holidaysByMonth,
         mountId
     } = useCalendarData();
 

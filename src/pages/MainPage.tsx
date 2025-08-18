@@ -9,7 +9,7 @@ import {
 import ExpandableCard from "../components/ui/ExpandableCard.tsx";
 import Button from "../components/ui/Button.tsx";
 import TeamCalendar from "../features/mainpage/TeamCalendar/TeamCalendar.tsx";
-import type {LeaveType} from "../types/leave.ts";
+import type {LeaveType} from "../features/Leave/types/leave.ts";
 import {useNavigate} from "react-router-dom";
 import chevronDownIconUrl from '/src/assets/images/chevron-down.svg'
 

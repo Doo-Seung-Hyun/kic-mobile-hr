@@ -2,7 +2,7 @@ import Chip from "../../../../components/ui/Chip.tsx";
 import {Checkbox} from "../../../../components/ui/Checkbox.tsx";
 import {format} from "date-fns";
 import {ko} from "date-fns/locale";
-import type {HalfLeaveType, SelectedLeaveProps} from "../../../../types/leave.ts";
+import type {HalfLeaveType, SelectedLeaveProps} from "../../../Leave/types/leave.ts";
 import {useEffect, useRef, useState} from "react";
 import ToggleSwitch from "../../../../components/ui/ToggleSwitch.tsx";
 
