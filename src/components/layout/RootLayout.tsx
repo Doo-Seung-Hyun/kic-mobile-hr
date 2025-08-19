@@ -15,7 +15,7 @@ function RootLayout(props: LayoutProps) {
     const {resetAllStores} = useStoreReset();
 
     const hasFixedTypeFooter = headerConfigs[location]?.footerType==='fixed';
-    const mainClassNames = headerConfigs[location]?.mainClassNames;
+    const mainClassNames = 'rela'+ headerConfigs[location]?.mainClassNames;
     const paddingBottomClassName = hasFixedTypeFooter ? ' pb-20' : '';
 
     useEffect(() => {

@@ -3,21 +3,27 @@ import Button from "../components/ui/Button.tsx";
 import Chip from "../components/ui/Chip.tsx";
 import {useGetLeaveApplicationHistory} from "../features/Leave/hooks/useLeaveApplication.tsx";
 import {format} from "date-fns";
+import {LoadingSpinner} from "../components/ui/LoadingSpinner.tsx";
 
 const LeaveHistoryPage = () => {
     const empNo = 2230103;
     const TODAY = new Date();
     const {isLoading, leaveApplicationHistory} = useGetLeaveApplicationHistory(empNo, `${TODAY.getFullYear()}0101`, format(TODAY, 'yyyyMMdd'));
-    if(isLoading)
-        return <div>...로딩중</div>;
-    
+
+    if(isLoading) {
+        return (
+            <div className="flex">
+                <LoadingSpinner />
+            </div>
+        )
+    }
     return (<div>
         <div>
             <button>진행중</button>
             <button>완료</button>
             <button>반려</button>
         </div>
-        <div className={"flex flex-col gap-3"}>
+        <div className={"fle"}>
             <Card>
                 <Card.Content className="font-normal">
                     <div className={"flex justify-between"}>
