@@ -15,7 +15,7 @@ function RootLayout(props: LayoutProps) {
     const {resetAllStores} = useStoreReset();
 
     const hasFixedTypeFooter = headerConfigs[location]?.footerType==='fixed';
-    const mainClassNames = 'rela'+ headerConfigs[location]?.mainClassNames;
+    const mainClassNames = (headerConfigs[location]?.mainClassNames ?? '');
     const paddingBottomClassName = hasFixedTypeFooter ? ' pb-20' : '';
 
     useEffect(() => {
@@ -24,7 +24,7 @@ function RootLayout(props: LayoutProps) {
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
-            <main className={`flex-1 px-4 ${paddingBottomClassName} ${mainClassNames}`.trim()}>
+            <main className={`flex-1 px-4 relative ${paddingBottomClassName} ${mainClassNames}`.trim()}>
                 {props.children}
             </main>
             <Footer />

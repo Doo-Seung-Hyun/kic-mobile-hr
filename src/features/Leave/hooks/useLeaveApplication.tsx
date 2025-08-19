@@ -42,8 +42,11 @@ export const useGetLeaveApplicationHistory = (
     if(isError)
         console.error(error);
 
+    const leaveApplicationHistory = data?.result?.sort((a,b)=>
+        a.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd > b.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd ? -1:1)
+
     return {
-        leaveApplicationHistory: data?.result,
+        leaveApplicationHistory,
         isLoading: isLoading,
         isError
     }

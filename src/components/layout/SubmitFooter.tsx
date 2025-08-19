@@ -26,7 +26,7 @@ const SubmitFooter = ({
     >
         {isSubmitting ? <div className={"text-center"}>
             <LoadingSpinner size={24}
-                            strokeWidth={18}
+                            strokeWidth={12}
                             color={"#66666666"}
                             className={"inline-block"}
             />

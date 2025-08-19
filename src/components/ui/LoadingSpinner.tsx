@@ -1,10 +1,29 @@
+import {useEffect, useState} from "react";
+
+interface LoadingSpinnerProps {
+    size?: number;
+    color?: string;
+    strokeWidth?: number;
+    className?: string;
+}
+
+
 export const LoadingSpinner = ({
     size = 140,
     color = "#0078D4",
     strokeWidth = 6,
-    className='' }) => (
-    <svg width={size} height={size} viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"
-         className={className}
+    className='' }:LoadingSpinnerProps) => {
+
+    const [animationClass, setAnimationClass] = useState('');
+
+    useEffect(() => {
+        const id = requestAnimationFrame(()=>setAnimationClass('animate-spin'));
+
+        return ()=>cancelAnimationFrame(id);
+    },[])
+    
+    return <svg width={size} height={size} viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"
+                className={`${className} ${animationClass}`.trim()}
     >
         <circle
             cx="70"
@@ -19,14 +38,6 @@ export const LoadingSpinner = ({
             transform="rotate(-90 70 70)"
             // filter="drop-shadow(0 0 12px rgba(0, 120, 212, 0.6))"
         >
-
-            <animateTransform
-                attributeName="transform"
-                type="rotate"
-                values="-90 70 70; 270 70 70"
-                dur="2s"
-                repeatCount="indefinite"
-            />
         </circle>
-    </svg>
-);
+    </svg>;
+}
