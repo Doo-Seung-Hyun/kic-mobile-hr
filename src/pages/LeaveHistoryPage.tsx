@@ -61,7 +61,7 @@ const LeaveHistoryPage = () => {
     }
     return (<div>
         <div>
-            <button>진행중</button>
+            <Chip>2025</Chip>
             <button>완료</button>
             <button>반려</button>
         </div>

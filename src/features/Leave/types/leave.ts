@@ -3,6 +3,7 @@ import type {DateInfo} from "../../../types/calendar.ts";
 export interface LeaveType {
     leaveTypeCode: string;
     leaveTypeName: string;
+    icon?: React.ReactElement; //lucide icon name
 }
 
 export interface UserLeaveBalance {
