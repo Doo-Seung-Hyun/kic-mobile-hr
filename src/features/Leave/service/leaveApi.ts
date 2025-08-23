@@ -40,21 +40,26 @@ const getLeaveApplicationHistory = async (
             resolve({
                 isSuccess: true,
                 message : '휴가신청내역 조회가 완료되었습니다.',
-                result : MOCK_LEAVE_REQUEST_HISTORY
+                result : MOCK_LEAVE_REQUEST_HISTORY.filter(
+                    item=>
+                        item.empNo===empNo &&
+                        item.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd>=startDate &&
+                        item.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd<=endDate
+                )
             })
         },2000)
     )
 }
 
-const getLeaveYears = async (
+const getOldestLeaveDate = async (
     empNo : number,
-):Promise<ApiResponse<number[]>> => {
+):Promise<ApiResponse<string>> => {
   return await new Promise((resolve,reject) =>
       setTimeout(()=>{
           resolve({
               isSuccess: true,
               message: '사용한 휴가연도 조회가 완료되었습니다.',
-              result: [2025,2024,2023,2022]
+              result: '2023'
           })
       },500)
   )
@@ -63,7 +68,7 @@ const getLeaveYears = async (
 const submitLeaveApplicationApi = {
     submitLeaveApplication,
     getLeaveApplicationHistory,
-    getLeaveYears,
+    getOldestLeaveDate,
 };
 
 export default submitLeaveApplicationApi;

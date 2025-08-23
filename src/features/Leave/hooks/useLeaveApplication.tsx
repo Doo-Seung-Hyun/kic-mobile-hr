@@ -52,21 +52,21 @@ export const useGetLeaveApplicationHistory = (
     }
 }
 
-export const useGetLeaveYears = (
+export const useGetOldestLeaveYear = (
     empNo: number,
 ) => {
-  const {data, isLoading, isError, error} = useQuery<ApiResponse<number[]>>({
+  const {data, isLoading, isError, error} = useQuery<ApiResponse<string>>({
       queryKey : ['MyLeaveYears',empNo],
-      queryFn : ()=>submitLeaveApplicationApi.getLeaveYears(empNo)
+      queryFn : ()=>submitLeaveApplicationApi.getOldestLeaveDate(empNo)
   });
 
   if(isError)
       console.error(error);
 
-  const leaveYears = data?.result?.sort((a,b)=>b-a);
+  const oldestLeaveYear = Number(data?.result?.substring(0,4)?? '0');
 
   return {
-      leaveYears,
+      oldestLeaveYear,
       isLoading: isLoading,
       isError
   }

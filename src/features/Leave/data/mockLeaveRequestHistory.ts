@@ -90,6 +90,65 @@ const MOCK_LEAVE_REQUEST_HISTORY:LeaveApplicationHistoryItem[] = [
         appliedAt: '20250801 10:45:10',
         approvedAt: '20250805 16:14:22',
     },
+    // --- 2025년 9월 이후 휴가 샘플 (추가) ---
+    {empNo: 2230103,
+        leaveType: {leaveTypeName:'보상휴가', leaveTypeCode:'017'},
+        leavePeriodProps: {leaveDays:1,
+            leaveDates:[
+                {
+                    dateInfo:{date:parse('20250915','yyyyMMdd', TODAY), yyyyMMdd: '20250915'}
+                },
+            ],
+            dateComponentType:'datePicker'
+        },
+        statusCd: '132', //결재완료
+        appliedAt: '20250910 11:20:00',
+        approvedAt: '20250911 15:30:45',
+    },
+    {empNo: 2230103,
+        leaveType: {leaveTypeName:'자녀돌봄', leaveTypeCode:'003'},
+        leavePeriodProps: {leaveDays:0.5,
+            leaveDates:[
+                {halfLeaveType:{halfLeaveTypeCd:'A', halfLeaveTypeCdName: '오후반차', dayOffTypeCd:'H', dayOffTypeCdName:'반차'},
+                    dateInfo:{date:parse('20251027','yyyyMMdd', TODAY), yyyyMMdd: '20251027'}
+                },
+            ],
+            dateComponentType:'datePicker'
+        },
+        statusCd: '131', //결재중
+        appliedAt: '20251025 09:10:00',
+    },
+    {empNo: 2230103,
+        leaveType: {leaveTypeName:'백신접종', leaveTypeCode:'014'},
+        leavePeriodProps: {leaveDays:1,
+            leaveDates:[
+                {
+                    dateInfo:{date:parse('20251105','yyyyMMdd', TODAY), yyyyMMdd: '20251105'}
+                },
+            ],
+            dateComponentType:'datePicker'
+        },
+        statusCd: '132', //결재완료
+        appliedAt: '20251030 14:00:00',
+        approvedAt: '20251031 11:00:00',
+    },
+    {empNo: 2230103,
+        leaveType: {leaveTypeName:'연차휴가', leaveTypeCode:'001'},
+        leavePeriodProps: {leaveDays:2,
+            leaveDates:[
+                {
+                    dateInfo:{date:parse('20251224','yyyyMMdd', TODAY), yyyyMMdd: '20251224'}
+                },
+                {
+                    dateInfo:{date:parse('20251226','yyyyMMdd', TODAY), yyyyMMdd: '20251226'}
+                },
+            ],
+            dateComponentType:'datePicker'
+        },
+        statusCd: '132', //결재완료
+        appliedAt: '20251215 17:00:00',
+        approvedAt: '20251216 09:30:00',
+    },
 ];
 
 export default MOCK_LEAVE_REQUEST_HISTORY;
