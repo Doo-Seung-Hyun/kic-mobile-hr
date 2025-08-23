@@ -1,10 +1,11 @@
 import Card from "../components/ui/Card.tsx";
 import Chip from "../components/ui/Chip.tsx";
-import {useGetLeaveApplicationHistory} from "../features/Leave/hooks/useLeaveApplication.tsx";
+import {useGetLeaveApplicationHistory, useGetLeaveYears} from "../features/Leave/hooks/useLeaveApplication.tsx";
 import {format} from "date-fns";
 import {LoadingSpinner} from "../components/ui/LoadingSpinner.tsx";
 import type {LeaveType, SelectedLeaveProps} from "../features/Leave/types/leave.ts";
 import {ko} from "date-fns/locale";
+import {useEffect, useState} from "react";
 
 interface LeaveHistoryCardProps {
     leaveType : LeaveType;
@@ -50,9 +51,19 @@ function LeaveHistoryCard({
 const LeaveHistoryPage = () => {
     const empNo = 2230103;
     const TODAY = new Date();
-    const {isLoading, leaveApplicationHistory} = useGetLeaveApplicationHistory(empNo, `${TODAY.getFullYear()}0101`, format(TODAY, 'yyyyMMdd'));
 
-    if(isLoading) {
+    const [leaveYear, setLeaveYear] = useState<number>(0);
+    const {isLoading: isHistoryLoading, leaveApplicationHistory} = useGetLeaveApplicationHistory(
+        empNo, `${leaveYear}0101`, `${leaveYear}1231`
+    );
+    const {isLoading: isYearsLoading, leaveYears} = useGetLeaveYears(empNo);
+
+    useEffect(() => {
+        if(leaveYears && leaveYear===0)
+            setLeaveYear(leaveYears[0]);
+    },[leaveYears])
+
+    if(isYearsLoading) {
         return (
             <div className="flex justify-center items-center absolute top-0 bottom-0 left-0 right-0">
                 <LoadingSpinner size={40} color={"#aaa"} strokeWidth={12} />
@@ -60,20 +71,31 @@ const LeaveHistoryPage = () => {
         )
     }
     return (<div>
-        <div>
-            <Chip>2025</Chip>
-            <button>완료</button>
-            <button>반려</button>
+        <div className={"flex gap-1 py-4"}>
+            {leaveYears?.map(year =>
+                <button key={year}>
+                    <Chip outline={true}
+                          classNames={[
+                              year !== leaveYear ? 'bg-white':'',
+                              'px-2',
+                              'py-1',
+                          ].join(' ')}
+                          isSelected={year === leaveYear}
+                          onClick={() => setLeaveYear(year)}
+                    >{year}</Chip>
+                </button>
+            )}
         </div>
         <div className={"flex flex-col gap-3"}>
-            {!leaveApplicationHistory || leaveApplicationHistory.length===0 ?
-                <div className="flex justify-center items-center absolute top-0 bottom-0 left-0 right-0">
-                    조회결과가 없습니다
-                </div> :
+        {
+            !leaveApplicationHistory || leaveApplicationHistory.length===0 ?
+                (<div className="flex justify-center items-center absolute top-0 bottom-0 left-0 right-0">
+                    {isHistoryLoading ? <LoadingSpinner size={40} color={"#aaa"} strokeWidth={12} /> :
+                        '조회결과가 없습니다'}
+                </div>) :
                 leaveApplicationHistory.map((item,index)=>
-                <LeaveHistoryCard key={index} {...item} />
-            )}
-
+                    <LeaveHistoryCard key={index} {...item} />)
+        }
         </div>
     </div>)
 }

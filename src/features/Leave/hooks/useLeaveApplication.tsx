@@ -51,4 +51,25 @@ export const useGetLeaveApplicationHistory = (
         isError
     }
 }
+
+export const useGetLeaveYears = (
+    empNo: number,
+) => {
+  const {data, isLoading, isError, error} = useQuery<ApiResponse<number[]>>({
+      queryKey : ['MyLeaveYears',empNo],
+      queryFn : ()=>submitLeaveApplicationApi.getLeaveYears(empNo)
+  });
+
+  if(isError)
+      console.error(error);
+
+  const leaveYears = data?.result?.sort((a,b)=>b-a);
+
+  return {
+      leaveYears,
+      isLoading: isLoading,
+      isError
+  }
+}
+
 export default useSubmitLeaveApplication;

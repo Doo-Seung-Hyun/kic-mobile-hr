@@ -46,9 +46,24 @@ const getLeaveApplicationHistory = async (
     )
 }
 
+const getLeaveYears = async (
+    empNo : number,
+):Promise<ApiResponse<number[]>> => {
+  return await new Promise((resolve,reject) =>
+      setTimeout(()=>{
+          resolve({
+              isSuccess: true,
+              message: '사용한 휴가연도 조회가 완료되었습니다.',
+              result: [2025,2024,2023,2022]
+          })
+      },500)
+  )
+}
+
 const submitLeaveApplicationApi = {
     submitLeaveApplication,
     getLeaveApplicationHistory,
+    getLeaveYears,
 };
 
 export default submitLeaveApplicationApi;
