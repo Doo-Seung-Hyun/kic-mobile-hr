@@ -68,14 +68,14 @@ const HalfLeaveSelection =({
     }
 
     return <>
-        <div className={"font-bold text-xl pb-4 flex justify-between items-center"}
+        <div className={"font-bold text-xl pb-4 flex justify-between items-end"}
              ref={scrollIntoRef}
         >
             <span>반차를 사용하시나요?</span>
             <ToggleSwitch
                 isOn={showArea}
                 onClick={()=>setShowArea(prev=>!prev)}
-                classNames={'w-10'}
+                classNames={'w-12'}
             />
         </div>
         {
@@ -85,7 +85,7 @@ const HalfLeaveSelection =({
                 <div className={"flex items-center gap-2"}>{
                     getHalfLeaveTypes('AM').map(halfLeaveType =>
                         <Chip outline={true}
-                              classNames={"flex-1 px-2 py-1"}
+                              classNames={"flex-1 px-2"}
                               onClick={() => onHalfLeaveOptionClick(0, halfLeaveType)}
                               isSelected={isHalfLeaveSelected(0, halfLeaveType)}
                         >
@@ -95,7 +95,7 @@ const HalfLeaveSelection =({
                 <div className={"flex items-center gap-2 mt-3"}>{
                     getHalfLeaveTypes('PM').map(halfLeaveType =>
                         <Chip outline={true}
-                              classNames={"flex-1 px-2 py-1"}
+                              classNames={"flex-1 px-2"}
                               onClick={() => onHalfLeaveOptionClick(0, halfLeaveType)}
                               isSelected={isHalfLeaveSelected(0, halfLeaveType)}
                         >
@@ -127,7 +127,7 @@ const HalfLeaveSelection =({
                     <div className={"flex items-center gap-2 pb-1"}>{
                         getHalfLeaveTypes('PM').map(halfLeaveType =>
                             <Chip outline={true}
-                                  classNames={"flex-1 px-2 py-1"}
+                                  classNames={"flex-1 px-2"}
                                   onClick={() => onHalfLeaveOptionClick(0, halfLeaveType)}
                                   isSelected={isHalfLeaveSelected(0, halfLeaveType)}
                             >
@@ -154,7 +154,7 @@ const HalfLeaveSelection =({
                 <div className={"flex items-center gap-2"}>{
                     getHalfLeaveTypes('AM').map(halfLeaveType=>
                         <Chip outline={true}
-                              classNames={"flex-1 px-2 py-1"}
+                              classNames={"flex-1 px-2"}
                               onClick={()=>onHalfLeaveOptionClick(1, halfLeaveType)}
                               isSelected={isHalfLeaveSelected(1, halfLeaveType)}
                         >

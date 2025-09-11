@@ -1,7 +1,13 @@
 import {useLocation} from "react-router-dom";
 import {headerConfigs} from "../../config/headerConfig.tsx";
 
-function Footer() {
+interface Props {
+    className?: string;
+}
+
+function Footer({
+    className,
+                }:Props) {
     const location = useLocation();
     const headerConfig = headerConfigs[location.pathname];
     const footerComponent = headerConfig?.footerComponent;
@@ -11,7 +17,7 @@ function Footer() {
         return null;
 
     return (
-        <footer className={"flex-none p-4 justify-center"+fixedFooterClassName}>
+        <footer className={className+" flex-none p-4 justify-center"+fixedFooterClassName}>
             {footerComponent}
         </footer>
     );

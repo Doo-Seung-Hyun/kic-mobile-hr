@@ -10,6 +10,9 @@ interface SubmitFooterStore {
     isSubmitting : boolean;
     setIsSubmitting: (isSubmitting:boolean) => void;
 
+    footerButtonText : string;
+    setFooterButtonText : (footerButtonText:string) => void;
+
     reset : ()=>void;
 }
 
@@ -28,10 +31,16 @@ const useSubmitFooterStore = create<SubmitFooterStore>(set=>({
         isSubmitting
     }),
 
+    footerButtonText : '',
+    setFooterButtonText : footerButtonText => set({
+        footerButtonText
+    }),
+
     reset : () => set({
         isValid : true,
         submitHandler : null,
-        isSubmitting : false
+        isSubmitting : false,
+        footerButtonText : '',
     })
 }));
 

@@ -13,7 +13,7 @@ function Card({
 }:CardProps):React.ReactNode {
     return (
         <div className={'flex flex-col gap-3 bg-white font-semibold text-gray-800 p-4 ' +
-            'rounded-xl shadow-[0_1px_2px_0_rgb(0_0_0_/_0.05),_0_4px_6px_0_rgb(0_0_0_/_0.03)] '
+            'rounded-2xl border border-gray-200 '
             +` ${className}`}
              onClick={event => {
                  if(handleClick)

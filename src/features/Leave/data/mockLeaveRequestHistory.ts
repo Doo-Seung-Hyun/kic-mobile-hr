@@ -33,6 +33,7 @@ const TODAY = new Date();
 
 const MOCK_LEAVE_REQUEST_HISTORY:LeaveApplicationHistoryItem[] = [
     {empNo: 2230103,
+        leaveId: '1',
         leaveType: {leaveTypeName:'연차휴가', leaveTypeCode:'001'},
         leavePeriodProps: {leaveDays:0.5,
             leaveDates:[
@@ -46,6 +47,7 @@ const MOCK_LEAVE_REQUEST_HISTORY:LeaveApplicationHistoryItem[] = [
         appliedAt: '20250210 13:55:10',
     },
     {empNo: 2230103,
+        leaveId: '2',
         leaveType: {leaveTypeName:'연차휴가', leaveTypeCode:'001'},
         leavePeriodProps: {leaveDays:3,
             leaveDates:[
@@ -63,6 +65,7 @@ const MOCK_LEAVE_REQUEST_HISTORY:LeaveApplicationHistoryItem[] = [
         approvedAt: '20250701 10:45:10',
     },
     {empNo: 2230103,
+        leaveId: '3',
         leaveType: {leaveTypeName:'대체휴가', leaveTypeCode:'018'},
         leavePeriodProps: {leaveDays:1,
             leaveDates:[
@@ -77,6 +80,7 @@ const MOCK_LEAVE_REQUEST_HISTORY:LeaveApplicationHistoryItem[] = [
         approvedAt: '20250725 10:45:10',
     },
     {empNo: 2230103,
+        leaveId: '4',
         leaveType: {leaveTypeName:'연차휴가', leaveTypeCode:'001'},
         leavePeriodProps: {leaveDays:1,
             leaveDates:[
@@ -92,6 +96,7 @@ const MOCK_LEAVE_REQUEST_HISTORY:LeaveApplicationHistoryItem[] = [
     },
     // --- 2025년 9월 이후 휴가 샘플 (추가) ---
     {empNo: 2230103,
+        leaveId: '5',
         leaveType: {leaveTypeName:'보상휴가', leaveTypeCode:'017'},
         leavePeriodProps: {leaveDays:1,
             leaveDates:[
@@ -106,6 +111,7 @@ const MOCK_LEAVE_REQUEST_HISTORY:LeaveApplicationHistoryItem[] = [
         approvedAt: '20250911 15:30:45',
     },
     {empNo: 2230103,
+        leaveId: '6',
         leaveType: {leaveTypeName:'자녀돌봄', leaveTypeCode:'003'},
         leavePeriodProps: {leaveDays:0.5,
             leaveDates:[
@@ -119,6 +125,7 @@ const MOCK_LEAVE_REQUEST_HISTORY:LeaveApplicationHistoryItem[] = [
         appliedAt: '20251025 09:10:00',
     },
     {empNo: 2230103,
+        leaveId: '7',
         leaveType: {leaveTypeName:'백신접종', leaveTypeCode:'014'},
         leavePeriodProps: {leaveDays:1,
             leaveDates:[
@@ -133,6 +140,7 @@ const MOCK_LEAVE_REQUEST_HISTORY:LeaveApplicationHistoryItem[] = [
         approvedAt: '20251031 11:00:00',
     },
     {empNo: 2230103,
+        leaveId: '8',
         leaveType: {leaveTypeName:'연차휴가', leaveTypeCode:'001'},
         leavePeriodProps: {leaveDays:2,
             leaveDates:[

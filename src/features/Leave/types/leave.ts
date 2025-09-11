@@ -40,6 +40,7 @@ export interface LeaveApplicationRequest {
 }
 
 export interface LeaveApplicationHistoryItem {
+    leaveId: string;
     empNo: number;
     leaveType : LeaveType;
     leavePeriodProps : SelectedLeaveProps

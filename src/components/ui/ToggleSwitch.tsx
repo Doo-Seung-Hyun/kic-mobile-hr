@@ -11,7 +11,7 @@ const ToggleSwitch = ({
 }:toggleSwitchProps)=>{
     const backGroundClassName = !isOn ?
         'bg-black opacity-40'
-        : 'bg-blue-700';
+        : 'bg-blue-600';
     const hasWidth = !!classNames?.match(/w-/);
     return (
         <span className={'inline-block text-[0px] leading-none'}>

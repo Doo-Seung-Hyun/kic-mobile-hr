@@ -9,9 +9,9 @@ interface LoadingSpinnerProps {
 
 
 export const LoadingSpinner = ({
-    size = 140,
-    color = "#0078D4",
-    strokeWidth = 6,
+    size = 24,
+    color = "#aaa",
+    strokeWidth = 12,
     className='' }:LoadingSpinnerProps) => {
 
     const [animationClass, setAnimationClass] = useState('');

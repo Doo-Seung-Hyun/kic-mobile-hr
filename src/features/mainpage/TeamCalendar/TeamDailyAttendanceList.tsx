@@ -51,10 +51,13 @@ const TeamDailyAttendanceList = ({
                             <span>{attendanceData.posGrdNm}</span>
                         </div>
                         <div className={"flex gap-1"}>
-                            <Chip color={attendanceType==='Leave' ? "primary" : "secondary"}>
+                            <Chip color={attendanceType==='Leave' ? "primary" : "secondary"}
+                                  classNames={'px-2.5 py-0.5'}
+                            >
                                 {attendanceName}
                             </Chip>
-                            <Chip>
+                            <Chip classNames={'px-2.5 py-0.5'}
+                            >
                                 {attendanceDuration}
                             </Chip>
                         </div>

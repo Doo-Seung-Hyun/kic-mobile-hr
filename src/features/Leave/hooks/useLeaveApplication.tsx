@@ -1,13 +1,14 @@
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 import type {LeaveResultPageProps} from "../../../pages/LeaveResultPage.tsx";
-import type {LeaveApplicationHistoryItem} from "../types/leave.ts";
+import type {LeaveApplicationHistoryItem, UserLeaveBalance} from "../types/leave.ts";
 import type {ApiResponse} from "../../../types/common.ts";
 import submitLeaveApplicationApi from "../service/leaveApi.ts";
 
 export const useSubmitLeaveApplication = ({
     leaveType,
-    leavePeriodProps
+    leavePeriodProps,
+    isModificationRequested=false,
 }:LeaveResultPageProps) => {
     const navigate = useNavigate()
 
@@ -18,7 +19,8 @@ export const useSubmitLeaveApplication = ({
             navigate('/leave/result',{
                 state : {
                     leaveType,
-                    leavePeriodProps
+                    leavePeriodProps,
+                    isModificationRequested,
                 }
             })
         },
@@ -70,6 +72,36 @@ export const useGetOldestLeaveYear = (
       isLoading: isLoading,
       isError
   }
+}
+
+export const useGetMyLeaveBalances = (
+    empNo: number,
+) => {
+  const {data, isLoading, isError, error} = useQuery<ApiResponse<UserLeaveBalance[]>>({
+      queryKey : ['MyLeaveBalance',empNo],
+      queryFn : ()=>submitLeaveApplicationApi.getMyLeaveBalance(empNo)
+  });
+
+  if(isError)
+      console.error(error);
+
+  const myLeaveBalances = data?.result ?? [];
+
+  return {
+      myLeaveBalances,
+      isLoading: isLoading,
+      isError
+  }
+}
+
+export const useCancelLeaveApplication = (
+    empNo: number,
+)=> {
+    return useMutation({
+        mutationFn: async(leaveId:string) => await submitLeaveApplicationApi.cancelLeaveApplication(leaveId, empNo),
+        onSuccess: data => console.log(data),
+        onError: error => console.error(error)
+    });
 }
 
 export default useSubmitLeaveApplication;

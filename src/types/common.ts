@@ -1,5 +1,5 @@
 export interface ApiResponse<ResultDataType> {
     isSuccess: boolean;
-    result : ResultDataType;
+    result? : ResultDataType;
     message?: string;
 }

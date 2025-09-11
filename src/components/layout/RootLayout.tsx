@@ -5,6 +5,7 @@ import {headerConfigs} from "../../config/headerConfig.tsx";
 import {useLocation} from "react-router-dom";
 import BottomSheet from "../ui/BottomSheet.tsx";
 import useStoreReset from "../../stores/useStoreReset.ts";
+import AlertDialog from "../ui/AlertDialog/AlertDialog.tsx";
 
 interface LayoutProps{
     children: React.ReactNode;
@@ -22,13 +23,14 @@ function RootLayout(props: LayoutProps) {
         resetAllStores();
     }, [location]);
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col ">
             <Header />
-            <main className={`flex-1 px-4 relative ${paddingBottomClassName} ${mainClassNames}`.trim()}>
+            <main className={`bg-gray-50 flex-1 px-6 flex flex-col relative ${paddingBottomClassName} ${mainClassNames}`.trim()}>
                 {props.children}
             </main>
-            <Footer />
+            <Footer className={'bg-gray-50'} />
             <BottomSheet />
+            <AlertDialog />
         </div>
     );
 }

@@ -15,7 +15,7 @@ const Button: React.FC<ButtonProps> = ({
                                            style,
                                            ...props
                                        }) => {
-    const baseClasses = 'font-semiBold rounded-lg transition-colors focus:outline-none';
+    const baseClasses = 'font-semibold rounded-xl transition-colors focus:outline-none';
 
     const variantClasses = {
         primary: disabled
@@ -26,7 +26,7 @@ const Button: React.FC<ButtonProps> = ({
             : 'bg-gray-500 text-white hover:bg-gray-600 focus:ring-gray-500 cursor-pointer',
         outline: disabled
             ? 'border border-gray-300 text-gray-400 cursor-not-allowed'
-            : 'border border-blue-700 text-blue-700 hover:bg-blue-50 focus:ring-blue-500 cursor-pointer',
+            : 'border border-gray-300 text-gray-800 hover:bg-blue-50 focus:ring-blue-500 cursor-pointer',
         none: disabled
             ? 'border-none text-gray-400 cursor-not-allowed'
             : 'border-none text-gray-800 cursor-pointer'
@@ -47,7 +47,7 @@ const Button: React.FC<ButtonProps> = ({
             : {},
         outline: disabled
             ? { borderColor: 'rgb(209, 213, 219)' } // gray-300
-            : { borderColor: 'rgb(38,86,201)' },
+            : undefined,
         none: {}
     }
 

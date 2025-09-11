@@ -4,6 +4,7 @@ import {
     isLeaveAttendance,
     type LeaveAttendanceData
 } from "../types/attendanceData.ts";
+import {differenceInCalendarDays, parse, startOfDay} from "date-fns";
 
 const getIcon = (attendanceType: 'Leave'|'FamilyTime') =>
     attendanceType==='Leave' ? '⛱️️' : '⏰';
@@ -104,6 +105,17 @@ const getDisplayInfoOfAttendanceData = (attendanceData: AttendanceData) => {
     return {attendanceType: '', icon: '', displayTexts: []}
 }
 
+const dDayformatter = (
+    date:string,
+    formatString='yyyyMMdd'
+):string =>{
+    const to:Date = startOfDay(parse(date,formatString,new Date()));
+    const daysLeft = differenceInCalendarDays(to,new Date());
+    return daysLeft===0 ? '오늘':
+        daysLeft===1 ? '내일':
+            `D-${daysLeft}`;
+}
 
 
-export {getDisplayInfoOfAttendanceData};
+
+export {getDisplayInfoOfAttendanceData, dDayformatter};

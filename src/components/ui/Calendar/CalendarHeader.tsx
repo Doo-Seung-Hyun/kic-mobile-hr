@@ -15,7 +15,7 @@ const CalendarHeader = ({
     if(!title){
         title = format(new Date(), 'yyyy년 M월');
     }
-    return <div className={"flex items-center justify-between px-2.5 pb-5"}>
+    return <div className={"flex items-center justify-between px-2.5 pb-6"}>
         <button onClick={onPrevClick}>
             <svg viewBox="0 0 24 24" width={24}>
                 <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"

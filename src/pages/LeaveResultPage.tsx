@@ -7,11 +7,12 @@ import {ko} from "date-fns/locale";
 export interface LeaveResultPageProps {
     leaveType: LeaveType;
     leavePeriodProps : SelectedLeaveProps;
+    isModificationRequested? : boolean;
 }
 
 const LeaveResultPage = () => {
     const location = useLocation();
-    const {leaveType, leavePeriodProps
+    const {leaveType, leavePeriodProps, isModificationRequested,
     }:LeaveResultPageProps = location.state || {};
 
     const {leaveDays, leaveDates} = leavePeriodProps;
@@ -21,7 +22,7 @@ const LeaveResultPage = () => {
 
     return (
         <ProcessResultLayout
-            title={"휴가를 신청했습니다"}
+            title={!isModificationRequested ? "휴가를 신청했습니다" : '휴가변경을 신청했습니다'}
             subMessage={"그룹웨어 전자결재로 결재가 진행됩니다"}
         >
             <div>

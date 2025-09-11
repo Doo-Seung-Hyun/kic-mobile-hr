@@ -1,12 +1,9 @@
 import Chip from "../components/ui/Chip.tsx";
-import {useGetOldestLeaveYear} from "../features/Leave/hooks/useLeaveApplication.tsx";
+import {useGetMyLeaveBalances, useGetOldestLeaveYear} from "../features/Leave/hooks/useLeaveApplication.tsx";
 import {LoadingSpinner} from "../components/ui/LoadingSpinner.tsx";
-import type {LeaveType, SelectedLeaveProps} from "../features/Leave/types/leave.ts";
 import {useEffect, useState} from "react";
 import {LeaveHistoryList} from "../features/Leave/components/LeaveHistoryList.tsx";
-import {LeaveHistoryCard} from "../features/Leave/components/LeaveHistoryCard.tsx";
-
-
+import Tab from "../components/ui/Tab/Tab.tsx";
 
 const getLeaveYears = (oldestLeaveYear : number) => {
 
@@ -26,9 +23,16 @@ const getLeaveYears = (oldestLeaveYear : number) => {
 const LeaveHistoryPage = () => {
     const empNo = 2230103;
 
-    const [leaveYear, setLeaveYear] = useState<number>(0);
+    const [leaveYear, setLeaveYear] = useState<number>(new Date().getFullYear());
 
+    // 휴가를 사용한 가장 오래된 연도를 조회
     const {isLoading: isOldestLeaveYearLoading, oldestLeaveYear} = useGetOldestLeaveYear(empNo);
+
+    // 잔여 휴가현황 조회
+    const {isLoading: isMyLeaveBalancesLoading, myLeaveBalances} = useGetMyLeaveBalances(empNo);
+
+    //activeTab index state 관리
+    const [activeTabName, setActiveTabName] = useState<'upcoming'|'past'>('past')
 
     const year = new Date().getFullYear();
     useEffect(() => {
@@ -38,20 +42,19 @@ const LeaveHistoryPage = () => {
 
     if(isOldestLeaveYearLoading) {
         return (
-            <div className="flex justify-center items-center absolute top-0 bottom-0 left-0 right-0">
+            <div className="flex justify-center items-center flex-1">
                 <LoadingSpinner size={40} color={"#aaa"} strokeWidth={12} />
             </div>
         )
     }
-    return (<div>
-        <div className={"flex gap-1 py-4"}>
+    return (<>
+        <div className={"flex flex-row gap-1 py-4"}>
             {getLeaveYears(oldestLeaveYear)?.map(year =>
                 <button key={year}>
                     <Chip outline={true}
                           classNames={[
                               year !== leaveYear ? 'bg-white' : '',
-                              'px-2',
-                              'py-1',
+                              'px-4'
                           ].join(' ')}
                           isSelected={year === leaveYear}
                           onClick={() => setLeaveYear(year)}
@@ -59,8 +62,20 @@ const LeaveHistoryPage = () => {
                 </button>
             )}
         </div>
-        <LeaveHistoryList empNo={empNo} year={leaveYear} />
-    </div>)
+        <Tab onChange={activeIndex => setActiveTabName(activeIndex===0? 'upcoming':'past')}
+             defaultActiveIndex={1}
+             className={'mb-6'}
+        >
+            <Tab.Item>예정중 휴가</Tab.Item>
+            <Tab.Item>다녀온 휴가</Tab.Item>
+        </Tab>
+        <LeaveHistoryList
+            empNo={empNo}
+            year={leaveYear}
+            leaveBalanceData={myLeaveBalances}
+            whatKind={activeTabName}
+        />
+    </>)
 }
 
 export default LeaveHistoryPage;

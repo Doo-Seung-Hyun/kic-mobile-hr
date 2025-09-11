@@ -1,8 +1,13 @@
 import {useEffect, useRef, useState} from 'react';
 import Card from "../components/ui/Card.tsx";
 import Button from "../components/ui/Button.tsx";
-import type {LeaveDate, LeaveType, SelectedLeaveProps} from "../features/Leave/types/leave.ts";
-import {addDays, format} from "date-fns";
+import type {
+    LeaveApplicationHistoryItem,
+    LeaveDate,
+    LeaveType,
+    SelectedLeaveProps
+} from "../features/Leave/types/leave.ts";
+import {format} from "date-fns";
 import {ko} from "date-fns/locale";
 import LeaveSelectionBottomSheetContent
     from "../features/mainpage/leaveApplication/components/LeaveSelectionBottomSheetContent.tsx";
@@ -12,22 +17,21 @@ import useSubmitFooterStore from "../stores/submitFooterStore.ts";
 import {useShallow} from "zustand/react/shallow";
 import Chip from "../components/ui/Chip.tsx";
 import useSubmitLeaveApplication from "../features/Leave/hooks/useLeaveApplication.tsx";
-
-const datePickerSvg = <svg className="w-5 text-gray-500"
-                           aria-hidden="true" viewBox="0 0 24 24">
-    <path
-        d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"
-        fill={"currentColor"}></path>
-</svg>;
+import {useLocation} from "react-router-dom";
 
 
 function LeaveApplicationPage() {
+
+    //[휴가 변경]으로 화면을 연 경우
+    const location = useLocation();
+    const passedLeaveData:{
+        leaveApplicationHistoryItem: LeaveApplicationHistoryItem;
+        leftLeaveDays: number;
+    } = location.state;
+    const isEditMode = !!passedLeaveData;
+
     const [selectedLeaveKind, setSelectedLeaveKind] = useState<LeaveType|undefined>(undefined);
     const [selectedLeaveBalance, setSelectedLeaveBalance] = useState<number>(0);
-
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
 
     const {setValidation, setSubmitHandler, setIsSubmitting} = useSubmitFooterStore(useShallow(state => ({
         setValidation : state.setValidation,
@@ -36,6 +40,11 @@ function LeaveApplicationPage() {
     })));
 
     const {openBottomSheet, closeBottomSheet} = useBottomSheetToggle<SelectedLeaveProps>();
+
+    const setFooterButtonText = useSubmitFooterStore(state =>
+        state.setFooterButtonText
+    );
+
 
     // 휴가종류 선택 핸들러
     const handleLeaveTypeClick = () =>{
@@ -50,7 +59,7 @@ function LeaveApplicationPage() {
                 }}
                 closeBottomSheet={closeBottomSheet}
             />
-        openBottomSheet(content);
+        openBottomSheet(content, 'basic', null, 'h-[80%]');
     }
 
     // 휴가기간정보
@@ -94,9 +103,11 @@ function LeaveApplicationPage() {
     //휴가신청 api 훅
     const leaveApplicationMutation = useSubmitLeaveApplication({
         leaveType : selectedLeaveKind!,
-        leavePeriodProps : selectedLeaveProps!
+        leavePeriodProps : selectedLeaveProps!,
+        isModificationRequested : isEditMode,
     });
 
+    // validation & submit Handler 처리
     useEffect(() => {
         setValidation(validate());
 
@@ -117,6 +128,22 @@ function LeaveApplicationPage() {
         setIsSubmitting(leaveApplicationMutation.isPending);
 
     }, [selectedLeaveKind, selectedLeaveProps, setValidation, leaveApplicationMutation.isPending]);
+
+    //[휴가변경]으로 화면 연 경우 state update
+    useEffect(() => {
+        if(isEditMode){
+            const {leaveType, leavePeriodProps, rmk, empNo} = passedLeaveData.leaveApplicationHistoryItem;
+            const {leftLeaveDays} = passedLeaveData;
+
+            setSelectedLeaveProps(leavePeriodProps);
+            setSelectedLeaveKind(leaveType);
+            setSelectedLeaveBalance(leftLeaveDays + (leavePeriodProps.leaveDays?? 0));
+            if(rmkRef.current)
+                rmkRef.current.value = rmk ?? '';
+
+            setFooterButtonText('휴가 변경하기');
+        }
+    }, [passedLeaveData, isEditMode]);
 
 
     const renderLeaveDate = (leaveDate : LeaveDate, leaveDateLength: number) => {
