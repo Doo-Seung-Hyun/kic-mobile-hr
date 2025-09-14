@@ -8,7 +8,7 @@ const chipColors: Record<'primary'|'secondary'|'default', {
     outline: string;
 }> = {
     primary: {
-        default : 'bg-blue-100 border border-blue-300 text-blue-700',
+        default : 'bg-blue-100 border border-blue-100 text-blue-600',
         selected : 'bg-blue-600 text-white border border-blue-600',
         outline : 'border border-blue-300 text-blue-700'
     },

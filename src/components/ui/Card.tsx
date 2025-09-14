@@ -35,7 +35,7 @@ function CardHeader ({children}:{children: React.ReactNode}){
 
 function CardContent({
     children,
-    className = ''
+    className
 }:CardProps){
     return (
         <div className={className}>{children}</div>

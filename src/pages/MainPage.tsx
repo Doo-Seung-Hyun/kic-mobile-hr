@@ -3,7 +3,7 @@ import Button from "../components/ui/Button.tsx";
 import TeamCalendar from "../features/mainpage/TeamCalendar/TeamCalendar.tsx";
 import familyDayIcon from "../assets/images/familyDayIcon.png"
 import scheduleIcon from "../assets/images/scheduleIcon.png"
-import LeaveDashboardWidget from "../widgets/leave/LeaveDashboard/ui.tsx";
+import {LeaveDashboardWidget} from "../widgets/leave/leave-dashboard";
 import FamilyDayWidget from "../widgets/familyDay/FamilyDayWidget/ui.tsx";
 
 

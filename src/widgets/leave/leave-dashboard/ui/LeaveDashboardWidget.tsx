@@ -1,14 +1,16 @@
-import ExpandableCard from "../../../components/ui/ExpandableCard.tsx";
-import leaveRocketIcon from "../../../assets/images/leaveRocketIcon.png";
+import ExpandableCard from "../../../../components/ui/ExpandableCard.tsx";
+import leaveRocketIcon from "../../../../assets/images/leaveRocketIcon.png";
 import chevronDownIconUrl from '/src/assets/images/chevron-down.svg';
 import {
     useGetLeaveApplicationHistory,
     useGetMyLeaveBalances
-} from "../../../features/Leave/hooks/useLeaveApplication.tsx";
+} from "../../../../features/Leave/hooks/useLeaveApplication.tsx";
 import {differenceInCalendarDays, format, parse, startOfDay} from "date-fns";
 import {useNavigate} from "react-router-dom";
-import Button from "../../../components/ui/Button.tsx";
-import MyLeaveBalanceWidget from "../MyLeaveBalanceWidget/ui.tsx";
+import Button from "../../../../components/ui/Button.tsx";
+import MyLeaveBalanceWidget from "../../MyLeaveBalanceWidget/ui.tsx";
+import {UpcomingLeaveDDayWidget} from "../../upcoming-leave-d-day";
+import {QuickLeaveUseWidget} from "../../quick-leave-use/ui/QuickLeaveUseWidget.tsx";
 
 const calculateDaysLeft = (leaveDate:string):string =>{
     const to:Date = startOfDay(parse(leaveDate,'yyyyMMdd',new Date()));
@@ -22,8 +24,7 @@ const getFormattedDateString = (date:string) =>{
     return format(parse(date,'yyyyMMdd',new Date()),'M월d일');
 }
 
-
-const LeaveDashboard = () => {
+export const LeaveDashboardWidget = () => {
     const TODAY = new Date();
     const TODAY_STRING = format(TODAY, 'yyyyMMdd');
 
@@ -103,6 +104,14 @@ const LeaveDashboard = () => {
             isLoading={isLoadingHistory}
         />
 
+        <div className={'flex justify-between gap-4'}>
+            <UpcomingLeaveDDayWidget
+                isLoading={isLoadingHistory}
+                leaveApplicationHistoryItem={upComingLeaves.length ? upComingLeaves[0] : undefined}
+            />
+            <QuickLeaveUseWidget myLeaveBalances={[]}/>
+        </div>
+
         {/*휴가신청 버튼*/}
         <Button className={"mb-2"}
                 onClick={() => navigate('/leave/apply')}>
@@ -110,5 +119,3 @@ const LeaveDashboard = () => {
         </Button>
     </>;
 }
-
-export default LeaveDashboard;

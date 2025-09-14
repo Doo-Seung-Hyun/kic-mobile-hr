@@ -24,7 +24,10 @@ interface InternalDropdownOption extends BaseDropdownOption{
 interface DropdownChipProps {
     children? : React.ReactElement<BaseDropdownOption>[] | React.ReactElement<BaseDropdownOption>;
     isSelected? : boolean;
+    color?: 'primary' | 'secondary' | 'default'
+    outline?:boolean;
     onChange?: (selectedItems:DropdownItem[])=>void;
+    className?: string;
 }
 
 const getArrowDownSvg = (arrowColor:string) => <span><svg
@@ -86,7 +89,10 @@ const DropdownMenu = ({
 const DropdownChip = ({
     children,
     isSelected = false,
-    onChange: handleToChange
+    color,
+    outline,
+    onChange: handleToChange,
+    className,
 }: DropdownChipProps) => {
     const dropdownMenus = !children ? [] :
         Array.isArray(children) ? children :
@@ -145,9 +151,10 @@ const DropdownChip = ({
     });
 
     return (
-        <Chip outline={true}
-              classNames={"px-3 py-1"}
+        <Chip outline={outline}
+              classNames={className}
               isSelected={isSelected}
+              color={color}
         >
             {enhancedChildren}
         </Chip>
