@@ -1,3 +1,5 @@
+import checkIcon from "/src/assets/images/check.png"
+
 
 export interface ProcessResultLayoutProps {
     resultIcon? : React.ReactNode;
@@ -7,10 +9,10 @@ export interface ProcessResultLayoutProps {
 }
 
 const ProcessResultLayout = ({
-   resultIcon = <img src = "/src/assets/images/check.png" alt = "체크박스" width={48}/>,
-   title = '처리 완료되었습니다',
-   subMessage,
-   children
+    resultIcon = <img src={checkIcon} alt="처리완료 이미지" width={48} /> ,
+    title = '처리 완료되었습니다',
+    subMessage,
+    children
 }:ProcessResultLayoutProps) => {
 
     return (<div className={'flex flex-col gap-4 justify-center text-center items-center h-[100vh] p-4'}>

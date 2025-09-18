@@ -1,6 +1,4 @@
-import ExpandableCard from "../../../../components/ui/ExpandableCard.tsx";
 import leaveRocketIcon from "../../../../assets/images/leaveRocketIcon.png";
-import chevronDownIconUrl from '/src/assets/images/chevron-down.svg';
 import {
     useGetLeaveApplicationHistory,
     useGetMyLeaveBalances
@@ -64,52 +62,53 @@ export const LeaveDashboardWidget = () => {
         <MyLeaveBalanceWidget balances={myLeaveBalanceForMainPage} isLoading={isLoadingMyLeaveBalances} />
 
         {/*예정 휴가*/}
-        <ExpandableCard
-            title={<button onClick={() => navigate('/leave/history')}>
-                <div className={"flex items-center"}>
-                    <span>예정 휴가</span>
-                    <img src={chevronDownIconUrl}
-                         alt={"더보기"}
-                         className={"inline-block -rotate-90 ml-1 h-[7px]"}
-                    />
-                </div>
-            </button>}
-            items={upComingLeaves}
-            itemRenderFunc={leave => {
-                const daysLeft = calculateDaysLeft(leave.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd);
-                const leaveTypeName = leave.leaveType.leaveTypeName;
-                const startDateString = leave.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd;
-                const endDateString = leave.leavePeriodProps.leaveDates[1]?.dateInfo.yyyyMMdd ?? '';
+        {/*<ExpandableCard*/}
+        {/*    title={<button onClick={() => navigate('/leave/history')}>*/}
+        {/*        <div className={"flex items-center"}>*/}
+        {/*            <span>예정 휴가</span>*/}
+        {/*            <img src={chevronDownIconUrl}*/}
+        {/*                 alt={"더보기"}*/}
+        {/*                 className={"inline-block -rotate-90 ml-1 h-[7px]"}*/}
+        {/*            />*/}
+        {/*        </div>*/}
+        {/*    </button>}*/}
+        {/*    items={upComingLeaves}*/}
+        {/*    itemRenderFunc={leave => {*/}
+        {/*        const daysLeft = calculateDaysLeft(leave.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd);*/}
+        {/*        const leaveTypeName = leave.leaveType.leaveTypeName;*/}
+        {/*        const startDateString = leave.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd;*/}
+        {/*        const endDateString = leave.leavePeriodProps.leaveDates[1]?.dateInfo.yyyyMMdd ?? '';*/}
 
-                return <>
-                    <div className="flex-1 text-blue-600">
-                        <span>{daysLeft}</span>
-                    </div>
-                    <div className="flex-1 font-normal">
-                        <span>{leaveTypeName}</span>
-                    </div>
-                    <div className="flex-1 flex-grow-[2] text-right font-normal text-sm text-gray-700">
-                        <span>{getFormattedDateString(startDateString)}</span>
+        {/*        return <>*/}
+        {/*            <div className="flex-1 text-blue-600">*/}
+        {/*                <span>{daysLeft}</span>*/}
+        {/*            </div>*/}
+        {/*            <div className="flex-1 font-normal">*/}
+        {/*                <span>{leaveTypeName}</span>*/}
+        {/*            </div>*/}
+        {/*            <div className="flex-1 flex-grow-[2] text-right font-normal text-sm text-gray-700">*/}
+        {/*                <span>{getFormattedDateString(startDateString)}</span>*/}
 
-                        {leave.leavePeriodProps.leaveDates.length>1 &&
-                            <>
-                                <span className="mx-1">-</span>
-                                <span>{getFormattedDateString(endDateString)}</span>
-                            </>
-                        }
-                    </div>
-                </>
-            }}
-            listItemClassName="items-center"
-            isLoading={isLoadingHistory}
-        />
+        {/*                {leave.leavePeriodProps.leaveDates.length>1 &&*/}
+        {/*                    <>*/}
+        {/*                        <span className="mx-1">-</span>*/}
+        {/*                        <span>{getFormattedDateString(endDateString)}</span>*/}
+        {/*                    </>*/}
+        {/*                }*/}
+        {/*            </div>*/}
+        {/*        </>*/}
+        {/*    }}*/}
+        {/*    listItemClassName="items-center"*/}
+        {/*    isLoading={isLoadingHistory}*/}
+        {/*/>*/}
 
         <div className={'flex justify-between gap-4'}>
             <UpcomingLeaveDDayWidget
                 isLoading={isLoadingHistory}
                 leaveApplicationHistoryItem={upComingLeaves.length ? upComingLeaves[0] : undefined}
             />
-            <QuickLeaveUseWidget myLeaveBalances={[]}/>
+            <QuickLeaveUseWidget myLeaveBalances={myLeaveBalanceForMainPage}
+                                 isLoading={isLoadingMyLeaveBalances} />
         </div>
 
         {/*휴가신청 버튼*/}

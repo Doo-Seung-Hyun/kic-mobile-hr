@@ -1,26 +1,23 @@
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 import type {LeaveResultPageProps} from "../../../pages/LeaveResultPage.tsx";
-import type {LeaveApplicationHistoryItem, UserLeaveBalance} from "../types/leave.ts";
+import type {LeaveApplicationHistoryItem, LeaveApplicationRequest, UserLeaveBalance} from "../types/leave.ts";
 import type {ApiResponse} from "../../../types/common.ts";
 import submitLeaveApplicationApi from "../service/leaveApi.ts";
 
-export const useSubmitLeaveApplication = ({
-    leaveType,
-    leavePeriodProps,
-    isModificationRequested=false,
-}:LeaveResultPageProps) => {
-    const navigate = useNavigate()
+export const useSubmitLeaveApplication = () => {
+    const navigate = useNavigate();
 
     return useMutation({
-        mutationFn : submitLeaveApplicationApi.submitLeaveApplication,
-        onSuccess : data => {
+        mutationFn : async (requestProps:LeaveApplicationRequest)=>
+            submitLeaveApplicationApi.submitLeaveApplication(requestProps),
+        onSuccess : (data,variables) => {
             console.log(data);
             navigate('/leave/result',{
                 state : {
-                    leaveType,
-                    leavePeriodProps,
-                    isModificationRequested,
+                    leaveType : variables.leaveType,
+                    leavePeriodProps : variables.leavePeriodProps,
+                    isModificationRequested : variables.isModificationRequested,
                 }
             })
         },
@@ -45,7 +42,7 @@ export const useGetLeaveApplicationHistory = (
         console.error(error);
 
     const leaveApplicationHistory = data?.result?.sort((a,b)=>
-        a.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd > b.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd ? -1:1)
+        a.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd < b.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd ? -1:1)
 
     return {
         leaveApplicationHistory,

@@ -37,6 +37,7 @@ export interface LeaveApplicationRequest {
     leaveType : LeaveType;
     leavePeriodProps : SelectedLeaveProps
     rmk? : string;
+    isModificationRequested? : boolean;
 }
 
 export interface LeaveApplicationHistoryItem {

@@ -101,11 +101,7 @@ function LeaveApplicationPage() {
     const rmkRef = useRef<HTMLTextAreaElement>(null);
 
     //휴가신청 api 훅
-    const leaveApplicationMutation = useSubmitLeaveApplication({
-        leaveType : selectedLeaveKind!,
-        leavePeriodProps : selectedLeaveProps!,
-        isModificationRequested : isEditMode,
-    });
+    const leaveApplicationMutation = useSubmitLeaveApplication();
 
     // validation & submit Handler 처리
     useEffect(() => {
@@ -118,7 +114,8 @@ function LeaveApplicationPage() {
                     empNo: 2230104,
                     leaveType: selectedLeaveKind,
                     leavePeriodProps : selectedLeaveProps,
-                    rmk : rmkRef?.current?.value
+                    rmk : rmkRef?.current?.value,
+                    isModificationRequested : isEditMode,
                 });
 
             })
