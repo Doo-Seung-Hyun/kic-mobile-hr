@@ -29,7 +29,7 @@ function MainPage() {
             <Card className="pb-5">
                 <Card.Content>
                     <div className="flex flex-row justify-between">
-                        <Card className="min-w-[47%] py-1">
+                        <Card className="min-w-[47%] py-4">
                             <Card.Header>잔여횟수</Card.Header>
                             <Card.Content className="flex flex-col gap-1">
                                 <div className="text-xl">2회</div>
@@ -41,7 +41,7 @@ function MainPage() {
                                 </div>
                             </Card.Content>
                         </Card>
-                        <Card className="min-w-[47%] py-1">
+                        <Card className="min-w-[47%] py-4">
                             <Card.Header>사용가능시간</Card.Header>
                             <Card.Content className="flex flex-col gap-1">
                                 <div className="text-xl">2시간20분</div>

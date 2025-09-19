@@ -1,4 +1,4 @@
-import type {LeaveDate, UserLeaveBalance} from "../../../../features/Leave/types/leave.ts";
+import type {UserLeaveBalance} from "../../../../features/Leave/types/leave.ts";
 import Card from "../../../../components/ui/Card.tsx";
 import {useMemo, useState} from "react";
 import lightningIcon from '/src/assets/images/lightningIcon.png'

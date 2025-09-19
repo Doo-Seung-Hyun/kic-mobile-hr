@@ -96,7 +96,7 @@ const FamilyDayWidget = () => {
     return <Card>
         <Card.Header>사용현황</Card.Header>
         <Card.Content>
-            <h3 className={'font-semibold text-xl'}>{`${TODAY_YEAR}년 ${TODAY_MONTH}월`}</h3>
+            <h3 className={'font-semibold text-xl mb-4'}>{`${TODAY_YEAR}년 ${TODAY_MONTH}월`}</h3>
             <div className={'flex flex-row justify-between items-end gap-3 pt-0.5'}>
                 {completedFamilyDays.map((date, index) =>
                     <div className={'flex-1'}>
