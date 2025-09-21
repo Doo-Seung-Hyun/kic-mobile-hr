@@ -70,10 +70,10 @@ const DropdownMenu = ({
                 " border rounded-md bg-white text-gray-700 shadow-lg" +
                 " min-w-16 max-h-40 overflow-auto"    +
                 (hasPreviousMenu ? " -left-2" : " -left-0")}>
-                <ul className={"flex flex-col gap-2"}>
+                <ul className={"flex flex-col"}>
                     {items.map(dropdownItem=>
                         <li key={String(dropdownItem.value)}>
-                            <button className={"w-full text-left"}
+                            <button className={"w-full text-left py-1"}
                                     onClick={event=>onClickDropdownMenuItem(dropdownItem,event)}>
                                 {dropdownItem.label}
                             </button>

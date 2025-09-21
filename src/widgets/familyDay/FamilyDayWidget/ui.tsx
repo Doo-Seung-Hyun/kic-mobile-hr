@@ -1,8 +1,9 @@
 import Card from "../../../components/ui/Card.tsx";
 import {format, parse} from "date-fns";
-import {Bell, Calendar, CalendarX2, Check, Plus} from "lucide-react";
+import {Bell, Calendar, Check, Plus} from "lucide-react";
 import Chip from "../../../components/ui/Chip.tsx";
 import {dDayformatter} from "../../../utils/attendanceFormmater.ts";
+
 
 const MAX_FAMILYDAY_COUNT = 4;
 
@@ -93,7 +94,8 @@ const FamilyDayWidget = () => {
 
     const notRegisteredCountOfFamilyDay = MAX_FAMILYDAY_COUNT - familyDates.length;
 
-    return <Card>
+    return <>
+    <Card>
         <Card.Header>사용현황</Card.Header>
         <Card.Content>
             <h3 className={'font-semibold text-xl mb-4'}>{`${TODAY_YEAR}년 ${TODAY_MONTH}월`}</h3>
@@ -140,6 +142,7 @@ const FamilyDayWidget = () => {
             </div>
         </Card.Content>
     </Card>
+    </>
 }
 
 export default FamilyDayWidget;

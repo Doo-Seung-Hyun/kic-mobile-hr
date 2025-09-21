@@ -4,7 +4,7 @@ import TeamCalendar from "../features/mainpage/TeamCalendar/TeamCalendar.tsx";
 import familyDayIcon from "../assets/images/familyDayIcon.png"
 import scheduleIcon from "../assets/images/scheduleIcon.png"
 import {LeaveDashboardWidget} from "../widgets/leave/leave-dashboard";
-import FamilyDayWidget from "../widgets/familyDay/FamilyDayWidget/ui.tsx";
+import {FamilyDayDashboardWidget} from "../widgets/familyDay/familyday-dashboard";
 
 
 function MainPage() {
@@ -25,41 +25,7 @@ function MainPage() {
             </div>
 
             {/*가족과 함께하는 날*/}
-            <FamilyDayWidget />
-            <Card className="pb-5">
-                <Card.Content>
-                    <div className="flex flex-row justify-between">
-                        <Card className="min-w-[47%] py-4">
-                            <Card.Header>잔여횟수</Card.Header>
-                            <Card.Content className="flex flex-col gap-1">
-                                <div className="text-xl">2회</div>
-                                <span className="text-sm mt-1">2/4회</span>
-                                <div>
-                                    <div className="h-3 bg-gray-200 rounded-2xl">
-                                        <div className="h-full bg-blue-500 rounded-2xl w-2/4"></div>
-                                    </div>
-                                </div>
-                            </Card.Content>
-                        </Card>
-                        <Card className="min-w-[47%] py-4">
-                            <Card.Header>사용가능시간</Card.Header>
-                            <Card.Content className="flex flex-col gap-1">
-                                <div className="text-xl">2시간20분</div>
-                                <span className="text-sm mt-1">4:00/6:20</span>
-                                <div>
-                                    <div className="h-3 bg-gray-200 rounded-2xl">
-                                        <div className={`h-full bg-blue-500 rounded-2xl`}
-                                             style={{
-                                                 width: Math.ceil((60 * 4) / (60 * 6 + 20) * 100) + '%'
-                                             }}
-                                        />
-                                    </div>
-                                </div>
-                            </Card.Content>
-                        </Card>
-                    </div>
-                </Card.Content>
-            </Card>
+            <FamilyDayDashboardWidget />
 
             {/*가족과 함께하는날 신청 버튼*/}
             <Button className={"mb-2"}>

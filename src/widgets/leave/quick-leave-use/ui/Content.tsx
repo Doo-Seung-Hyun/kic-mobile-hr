@@ -23,7 +23,7 @@ export const Content = ({
     const dayOfWeek = new Date().getDay();
 
     return <>
-        <div className={"flex-1 flex flex-wrap gap-2 content-start"}>
+        <div className={"flex-1 flex flex-wrap gap-1 content-start mb-2"}>
             <button onClick={() => handleChangeDateChip('TODAY',0)}>
                 <Chip color={dateChip?.chipText==='TODAY' ? 'primary' : 'default'}
                       outline={dateChip?.chipText!=='TODAY'}

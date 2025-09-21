@@ -4,6 +4,7 @@ import {dDayformatter} from "../../../../utils/attendanceFormmater.ts";
 import {format} from "date-fns";
 import fireIcon from '/src/assets/images/fireIcon.png';
 import chevronDown from '/src/assets/images/chevron-down.svg';
+import sadFaceIcon from '/src/assets/images/sadFaceIcon.png';
 import {CalendarDays} from "lucide-react";
 import {LoadingSpinner} from "../../../../components/ui/LoadingSpinner.tsx";
 import {useNavigate} from "react-router-dom";
@@ -21,7 +22,7 @@ const Title = ({
     return <div className={'flex items-center justify-between font-semibold'}>
         <div className={'flex items-center gap-1'}>
             <img src={fireIcon} alt={'불꽃아이콘'} width={14} height={14} />
-            <span>{`다음 ${leaveTypeName}까지`}</span>
+            <span className={'truncate'}>{`다음 ${leaveTypeName}까지`}</span>
         </div>
         <img src={chevronDown} alt={'더보기'}
              width={14} height={14}
@@ -62,8 +63,13 @@ const DDayWidget = ({
 const Empty = () => {
     return (<>
         <Title />
-        <div className={'flex items-center justify-center h-full'}>
-            휴가가 없습니다
+        <div className={'flex items-center justify-center h-full w-full break-keep'}>
+            <div>
+                신청한 휴가가 없습니다
+                <img src={sadFaceIcon} alt={'슬픈 표정 아이콘'}
+                     width={14} height={14}
+                     className={'ml-1 inline-block'}/>
+            </div>
         </div>
         <div></div>
     </>)
@@ -79,7 +85,7 @@ export const UpcomingLeaveDDayWidget = ({
     return <Card className={'font-medium text-sm flex-1 aspect-square max-w-48'}>
         <Card.Content className={'flex flex-1'}>
             <button onClick={()=>navigate('/leave/history')}
-                    className={'flex-1 flex flex-col text-gray-500 text-center justify-center'}>
+                    className={'flex-1 flex flex-col text-gray-500 text-center justify-center items-stretch'}>
             {isLoading ? <Loading />
                 : leaveApplicationHistoryItem ? <DDayWidget item={leaveApplicationHistoryItem} />
                         : <Empty />}
