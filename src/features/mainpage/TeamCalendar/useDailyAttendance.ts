@@ -88,6 +88,62 @@ const mockData:AttendanceData[] = [
         leaveTitleNm : '연차휴가',
         leaveStaYmd : tempNextDate,
         leaveEndYmd : tempNextDate
+    },{
+        empNm : '오윤석',
+        empNo : '2250302',
+        orgNm : '정보시스템실',
+        posGrdNm : '4급',
+        ymd : '20250922',
+        _seq : 1,
+        workStartTime: 8,
+        workEndTime: 17,
+        leaveTitleNm : '연차휴가',
+        leaveStaYmd : '20250919',
+        leaveEndYmd : '20250923'
+    },{
+        empNm : '오윤석',
+        empNo : '2250302',
+        orgNm : '정보시스템실',
+        posGrdNm : '4급',
+        ymd : '20250923',
+        _seq : 1,
+        workStartTime: 8,
+        workEndTime: 17,
+        leaveTitleNm : '연차휴가',
+        leaveStaYmd : '20250919',
+        leaveEndYmd : '20250923'
+    },{
+        empNm : '오윤석',
+        empNo : '2250302',
+        orgNm : '정보시스템실',
+        posGrdNm : '4급',
+        ymd : '20250919',
+        _seq : 1,
+        workStartTime: 8,
+        workEndTime: 17,
+        leaveTitleNm : '연차휴가',
+        leaveStaYmd : '20250919',
+        leaveEndYmd : '20250923'
+    },{
+        empNm : '두승현',
+        empNo : '2230103',
+        orgNm : '정보시스템실',
+        posGrdNm : '4급',
+        ymd : '20250926',
+        _seq : 2,
+        workStartTime: 9,
+        workEndTime: 18,
+        familyTimeTypeCd : '30'
+    },{
+        empNm : '오윤석',
+        empNo : '2250302',
+        orgNm : '정보시스템실',
+        posGrdNm : '4급',
+        ymd : '20250926',
+        _seq : 2,
+        workStartTime: 9,
+        workEndTime: 18,
+        familyTimeTypeCd : '30'
     },
 ];
 

@@ -1,8 +1,37 @@
 import Card from "../../../../components/ui/Card.tsx";
 import stopWatchIcon from "/src/assets/images/stopWatchIcon.png";
+import {LoadingSpinner} from "../../../../components/ui/LoadingSpinner.tsx";
 
-export function OverTimeHoursWidget() {
+interface OverTimeHoursWidgetProps {
+    overTimeHours: number;
+    overTimeMinutes: number;
+    totalOverTimeHours: number;
+    totalOverTimeMinutes: number;
+    totalFamilyDaysUseHours: number;
+    totalFamilyDaysUseMinutes: number;
+    isLoading: boolean;
+}
+export function OverTimeHoursWidget({
+    overTimeHours,
+    overTimeMinutes,
+    totalOverTimeHours,
+    totalOverTimeMinutes,
+    totalFamilyDaysUseHours,
+    totalFamilyDaysUseMinutes,
+    isLoading,
+}:OverTimeHoursWidgetProps) {
 
+    const overTimeHourString = overTimeHours ?
+        `${overTimeHours}시간${overTimeMinutes? ' '+overTimeMinutes+'분' :''}`
+        : '' ;
+
+    const totalOverTimeHoursString = totalOverTimeHours ?
+        `${totalOverTimeHours}:${totalOverTimeMinutes==0? '00':totalOverTimeMinutes}`
+        : '';
+
+    const totalFamilyDaysUseHoursString = totalFamilyDaysUseHours ?
+        `${totalFamilyDaysUseHours}:${totalFamilyDaysUseMinutes==0? '00':totalFamilyDaysUseMinutes}`
+        : '';
 
     return <Card className={'flex-1 aspect-square max-w-48'}>
         <Card.Header>
@@ -12,26 +41,29 @@ export function OverTimeHoursWidget() {
             </div>
         </Card.Header>
         <Card.Content className={'flex-1 flex flex-col text-sm text-gray-500 gap-1'}>
-            <div className={'flex-1 flex flex-col justify-center gap-2'}>
-                <div className="text-xl text-center text-gray-700">1시간 10분</div>
-                <div className="h-3 bg-gray-200 rounded-2xl">
-                    <div className={`h-full bg-green-500 rounded-2xl`}
-                         style={{
-                             width: Math.ceil(Math.min(70, 120) / 120 * 100) + '%'
-                         }}
-                    />
-                </div>
-            </div>
-            <div className={'flex font-medium justify-between'}>
-                <div className={'text-center'}>
-                    <div className={'flex-1'}>추가근무</div>
-                    <div>6:10</div>
-                </div>
-                <div className={'text-center'}>
-                    <div className={'flex-1'}>사용시간</div>
-                    <div>4:50</div>
-                </div>
-            </div>
+            {isLoading ? <LoadingSpinner /> : <>
+                    <div className={'flex-1 flex flex-col justify-center gap-2'}>
+                        <div className="text-xl text-center text-gray-700">{overTimeHourString}</div>
+                        <div className="h-3 bg-gray-200 rounded-2xl">
+                            <div className={`h-full bg-green-500 rounded-2xl`}
+                                 style={{
+                                     width: Math.ceil(Math.min(overTimeHours*60+overTimeMinutes, 120) / 120 * 100) + '%'
+                                 }}
+                            />
+                        </div>
+                    </div>
+                    <div className={'flex font-medium justify-between'}>
+                        <div className={'text-center'}>
+                            <div className={'flex-1'}>추가근무</div>
+                            <div>{totalOverTimeHoursString}</div>
+                        </div>
+                        <div className={'text-center'}>
+                            <div className={'flex-1'}>사용시간</div>
+                            <div>{totalFamilyDaysUseHoursString}</div>
+                        </div>
+                    </div>
+                </>
+            }
         </Card.Content>
     </Card>;
 }

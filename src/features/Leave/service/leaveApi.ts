@@ -26,7 +26,7 @@ const submitLeaveApplication = async (
             }else {
                 reject(new Error('휴가신청 중 오류가 발생했습니다. 관리자에게 문의하시기 바랍니다.'));
             }
-        },2000));
+        },1800));
 }
 
 const getLeaveApplicationHistory = async (
@@ -46,7 +46,7 @@ const getLeaveApplicationHistory = async (
                         item.leavePeriodProps.leaveDates[0].dateInfo.yyyyMMdd<=endDate
                 )
             })
-        },2000)
+        },1800)
     )
 }
 
@@ -237,7 +237,7 @@ const getMyLeaveBalance = async (
                     }
                 ]
             })
-        },2000)
+        },2500)
     )
 }
 

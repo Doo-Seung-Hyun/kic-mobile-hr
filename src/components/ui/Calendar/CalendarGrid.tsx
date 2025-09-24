@@ -79,9 +79,9 @@ const MonthGrid = ({
                                     <span className={isDateToRenderCircle(fullDate) ? 'text-white' : ''}
                                     >{date}</span>
                             <div className={"flex h-1.5 justify-center gap-1"}>
-                                {(hasLeave || date=='15') &&
+                                {(hasLeave || date=='15' || date=='22' || date=='23' || date=='29' || date=='30') &&
                                     <div className={"w-1.5 h-1.5 bg-blue-500 rounded-full"}/>}
-                                {!hasFamilyTime && Number(date)%3==0 &&
+                                {(!hasFamilyTime && Number(date)%3==0 || date=='25' || date=='26') &&
                                     <div className={"w-1.5 h-1.5 bg-lime-500 rounded-full"}/>}
                             </div>
                         </div>
