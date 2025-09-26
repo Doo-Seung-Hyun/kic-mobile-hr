@@ -1,13 +1,4 @@
-interface BaseAttendanceData{
-    empNo : string,
-    empNm : string,
-    orgNm : string,
-    posGrdNm : string,
-    ymd : string,
-    _seq : number,
-    workStartTime : number;
-    workEndTime : number;
-}
+import type {BaseAttendanceData} from "../shared/api/types.ts";
 
 export interface LeaveAttendanceData extends BaseAttendanceData{
     isHalfDayLeave? : boolean;
@@ -19,7 +10,8 @@ export interface LeaveAttendanceData extends BaseAttendanceData{
 }
 
 export interface FamilyTimeAttendanceData extends BaseAttendanceData{
-    familyTimeTypeCd : '20'|'30'
+    familyTimeTypeCd : '20'|'30';
+    familyTimeTypeNm : '오전'|'오후';
 }
 
 export type AttendanceData = LeaveAttendanceData | FamilyTimeAttendanceData;

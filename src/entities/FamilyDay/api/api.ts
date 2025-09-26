@@ -24,3 +24,7 @@ export const getOverTimeHours = async (empNo:number):Promise<ApiResponse<OverTim
         }, 1600);
     })
 };
+
+export const getUpcomingFamilyDay = async (empNo: number):Promise<ApiResponse<UpcomingFamilyDayResponse>> => {
+
+}

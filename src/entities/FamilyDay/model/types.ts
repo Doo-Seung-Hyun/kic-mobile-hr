@@ -6,3 +6,8 @@ export interface OverTimeHoursResponse {
     totalFamilyDaysUseHours : number;
     totalFamilyDaysUseMinutes : number;
 }
+
+export interface UpcomingFamilyDayResponse {
+
+}
+

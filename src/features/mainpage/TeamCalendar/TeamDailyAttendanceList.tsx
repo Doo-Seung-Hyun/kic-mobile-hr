@@ -43,7 +43,7 @@ const TeamDailyAttendanceList = ({
                     const [attendanceName, attendanceDuration] = displayTexts;
 
                     return (
-                    <div key={`${attendanceData.empNo}-${attendanceType}-${attendanceName}`}
+                    <div key={`${attendanceData.empNo}-${attendanceType}-${attendanceName}-${attendanceDuration}`}
                          className={"flex text-gray-800 font-normal justify-between py-1 items-center"}>
                         <div className={"flex gap-2 text-sm items-center"}>
                             <span className={"text-lg mr-1"}>{icon}</span>

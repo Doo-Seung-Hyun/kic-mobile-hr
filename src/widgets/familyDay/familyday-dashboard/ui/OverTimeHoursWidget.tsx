@@ -21,17 +21,14 @@ export function OverTimeHoursWidget({
     isLoading,
 }:OverTimeHoursWidgetProps) {
 
-    const overTimeHourString = overTimeHours ?
-        `${overTimeHours}시간${overTimeMinutes? ' '+overTimeMinutes+'분' :''}`
-        : '' ;
+    const overTimeHourString = [
+        overTimeHours && `${overTimeHours}시간`,
+        overTimeMinutes && `${overTimeMinutes}분`
+    ].filter(Boolean).join(' ');
 
-    const totalOverTimeHoursString = totalOverTimeHours ?
-        `${totalOverTimeHours}:${totalOverTimeMinutes==0? '00':totalOverTimeMinutes}`
-        : '';
+    const totalOverTimeHoursString = `${totalOverTimeHours}:${totalOverTimeMinutes ? totalOverTimeMinutes:'00'}`;
 
-    const totalFamilyDaysUseHoursString = totalFamilyDaysUseHours ?
-        `${totalFamilyDaysUseHours}:${totalFamilyDaysUseMinutes==0? '00':totalFamilyDaysUseMinutes}`
-        : '';
+    const totalFamilyDaysUseHoursString = `${totalFamilyDaysUseHours}:${totalFamilyDaysUseMinutes ? totalFamilyDaysUseMinutes:'00'}`;
 
     return <Card className={'flex-1 aspect-square max-w-48'}>
         <Card.Header>
