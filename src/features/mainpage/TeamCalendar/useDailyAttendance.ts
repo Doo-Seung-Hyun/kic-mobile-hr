@@ -169,7 +169,7 @@ const useDailyAttendance = (yyyyMMdd: string, orgId: string) => {
         const getAttendanceList = (
             date:string,
             // orgId:string
-        ) =>{
+        ) => {
             setAttendanceList(getTeamAttendanceList(date ,
                 // orgId
             ))

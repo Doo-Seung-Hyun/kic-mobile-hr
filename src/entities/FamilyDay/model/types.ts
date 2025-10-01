@@ -7,7 +7,14 @@ export interface OverTimeHoursResponse {
     totalFamilyDaysUseMinutes : number;
 }
 
-export interface UpcomingFamilyDayResponse {
+export interface MyFamilyDaysResponse {
+    myFamilyDays : FamilyDay[] | null;
+}
 
+export interface FamilyDay {
+    count: number;
+    date: string;
+    familyTimeTypeCd : '20'|'30';
+    familyTimeTypeNm : '오전'|'오후';
 }
 
