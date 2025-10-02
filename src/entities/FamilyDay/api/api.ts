@@ -39,26 +39,23 @@ export const getMyFamilyDays =
                     result : {
                         myFamilyDays : [
                             {
-                                count: 1,
-                                date: `${yyyyMM}03`,
+                                empNo,
+                                requestNumber: 1,
+                                date: `${yyyyMM}01`,
                                 familyTimeTypeCd: '30',
                                 familyTimeTypeNm: '오후'
                             },
                             {
-                                count: 2,
+                                empNo,
+                                requestNumber: 2,
                                 date: `${yyyyMM}14`,
                                 familyTimeTypeCd: '20',
                                 familyTimeTypeNm: '오전'
                             },
                             {
-                                count: 3,
+                                empNo,
+                                requestNumber: 3,
                                 date: `${yyyyMM}22`,
-                                familyTimeTypeCd: '30',
-                                familyTimeTypeNm: '오후'
-                            },
-                            {
-                                count: 4,
-                                date: `${yyyyMM}28`,
                                 familyTimeTypeCd: '30',
                                 familyTimeTypeNm: '오후'
                             },

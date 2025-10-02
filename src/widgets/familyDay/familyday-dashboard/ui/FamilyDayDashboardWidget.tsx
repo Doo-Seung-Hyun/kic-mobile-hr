@@ -14,10 +14,15 @@ export function FamilyDayDashboardWidget() {
     const yyyyMMdd = format(TODAY, "yyyyMMdd");
     const {myFamilyDaysResponse, isLoading: isMyFamilyDaysLoading} = useMyFamilyDaysQuery(EMP_NO, format(TODAY, 'yyyyMM'));
 
-    const totalAppliedCount = myFamilyDaysResponse?.myFamilyDays?.length ?? 0;
-    const pastFamilyDaysCount = myFamilyDaysResponse?.myFamilyDays
+    const canRequestCount = 4;
+    const requestedCount = myFamilyDaysResponse?.myFamilyDays?.length ?? 0;
+    const notRequestedCount = canRequestCount - requestedCount;
+
+    const usedCount = myFamilyDaysResponse?.myFamilyDays
         ?.filter(familyDay=>familyDay.date<yyyyMMdd).length ?? 0;
-    const upcomingCount = pastFamilyDaysCount == totalAppliedCount ? 0 :  pastFamilyDaysCount+1;
+    const notUsedCount = requestedCount - usedCount;
+
+    const upcomingCount = usedCount == requestedCount ? 0 :  usedCount+1;
     const upcomingMyFamilyDay = upcomingCount>0 ? myFamilyDaysResponse?.myFamilyDays?.[upcomingCount-1] : null;
 
     return <div className={'flex justify-between gap-4'}>
@@ -28,7 +33,7 @@ export function FamilyDayDashboardWidget() {
                                  totalFamilyDaysUseHours={overTimeHoursResponse?.totalFamilyDaysUseHours ?? 0}
                                  totalFamilyDaysUseMinutes={overTimeHoursResponse?.totalFamilyDaysUseMinutes ?? 0}
                                  isLoading = {isOverTimeHoursLoading} />
-            <UpcomingFamilyDayWidget upcomingCount={upcomingMyFamilyDay?.count ?? 0}
+            <UpcomingFamilyDayWidget requestedNumberInfo={{notRequestedCount, usedCount, notUsedCount}}
                                      date={upcomingMyFamilyDay?.date ?? ''}
                                      dDayText={upcomingMyFamilyDay ? dDayformatter(upcomingMyFamilyDay.date) : ''}
                                      typeName={upcomingMyFamilyDay?.familyTimeTypeNm ?? ''}/>

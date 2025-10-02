@@ -1,39 +1,48 @@
 import Card from "../../../../components/ui/Card.tsx";
 import wavingIcon from "/src/assets/images/wavingIcon.png";
 import {CalendarDays, Moon} from "lucide-react";
+import {parse, format} from "date-fns";
+
+export interface RequestedNumberInfo {
+    notRequestedCount: number;
+    usedCount: number;
+    notUsedCount: number;
+}
 
 interface UpcomingFamilyDayWidgetProps {
-    upcomingCount : number;
+    requestedNumberInfo: RequestedNumberInfo;
     dDayText: string;
     date: string;
     typeName : string;
 }
 
 export function UpcomingFamilyDayWidget({
-    upcomingCount,
+    requestedNumberInfo,
     dDayText,
     date,
     typeName,
 }:UpcomingFamilyDayWidgetProps) {
 
     function FamilyDayStatusDots({
-        completedCount,
-        upcomingCount
-    }: {
-        completedCount: number;
-        upcomingCount: number;
-    }) {
-        const totalAvailableFamilyDays = 4;
+        requestedNumberInfo
+    }: {requestedNumberInfo: RequestedNumberInfo}) {
+        const {notRequestedCount, usedCount, notUsedCount} = requestedNumberInfo;
 
         return <div className={'flex gap-1 items-center'}>
-            {[...new Array(totalAvailableFamilyDays)]
-                .map((_, i) => i+1)
-                .map((_, i) => {
-                    const bgClass = i<upcomingCount ? 'bg-green-200'
-                        : i==upcomingCount ? 'bg-green-500'
-                            : 'bg-gray-300'
-                    return <span className={'w-2 h-2 rounded-full '+bgClass}/>
-                })}
+            {/*완료 횟수*/}
+            {[...new Array(usedCount)]
+                .map(() => <span className={'w-2 h-2 rounded-full bg-green-200'} />)}
+
+            {/*다가오는 회차*/}
+            {notUsedCount && <span className={'w-2 h-2 rounded-full bg-green-500'} />}
+
+            {/*남은 예정 회차*/}
+            {notUsedCount-1>0 && [...new Array(notUsedCount-1)]
+                .map(() => <span className={'w-2 h-2 rounded-full bg-green-200'} />)}
+
+            {/*미등록 회차*/}
+            {[...new Array(notRequestedCount)]
+                .map(() => <span className={'w-2 h-2 rounded-full bg-gray-300'} />)}
         </div>
     }
 
@@ -44,7 +53,7 @@ export function UpcomingFamilyDayWidget({
                     <img src={wavingIcon} alt={'손흔드는 아이콘'} width={14} height={14} />
                     <span className={'truncate'}>예정일자</span>
                 </div>
-                <FamilyDayStatusDots upcomingCount={upcomingCount} />
+                <FamilyDayStatusDots requestedNumberInfo={requestedNumberInfo} />
             </div>
         </Card.Header>
         <Card.Content className={'flex-1 flex flex-col text-sm text-gray-500 gap-0.5'}>
@@ -55,7 +64,7 @@ export function UpcomingFamilyDayWidget({
             </div>
             <div className={'font-medium flex items-center gap-1'}>
                 <CalendarDays size={14}/>
-                <span>{date}</span>
+                <span>{format(parse(date, 'yyyyMMdd', new Date()),'M월 d일')}</span>
             </div>
         </Card.Content>
     </Card>;

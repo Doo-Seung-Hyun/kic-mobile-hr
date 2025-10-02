@@ -12,7 +12,8 @@ export interface MyFamilyDaysResponse {
 }
 
 export interface FamilyDay {
-    count: number;
+    empNo: number;
+    requestNumber: number;
     date: string;
     familyTimeTypeCd : '20'|'30';
     familyTimeTypeNm : '오전'|'오후';
