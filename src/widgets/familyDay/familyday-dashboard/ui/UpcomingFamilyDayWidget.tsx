@@ -2,6 +2,7 @@ import Card from "../../../../components/ui/Card.tsx";
 import wavingIcon from "/src/assets/images/wavingIcon.png";
 import {CalendarDays, Moon} from "lucide-react";
 import {parse, format} from "date-fns";
+import {LoadingSpinner} from "../../../../components/ui/LoadingSpinner.tsx";
 
 export interface RequestedNumberInfo {
     notRequestedCount: number;
@@ -10,6 +11,7 @@ export interface RequestedNumberInfo {
 }
 
 interface UpcomingFamilyDayWidgetProps {
+    isLoading? : boolean;
     requestedNumberInfo: RequestedNumberInfo;
     dDayText: string;
     date: string;
@@ -17,6 +19,7 @@ interface UpcomingFamilyDayWidgetProps {
 }
 
 export function UpcomingFamilyDayWidget({
+    isLoading = false,
     requestedNumberInfo,
     dDayText,
     date,
@@ -25,7 +28,11 @@ export function UpcomingFamilyDayWidget({
 
     function FamilyDayStatusDots({
         requestedNumberInfo
-    }: {requestedNumberInfo: RequestedNumberInfo}) {
+    }: {requestedNumberInfo?: RequestedNumberInfo}) {
+
+        if (!requestedNumberInfo)
+            return null;
+
         const {notRequestedCount, usedCount, notUsedCount} = requestedNumberInfo;
 
         return <div className={'flex gap-1 items-center'}>
@@ -34,7 +41,7 @@ export function UpcomingFamilyDayWidget({
                 .map(() => <span className={'w-2 h-2 rounded-full bg-green-200'} />)}
 
             {/*다가오는 회차*/}
-            {notUsedCount && <span className={'w-2 h-2 rounded-full bg-green-500'} />}
+            {!!notUsedCount && <span className={'w-2 h-2 rounded-full bg-green-500'} />}
 
             {/*남은 예정 회차*/}
             {notUsedCount-1>0 && [...new Array(notUsedCount-1)]
@@ -43,6 +50,12 @@ export function UpcomingFamilyDayWidget({
             {/*미등록 회차*/}
             {[...new Array(notRequestedCount)]
                 .map(() => <span className={'w-2 h-2 rounded-full bg-gray-300'} />)}
+        </div>
+    }
+
+    function Loading() {
+        return <div className={'flex flex-1 items-center justify-center'}>
+            <LoadingSpinner/>
         </div>
     }
 
@@ -57,15 +70,17 @@ export function UpcomingFamilyDayWidget({
             </div>
         </Card.Header>
         <Card.Content className={'flex-1 flex flex-col text-sm text-gray-500 gap-0.5'}>
-            <div className="flex-1 flex items-center justify-center text-xl text-gray-700">{dDayText}</div>
-            <div className={'font-medium flex items-center gap-1'}>
-                <Moon size={14}/>
-                <span>{typeName}</span>
-            </div>
-            <div className={'font-medium flex items-center gap-1'}>
-                <CalendarDays size={14}/>
-                <span>{format(parse(date, 'yyyyMMdd', new Date()),'M월 d일')}</span>
-            </div>
+            {isLoading ? <Loading /> : (<>
+                <div className="flex-1 flex items-center justify-center text-xl text-gray-700">{dDayText}</div>
+                <div className={'font-medium flex items-center gap-1'}>
+                    <Moon size={14}/>
+                    <span>{typeName}</span>
+                </div>
+                <div className={'font-medium flex items-center gap-1'}>
+                    <CalendarDays size={14}/>
+                    <span>{format(parse(date, 'yyyyMMdd', new Date()),'M월 d일')}</span>
+                </div>
+            </>)}
         </Card.Content>
     </Card>;
 }

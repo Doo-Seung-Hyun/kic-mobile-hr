@@ -33,7 +33,8 @@ export function FamilyDayDashboardWidget() {
                                  totalFamilyDaysUseHours={overTimeHoursResponse?.totalFamilyDaysUseHours ?? 0}
                                  totalFamilyDaysUseMinutes={overTimeHoursResponse?.totalFamilyDaysUseMinutes ?? 0}
                                  isLoading = {isOverTimeHoursLoading} />
-            <UpcomingFamilyDayWidget requestedNumberInfo={{notRequestedCount, usedCount, notUsedCount}}
+            <UpcomingFamilyDayWidget isLoading={isMyFamilyDaysLoading}
+                                     requestedNumberInfo={{notRequestedCount, usedCount, notUsedCount}}
                                      date={upcomingMyFamilyDay?.date ?? ''}
                                      dDayText={upcomingMyFamilyDay ? dDayformatter(upcomingMyFamilyDay.date) : ''}
                                      typeName={upcomingMyFamilyDay?.familyTimeTypeNm ?? ''}/>

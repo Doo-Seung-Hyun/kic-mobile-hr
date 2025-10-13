@@ -21,6 +21,12 @@ export function OverTimeHoursWidget({
     isLoading,
 }:OverTimeHoursWidgetProps) {
 
+    function Loading() {
+        return <div className={'flex flex-1 items-center justify-center'}>
+            <LoadingSpinner/>
+        </div>
+    }
+
     const overTimeHourString = [
         overTimeHours && `${overTimeHours}시간`,
         overTimeMinutes && `${overTimeMinutes}분`
@@ -38,7 +44,7 @@ export function OverTimeHoursWidget({
             </div>
         </Card.Header>
         <Card.Content className={'flex-1 flex flex-col text-sm text-gray-500 gap-1'}>
-            {isLoading ? <LoadingSpinner /> : <>
+            {isLoading ? <Loading /> : <>
                     <div className={'flex-1 flex flex-col justify-center gap-2'}>
                         <div className="text-xl text-center text-gray-700">{overTimeHourString}</div>
                         <div className="h-3 bg-gray-200 rounded-2xl">

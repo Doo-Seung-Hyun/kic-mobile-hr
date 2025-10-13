@@ -1,10 +1,12 @@
 import {
-    type AttendanceData, type FamilyTimeAttendanceData,
+    type AttendanceData,
+    type FamilyTimeAttendanceData,
     isFamilyTimeAttendance,
     isLeaveAttendance,
     type LeaveAttendanceData
 } from "../types/attendanceData.ts";
-import {differenceInCalendarDays, parse, startOfDay} from "date-fns";
+import {differenceInCalendarDays, format, getWeek, parse, startOfDay} from "date-fns";
+import {ko} from "date-fns/locale";
 
 const getIcon = (attendanceType: 'Leave'|'FamilyTime') =>
     attendanceType==='Leave' ? '⛱️️' : '⏰';
@@ -111,9 +113,15 @@ const dDayformatter = (
 ):string =>{
     const to:Date = startOfDay(parse(date,formatString,new Date()));
     const daysLeft = differenceInCalendarDays(to,new Date());
-    return daysLeft===0 ? '오늘':
-        daysLeft===1 ? '내일':
-            `D-${daysLeft}`;
+
+    if(daysLeft===0) return '오늘';
+    if(daysLeft===1) return '내일';
+
+    const differenceInWeeks = getWeek(to) - getWeek(new Date());
+    if(differenceInWeeks<=1)
+        return `${differenceInWeeks===1 ? '다음주':'이번주'} ${format(to, 'EE', {locale: ko})}`;
+
+    return `D-${daysLeft}`;
 }
 
 
